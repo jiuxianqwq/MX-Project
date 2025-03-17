@@ -105,10 +105,9 @@ public class PlayerProfile extends ConfigController {
     }
 
     private String wrapString(String v) {
-        return v.replace("%player%", this.getPlayer().getName())
-                        .replace("&", "§")
+        return MessageUtils.wrapColors(v.replace("%player%", this.getPlayer().getName())
                         .replace("%vl%", String.valueOf(this.vl))
-                        .replace("%vlLimit%", String.valueOf(config().getDouble("vlLimit")));
+                        .replace("%vlLimit%", String.valueOf(config().getDouble("vlLimit"))));
     }
 
     public boolean toggleAlerts() {
