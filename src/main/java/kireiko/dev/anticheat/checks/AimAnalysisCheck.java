@@ -56,11 +56,12 @@ public class AimAnalysisCheck implements PacketCheckHandler {
             if (max > 8 && pearson < 0.25 && distinctX < 85 && distinctX > 40 && kurtosis > 0 && spikes >= 40) {
                 this.increaseBuffer(0, (distinctX < 80) ? 1.25f : 0.85f);
                 profile.debug("&7Aim Incorrect distribution: " + this.buffer.get(0));
-                if (this.buffer.get(0) > 2.1f) {
-                    this.profile.punish("Aim", "Distribution", "[Analysis] Incorrect distribution [" + distinctX + ", " + pearson + ", " + max + "]", 2.0f);
-                    this.buffer.set(0, 1.5f);
+                if (this.buffer.get(0) > 3.2f) {
+                    this.profile.punish("Aim", "Distribution", "[Analysis] Incorrect distribution [" + distinctX + ", "
+                                    + pearson + ", " + max + ", " + spikes + "]", 2.0f);
+                    this.buffer.set(0, 2.5f);
                 }
-            } else this.increaseBuffer(0, -0.4f);
+            } else this.increaseBuffer(0, -0.5f);
             //profile.getPlayer().sendMessage("f: " + distinctX + " " + pearson + " " + max + " " + kurtosis + " " + spikes);
         }
         this.rawRotations.clear();
