@@ -1,0 +1,11 @@
+name: MX
+version: '1.0'
+author: pawsashatoy
+main: kireiko.dev.anticheat.MX
+depend: [ProtocolLib]
+commands:
+  mx:
+    description: "Main command"
+    usage: "/mx"
+    permission: "mx.admin"
+    aliases: [mx]
