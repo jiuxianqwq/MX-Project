@@ -54,7 +54,7 @@ public class AimAnalysisCheck implements PacketCheckHandler {
             double pearson = Statistics.getPearsonCorrelation(x, y);
             final int spikes = Statistics.getZScoreOutliers(x, 1.0f).size() + Statistics.getZScoreOutliers(y, 1.0f).size();
             if (max > 8 && pearson < 0.25 && distinctX < 85 && distinctX > 40 && kurtosis > 0 && spikes >= 40) {
-                this.increaseBuffer(0, (distinctX < 80) ? 1.25f : 0.85f);
+                this.increaseBuffer(0, (distinctX < 80) ? 1.1f : 0.85f);
                 profile.debug("&7Aim Incorrect distribution: " + this.buffer.get(0));
                 if (this.buffer.get(0) > 3.2f) {
                     this.profile.punish("Aim", "Distribution", "[Analysis] Incorrect distribution [" + distinctX + ", "
