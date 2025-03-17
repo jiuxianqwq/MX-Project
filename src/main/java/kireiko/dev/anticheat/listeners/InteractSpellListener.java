@@ -7,6 +7,7 @@ import kireiko.dev.anticheat.api.player.fun.Hook;
 import kireiko.dev.anticheat.api.player.fun.Rocket;
 import kireiko.dev.anticheat.api.player.fun.Spell;
 import kireiko.dev.anticheat.core.AsyncScheduler;
+import kireiko.dev.anticheat.utils.ConfigController;
 import kireiko.dev.anticheat.utils.FunThingsUtil;
 import kireiko.dev.anticheat.utils.MessageUtils;
 import kireiko.dev.millennium.math.AxisAlignedBB;
@@ -28,9 +29,12 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class InteractSpellListener implements Listener {
+public class InteractSpellListener extends ConfigController implements Listener {
     @EventHandler
     public void interact(PlayerInteractEvent event) {
+        if (!config().getBoolean("interactSpell")) {
+            return;
+        }
         final Player player = event.getPlayer();
         final PlayerProfile profile = PlayerContainer.getProfile(player);
         if (event.getAction().equals(Action.RIGHT_CLICK_AIR) && event.hasItem()) {

@@ -14,3 +14,4 @@ banCommand: "ban %player% 1d Unfair advantage"
 bypass: "mx.bypass"
 bcMsg: "&c&l[MX]&f %message%"
 punishEffect: false
+interactSpell: true
