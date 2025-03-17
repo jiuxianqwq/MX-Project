@@ -124,12 +124,12 @@ public class AimStatisticsCheck implements PacketCheckHandler {
 
             boolean positive = false, negative = false;
             for (double d : zFactorYaw) {
-                if (d > 14) positive = true;
-                if (d < 14) negative = true;
+                if (d > 12) positive = true;
+                if (d < -12) negative = true;
             }
             if (zFactorYaw.size() == 2 && positive && negative
                             && Statistics.getMax(zFactorYaw) < 55) {
-                this.increaseBuffer(0, zFactorYaw.size() == 2 ? 1.75f : 1.2f);
+                this.increaseBuffer(0, 1.5f);
                 if (this.buffer.get(0) > 4)
                     total++;
                 profile.debug("&7Aim zFactor: " + this.buffer.get(0));
