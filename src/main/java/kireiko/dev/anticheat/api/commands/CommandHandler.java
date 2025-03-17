@@ -46,9 +46,11 @@ public class CommandHandler extends ConfigController implements CommandExecutor 
                     "",
                     wrapColors("&e/" + MX.command + " alerts &f- &cturn on/off alerts"),
                     wrapColors("&e/" + MX.command + " ban <player> &f- &cforce ban"),
+                            /*
                     wrapColors("&e/" + MX.command + " crash <player> &f- &cgame crash"),
                     wrapColors("&e/" + MX.command + " crash <player> <msg>/silent &f- &ccustom game crash"),
                     wrapColors("&e/" + MX.command + " horrow <player> &f- &cgame crash with horror ;)"),
+                             */
                     wrapColors("&e/" + MX.command + " reload &f- &cconfig reload"),
                     wrapColors("&e/" + MX.command + " stat &f- &cglobal statistics"),
                     wrapColors("&e/" + MX.command + " bc &f- &cmessage for all players"),
@@ -78,6 +80,7 @@ public class CommandHandler extends ConfigController implements CommandExecutor 
                     }
                     break;
                 }
+                /*
                 case ("crash"): {
                     Player t = null;
                     for (Player profile : PlayerContainer.getUuid2Player().values()) {
@@ -120,6 +123,7 @@ public class CommandHandler extends ConfigController implements CommandExecutor 
                     }
                     break;
                 }
+                 */
                 case ("ban"): {
                     Player t = null;
                     for (Player profile : PlayerContainer.getUuid2Player().values()) {
