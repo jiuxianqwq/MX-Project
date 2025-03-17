@@ -46,11 +46,6 @@ public class CommandHandler extends ConfigController implements CommandExecutor 
                     "",
                     wrapColors("&e/" + MX.command + " alerts &f- &cturn on/off alerts"),
                     wrapColors("&e/" + MX.command + " ban <player> &f- &cforce ban"),
-                            /*
-                    wrapColors("&e/" + MX.command + " crash <player> &f- &cgame crash"),
-                    wrapColors("&e/" + MX.command + " crash <player> <msg>/silent &f- &ccustom game crash"),
-                    wrapColors("&e/" + MX.command + " horrow <player> &f- &cgame crash with horror ;)"),
-                             */
                     wrapColors("&e/" + MX.command + " reload &f- &cconfig reload"),
                     wrapColors("&e/" + MX.command + " stat &f- &cglobal statistics"),
                     wrapColors("&e/" + MX.command + " bc &f- &cmessage for all players"),
@@ -80,50 +75,6 @@ public class CommandHandler extends ConfigController implements CommandExecutor 
                     }
                     break;
                 }
-                /*
-                case ("crash"): {
-                    Player t = null;
-                    for (Player profile : PlayerContainer.getUuid2Player().values()) {
-                        if (profile.getName().equalsIgnoreCase(args[1])) {
-                            t = profile;
-                            break;
-                        }
-                    }
-                    if (t == null) {
-                        sendToSender(sender, "§cPlayer not found... Sorry!");
-                    } else {
-                        if (args.length > 3) {
-                            if (args[3].equalsIgnoreCase("silent")) {
-                                FunnyPackets.closeMinecraftCustom(t, "");
-                            } else {
-                                StringBuilder builder = new StringBuilder();
-                                for (int i = 3; i < args.length; i++)
-                                    builder.append(" ").append(args[i]);
-
-                                FunnyPackets.closeMinecraftCustom(t, builder.toString());
-                            }
-                        } else {
-                            FunnyPackets.closeMinecraft(t);
-                        }
-                    }
-                    break;
-                }
-                case ("horrow"): {
-                    Player t = null;
-                    for (Player profile : PlayerContainer.getUuid2Player().values()) {
-                        if (profile.getName().equalsIgnoreCase(args[1])) {
-                            t = profile;
-                            break;
-                        }
-                    }
-                    if (t == null) {
-                        sendToSender(sender, "§cPlayer not found... Sorry!");
-                    } else {
-                        PlayerContainer.getProfile(t).horrowStage = 1;
-                    }
-                    break;
-                }
-                 */
                 case ("ban"): {
                     Player t = null;
                     for (Player profile : PlayerContainer.getUuid2Player().values()) {

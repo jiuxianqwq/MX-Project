@@ -3,6 +3,7 @@ package kireiko.dev.anticheat.utils;
 import kireiko.dev.anticheat.api.PlayerContainer;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.text.SimpleDateFormat;
@@ -25,7 +26,7 @@ public class MessageUtils {
         }
     }
     public static String wrapColors(String v) {
-        return v.replace("&", "§");
+        return ChatColor.translateAlternateColorCodes('&', v);
     }
     public static String getDate() {
         Date date = new Date();
