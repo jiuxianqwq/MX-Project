@@ -35,7 +35,7 @@ public class AimHeuristicCheck implements PacketCheckHandler {
                 checkDefaultAim();
         } else if (o instanceof UseEntityEvent) {
             UseEntityEvent event = (UseEntityEvent) o;
-            if (event.isAttack() && event.getTarget() instanceof Player) {
+            if (event.isAttack()) {
                 this.lastAttack = System.currentTimeMillis();
             }
         }

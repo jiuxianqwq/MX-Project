@@ -58,7 +58,7 @@ public class AimComplexCheck implements PacketCheckHandler {
             if (this.rawRotations.size() >= 10) this.checkRaw();
         } else if (o instanceof UseEntityEvent) {
             UseEntityEvent event = (UseEntityEvent) o;
-            if (event.isAttack() && event.getTarget() instanceof Player) {
+            if (event.isAttack()) {
                 this.lastAttack = System.currentTimeMillis();
             }
         }
