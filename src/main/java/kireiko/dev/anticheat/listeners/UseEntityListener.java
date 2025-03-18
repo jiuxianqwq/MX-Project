@@ -6,19 +6,26 @@ import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.utility.MinecraftVersion;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import kireiko.dev.anticheat.MX;
 import kireiko.dev.anticheat.api.PlayerContainer;
 import kireiko.dev.anticheat.api.events.UseEntityEvent;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
+import kireiko.dev.anticheat.core.AsyncEntityFetcher;
+import lombok.SneakyThrows;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 public class UseEntityListener extends PacketAdapter {
+
+    private static final boolean modern = ProtocolLibrary.getProtocolManager().getMinecraftVersion()
+                    .compareTo(new MinecraftVersion("1.13")) >= 0;
     public UseEntityListener() {
         super(MX.getInstance(), ListenerPriority.HIGHEST,
                         PacketType.Play.Client.USE_ENTITY);
     }
+    @SneakyThrows
     @Override
     public void onPacketReceiving(PacketEvent event) {
         Player player = event.getPlayer();
@@ -39,7 +46,8 @@ public class UseEntityListener extends PacketAdapter {
                         EnumWrappers.EntityUseAction.ATTACK);
         if (packet.getIntegers().getValues().isEmpty()) return;
         int entityId = packet.getIntegers().read(0);
-        Entity entity = ProtocolLibrary.getProtocolManager().
+        Entity entity = (modern) ? AsyncEntityFetcher.getEntityFromIDAsync(event.getPlayer().getWorld(), entityId).get()
+                        : ProtocolLibrary.getProtocolManager().
                         getEntityFromID(event.getPlayer().getWorld(), entityId);
         UseEntityEvent e = new UseEntityEvent(entity, attack, entityId, false);
         profile.run(e);

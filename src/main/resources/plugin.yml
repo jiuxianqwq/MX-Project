@@ -1,6 +1,7 @@
 name: MX
-version: '1.0'
+version: '1.2'
 author: pawsashatoy
+description: "Complex aim analysis anti-cheat"
 main: kireiko.dev.anticheat.MX
 depend: [ProtocolLib]
 commands:
