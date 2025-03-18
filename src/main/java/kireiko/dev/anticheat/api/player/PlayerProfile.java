@@ -3,6 +3,7 @@ package kireiko.dev.anticheat.api.player;
 import kireiko.dev.anticheat.MX;
 import kireiko.dev.anticheat.api.CheckPacketRegister;
 import kireiko.dev.anticheat.api.PacketCheckHandler;
+import kireiko.dev.anticheat.api.events.MXFlagEvent;
 import kireiko.dev.anticheat.checks.AimAnalysisCheck;
 import kireiko.dev.anticheat.checks.AimComplexCheck;
 import kireiko.dev.anticheat.checks.AimHeuristicCheck;
@@ -55,17 +56,24 @@ public class PlayerProfile extends ConfigController {
                         && this.player.hasPermission(config().getString("bypass"))) {
             return;
         }
-        this.vl += 10.0f * m;
+        // this.vl += 10.0f * m;
+        final float tempVl = this.vl + 10.0f * m;
+        final double vlLimit = config().getDouble("vlLimit");
+        MXFlagEvent event = new MXFlagEvent(this.player, check, component, info, tempVl, vlLimit);
+        if (!event.callEvent()) {
+            return;
+        }
+        this.vl = tempVl;
         this.flagCount += (m == 0.0) ? 0 : 1;
         String builder = this.wrapString(Objects.requireNonNull(
                         config().getString("alertMsg")))
                         .replace("%check%", check).replace("%component%", component).replace("%info%", info);
         MessageUtils.sendMessagesToPlayers(MX.permission, builder);
-        if (this.vl >= config().getDouble("vlLimit")) {
+        if (this.vl >= vlLimit) {
             if (config().getBoolean("punishEffect")) {
                 AnimatedPunishUtil.punish(this, new Pair<>(check, info));
             } else forcePunish(check, info);
-        } else if (this.vl >= config().getDouble("vlLimit") / 1.8) {
+        } else if (this.vl >= vlLimit / 1.8) {
             if (flagCount > 2) {
                 MessageUtils.sendMessagesToPlayersNative(
                         MX.permissionHead + "personal",
