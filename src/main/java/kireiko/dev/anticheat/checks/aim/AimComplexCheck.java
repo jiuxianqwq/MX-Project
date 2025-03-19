@@ -14,18 +14,20 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class AimComplexCheck implements PacketCheckHandler {
     private final List<Float> buffer;
     private final PlayerProfile profile;
-    private final List<Vec2i> rotations, rotations2;
+    private final List<Vec2i> /*rotations,*/ rotations2;
     private final List<Vec2> kireikoGeneric;
     private final List<Vec2f> rawRotations;
     private long lastAttack;
     private double oldShannonYaw, oldShannonPitch;
+    private final ReentrantLock aimLock = new ReentrantLock();
     public AimComplexCheck(PlayerProfile profile) {
         this.profile = profile;
-        this.rotations = Collections.synchronizedList(new CopyOnWriteArrayList<>());
+        /*this.rotations = Collections.synchronizedList(new CopyOnWriteArrayList<>());*/
         this.rotations2 = Collections.synchronizedList(new CopyOnWriteArrayList<>());
         this.rawRotations = new CopyOnWriteArrayList<>();
         this.kireikoGeneric = new CopyOnWriteArrayList<>();
@@ -43,15 +45,22 @@ public class AimComplexCheck implements PacketCheckHandler {
             Vec2f delta = event.getDelta();
             this.rawRotations.add(delta);
             double gcdValue = Statistics.getGCDValue(0.5d) * 3;
-            this.rotations.add(new Vec2i(
+            /*this.rotations.add(new Vec2i(
                             ((int) ((delta.getX() / gcdValue))),
-                            ((int) ((delta.getY() / gcdValue)))));
+                            ((int) ((delta.getY() / gcdValue)))));*/
             this.rotations2.add(new Vec2i(
                             ((int) ((delta.getX() / gcdValue))),
                             ((int) ((delta.getY() / gcdValue)))));
             if (this.rotations2.size() >= 10) {
-                synchronized (rotations2) {
+                /*synchronized (rotations2) {
                     this.checkSpikes();
+                }*/
+                // try to replace with lock
+                this.aimLock.lock();
+                try {
+                    this.checkSpikes();
+                } finally {
+                    this.aimLock.unlock();
                 }
             }
             if (this.rawRotations.size() >= 10) this.checkRaw();
