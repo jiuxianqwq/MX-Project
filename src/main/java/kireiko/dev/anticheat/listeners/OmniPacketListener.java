@@ -1,6 +1,7 @@
 package kireiko.dev.anticheat.listeners;
 
 import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.events.ListenerOptions;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
@@ -17,7 +18,8 @@ public class OmniPacketListener extends PacketAdapter {
         super(
                 MX.getInstance(),
                 ListenerPriority.HIGHEST,
-                list
+                list,
+                ListenerOptions.ASYNC
         );
     }
 

@@ -1,7 +1,6 @@
 package kireiko.dev.anticheat.api.events;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -10,7 +9,6 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 @Getter
-@RequiredArgsConstructor
 public class MXFlagEvent extends Event implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
@@ -22,6 +20,16 @@ public class MXFlagEvent extends Event implements Cancellable {
     private final double vlLimit;
     @Setter
     private boolean cancelled;
+
+    public MXFlagEvent(Player player, String check, String component, String info, float vl, double vlLimit) {
+        super(true);
+        this.player = player;
+        this.check = check;
+        this.component = component;
+        this.info = info;
+        this.vl = vl;
+        this.vlLimit = vlLimit;
+    }
 
 
     @Override

@@ -2,10 +2,7 @@ package kireiko.dev.anticheat.listeners;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.events.ListenerPriority;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.events.*;
 import com.comphenix.protocol.utility.MinecraftVersion;
 import kireiko.dev.anticheat.MX;
 import kireiko.dev.anticheat.api.PlayerContainer;
@@ -14,22 +11,25 @@ import kireiko.dev.anticheat.api.player.PlayerProfile;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.Arrays;
+
 public class LatencyHandler extends PacketAdapter {
 
     public LatencyHandler() {
         super(
-                        MX.getInstance(),
-                        ListenerPriority.MONITOR,
+                MX.getInstance(),
+                ListenerPriority.MONITOR,
+                Arrays.asList((ProtocolLibrary.getProtocolManager().getMinecraftVersion().compareTo(new MinecraftVersion("1.17")) >= 0)
+                                ? PacketType.Play.Client.PONG
+                                : (ProtocolLibrary.getProtocolManager().getMinecraftVersion().compareTo(new MinecraftVersion("1.12")) >= 0)
+                                ? PacketType.Play.Client.TRANSACTION
+                                : PacketType.Play.Client.KEEP_ALIVE,
                         (ProtocolLibrary.getProtocolManager().getMinecraftVersion().compareTo(new MinecraftVersion("1.17")) >= 0)
-                                        ? PacketType.Play.Client.PONG
-                                        : (ProtocolLibrary.getProtocolManager().getMinecraftVersion().compareTo(new MinecraftVersion("1.12")) >= 0)
-                                        ? PacketType.Play.Client.TRANSACTION
-                                        : PacketType.Play.Client.KEEP_ALIVE,
-                        (ProtocolLibrary.getProtocolManager().getMinecraftVersion().compareTo(new MinecraftVersion("1.17")) >= 0)
-                                        ? PacketType.Play.Server.PING
-                                        : (ProtocolLibrary.getProtocolManager().getMinecraftVersion().compareTo(new MinecraftVersion("1.12")) >= 0)
-                                        ? PacketType.Play.Server.TRANSACTION
-                                        : PacketType.Play.Server.KEEP_ALIVE
+                                ? PacketType.Play.Server.PING
+                                : (ProtocolLibrary.getProtocolManager().getMinecraftVersion().compareTo(new MinecraftVersion("1.12")) >= 0)
+                                ? PacketType.Play.Server.TRANSACTION
+                                : PacketType.Play.Server.KEEP_ALIVE),
+                ListenerOptions.ASYNC
         );
     }
 
@@ -57,9 +57,10 @@ public class LatencyHandler extends PacketAdapter {
             CTransactionEvent transactionEvent = new CTransactionEvent(protocol);
             protocol.run(transactionEvent);
             Bukkit.getScheduler().runTaskLaterAsynchronously(MX.getInstance(),
-                            () -> sendTransaction(protocol, protocol.transactionId), 10L);
+                    () -> sendTransaction(protocol, protocol.transactionId), 10L);
         }
     }
+
     @Override
     public void onPacketSending(PacketEvent event) {
         final Player player = event.getPlayer();
@@ -76,14 +77,15 @@ public class LatencyHandler extends PacketAdapter {
         protocol.transactionBoot = false;
         sendTransaction(protocol, protocol.transactionId);
     }
+
     public static void sendTransaction(PlayerProfile protocol, short id) {
 
         PacketContainer packet = new PacketContainer(
-                        (ProtocolLibrary.getProtocolManager().getMinecraftVersion().compareTo(new MinecraftVersion("1.17")) >= 0)
-                                        ? PacketType.Play.Server.PING
-                                        : (ProtocolLibrary.getProtocolManager().getMinecraftVersion().compareTo(new MinecraftVersion("1.12")) >= 0)
-                                        ? PacketType.Play.Server.TRANSACTION
-                                        : PacketType.Play.Server.KEEP_ALIVE
+                (ProtocolLibrary.getProtocolManager().getMinecraftVersion().compareTo(new MinecraftVersion("1.17")) >= 0)
+                        ? PacketType.Play.Server.PING
+                        : (ProtocolLibrary.getProtocolManager().getMinecraftVersion().compareTo(new MinecraftVersion("1.12")) >= 0)
+                        ? PacketType.Play.Server.TRANSACTION
+                        : PacketType.Play.Server.KEEP_ALIVE
         );
 
 

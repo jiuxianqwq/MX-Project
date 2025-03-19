@@ -1,6 +1,7 @@
 package kireiko.dev.anticheat.listeners;
 
 import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.events.ListenerOptions;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
@@ -8,6 +9,8 @@ import kireiko.dev.anticheat.MX;
 import kireiko.dev.anticheat.api.PlayerContainer;
 import kireiko.dev.anticheat.api.events.EntityActionEvent;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
+
+import java.util.Collections;
 
 public class EntityActionListener extends PacketAdapter {
 
@@ -22,7 +25,8 @@ public class EntityActionListener extends PacketAdapter {
         super(
                 MX.getInstance(),
                 ListenerPriority.HIGHEST,
-                PacketType.Play.Client.ENTITY_ACTION
+                Collections.singletonList(PacketType.Play.Client.ENTITY_ACTION),
+                ListenerOptions.ASYNC
         );
     }
 

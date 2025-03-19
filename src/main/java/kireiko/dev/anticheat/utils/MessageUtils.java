@@ -1,6 +1,7 @@
 package kireiko.dev.anticheat.utils;
 
 import kireiko.dev.anticheat.api.PlayerContainer;
+import kireiko.dev.anticheat.api.player.PlayerProfile;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -13,7 +14,11 @@ import java.util.Date;
 public class MessageUtils {
     public static void sendMessagesToPlayers(String permission, String message) {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if (player.hasPermission(permission) && PlayerContainer.getProfile(player).isAlerts()) {
+            PlayerProfile profile = PlayerContainer.getProfile(player);
+            if (profile == null || !profile.isAlerts()) {
+                continue;
+            }
+            if (player.hasPermission(permission)) {
                 player.sendMessage(wrapColors(message));
             }
         }

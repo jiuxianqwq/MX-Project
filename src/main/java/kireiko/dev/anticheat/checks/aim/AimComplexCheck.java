@@ -52,16 +52,7 @@ public class AimComplexCheck implements PacketCheckHandler {
                             ((int) ((delta.getX() / gcdValue))),
                             ((int) ((delta.getY() / gcdValue)))));
             if (this.rotations2.size() >= 10) {
-                /*synchronized (rotations2) {
-                    this.checkSpikes();
-                }*/
-                // try to replace with lock
-                this.aimLock.lock();
-                try {
-                    this.checkSpikes();
-                } finally {
-                    this.aimLock.unlock();
-                }
+                this.checkSpikes();
             }
             if (this.rawRotations.size() >= 10) this.checkRaw();
         } else if (o instanceof UseEntityEvent) {
