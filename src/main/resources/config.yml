@@ -15,3 +15,6 @@ bypass: "mx.bypass"
 bcMsg: "&c&l[MX]&f %message%"
 punishEffect: false
 interactSpell: true
+
+# TURN ON/OFF Anti-KnockBack Checks
+checkVelocity: true

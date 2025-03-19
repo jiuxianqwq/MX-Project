@@ -1,4 +1,4 @@
-package kireiko.dev.anticheat.checks;
+package kireiko.dev.anticheat.checks.aim;
 
 import kireiko.dev.anticheat.api.PacketCheckHandler;
 import kireiko.dev.anticheat.api.events.RotationEvent;
@@ -7,7 +7,6 @@ import kireiko.dev.anticheat.api.player.PlayerProfile;
 import kireiko.dev.millennium.math.Simplification;
 import kireiko.dev.millennium.math.Statistics;
 import kireiko.dev.millennium.vectors.Vec2;
-import org.bukkit.entity.Player;
 
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +16,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class AimHeuristicCheck implements PacketCheckHandler {
     private final PlayerProfile profile;
     private final List<Vec2> rawRotations;
+    private int streak = 0;
     private long lastAttack;
     private float vl = 0, vlL2 = 0;
     private String reason = "";
@@ -96,7 +96,7 @@ public class AimHeuristicCheck implements PacketCheckHandler {
                 if (constantRotations > 3) addNewPunish("heuristic(constant)", 60);
             } else {
                 if (machineKnownMovement > 8) addNewPunish("heuristic(aim)", 100);
-                if (constantRotations > 5) addNewPunish("heuristic(constant)", 60);
+                if (constantRotations > 6) addNewPunish("heuristic(constant)", 60);
             }
             if (infinitives > 1 && Math.abs(Statistics.getAverage(yaws)) > 3.2) {
                 addNewPunishL2("heuristic(interpolation)", 55);
@@ -107,12 +107,13 @@ public class AimHeuristicCheck implements PacketCheckHandler {
                 addNewPunishL2("pattern(random)", 25);
             if (aggressivePatternI2 > 3 && aggressivePatternD2 > 3
                             && (aggressivePatternI2 + aggressivePatternD2) > 8) {
-                addNewPunish("pattern(snap)", 40);
-            }
+                streak++;
+                if (streak > 2) addNewPunish("pattern(snap)", 55);
+            } else streak = 0;
             if (this.vl > 400) {
                 this.profile.punish("Aim", "Heuristic", "[Component] " + this.reason, 0.0f);
                 this.profile.setAttackBlockToTime(System.currentTimeMillis() + 3000L);
-                this.vl -= 85;
+                this.vl = 360;
             }
             if (this.vlL2 > 400) {
                 this.profile.punish("Aim", "Flaw", "[Flaw] Interpolation", 0.0f);

@@ -4,13 +4,15 @@ import kireiko.dev.anticheat.MX;
 import kireiko.dev.anticheat.api.CheckPacketRegister;
 import kireiko.dev.anticheat.api.PacketCheckHandler;
 import kireiko.dev.anticheat.api.events.MXFlagEvent;
-import kireiko.dev.anticheat.checks.AimAnalysisCheck;
-import kireiko.dev.anticheat.checks.AimComplexCheck;
-import kireiko.dev.anticheat.checks.AimHeuristicCheck;
-import kireiko.dev.anticheat.checks.AimStatisticsCheck;
-import kireiko.dev.anticheat.utils.AnimatedPunishUtil;
+import kireiko.dev.anticheat.checks.aim.AimAnalysisCheck;
+import kireiko.dev.anticheat.checks.aim.AimComplexCheck;
+import kireiko.dev.anticheat.checks.aim.AimHeuristicCheck;
+import kireiko.dev.anticheat.checks.aim.AimStatisticsCheck;
+import kireiko.dev.anticheat.checks.velocity.VelocityCheck;
+import kireiko.dev.anticheat.services.AnimatedPunishService;
 import kireiko.dev.anticheat.utils.ConfigController;
 import kireiko.dev.anticheat.utils.MessageUtils;
+import kireiko.dev.anticheat.utils.protocol.ProtocolLib;
 import kireiko.dev.anticheat.utils.protocol.ProtocolTools;
 import kireiko.dev.millennium.types.EvictingList;
 import kireiko.dev.millennium.vectors.Pair;
@@ -22,16 +24,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Getter
 public class PlayerProfile extends ConfigController {
 
+    public boolean transactionSentKeep, transactionBoot;
+    public long transactionTime, transactionLastTime, transactionPing;
+    public short transactionId;
     private Player player;
     private Location to, from;
     private Set<PacketCheckHandler> checks;
@@ -51,7 +53,11 @@ public class PlayerProfile extends ConfigController {
         this.player = player;
         initClass();
     }
-    public void punish(String check, String component, String info, float m) {
+
+    public void punish(final String check, final String component, final String info, final float m) {
+        Bukkit.getScheduler().runTask(MX.getInstance(), () -> this.punishAsync(check, component, info, m));
+    }
+    public void punishAsync(final String check, final String component, final String info, final float m) {
         if (!config().getString("bypass").equalsIgnoreCase("none")
                         && this.player.hasPermission(config().getString("bypass"))) {
             return;
@@ -71,7 +77,7 @@ public class PlayerProfile extends ConfigController {
         MessageUtils.sendMessagesToPlayers(MX.permission, builder);
         if (this.vl >= vlLimit) {
             if (config().getBoolean("punishEffect")) {
-                AnimatedPunishUtil.punish(this, new Pair<>(check, info));
+                AnimatedPunishService.punish(this, new Pair<>(check, info));
             } else forcePunish(check, info);
         } else if (this.vl >= vlLimit / 1.8) {
             if (flagCount > 2) {
@@ -104,6 +110,7 @@ public class PlayerProfile extends ConfigController {
         this.checks.add(new AimComplexCheck(this));
         this.checks.add(new AimStatisticsCheck(this));
         this.checks.add(new AimAnalysisCheck(this));
+        this.checks.add(new VelocityCheck(this));
     }
     public void unload() {
         this.checks.clear();
@@ -142,6 +149,12 @@ public class PlayerProfile extends ConfigController {
         this.attackBlockToTime = 0L;
         this.airTicks = 0;
         this.horrowStage = 0;
+        this.transactionPing = 0;
+        this.transactionLastTime = 0;
+        this.transactionTime = 0;
+        this.transactionSentKeep = false;
+        this.transactionBoot = true;
+        this.transactionId = (short) 0;
         // init checks
         this.initChecks();
     }
@@ -167,5 +180,10 @@ public class PlayerProfile extends ConfigController {
             return;
         }
         this.attackBlockToTime = time;
+    }
+    public int getEntityId() {
+        return ProtocolLib.isTemporary(this.getPlayer())
+                        ? new Random().nextInt()
+                        : this.getPlayer().getEntityId();
     }
 }

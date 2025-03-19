@@ -11,6 +11,7 @@ import kireiko.dev.anticheat.api.events.RotationEvent;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
 import kireiko.dev.anticheat.api.player.SensitivityProcessor;
 import kireiko.dev.anticheat.api.player.fun.HorrowProcessor;
+import kireiko.dev.anticheat.utils.protocol.ProtocolLib;
 import kireiko.dev.anticheat.utils.protocol.ProtocolTools;
 import kireiko.dev.millennium.vectors.Vec2f;
 import org.bukkit.Location;
@@ -58,6 +59,7 @@ public class RawMovementListener extends PacketAdapter {
             }
             l.setX(r.getX()); l.setY(r.getY()); l.setZ(r.getZ());
         }
+        l.setWorld(ProtocolLib.getWorld(player));
         if (hasRotation) {
             for (Float check : Arrays.asList(packet.getFloat().read(0), packet.getFloat().read(1)))
                 if (check.isNaN() || check.isInfinite() || Math.abs(check) > 3E8) { return;
@@ -80,5 +82,7 @@ public class RawMovementListener extends PacketAdapter {
         profile.getPastLoc().add(profile.getTo());
         profile.run(new MoveEvent(profile, profile.getTo(), profile.getFrom()));
         if (profile.horrowStage > 0) HorrowProcessor.tick(profile);
+
+        if (profile.transactionBoot) LatencyHandler.startChecking(profile);
     }
 }

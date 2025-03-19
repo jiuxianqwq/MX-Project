@@ -1,4 +1,4 @@
-package kireiko.dev.anticheat.utils;
+package kireiko.dev.anticheat.services;
 
 import kireiko.dev.anticheat.MX;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 @UtilityClass
-public class AnimatedPunishUtil {
+public class AnimatedPunishService {
     private static final List<PlayerProfile> punished
                     = new ArrayList<>();
     private static List<Object[]> endAnim = new ArrayList<>();

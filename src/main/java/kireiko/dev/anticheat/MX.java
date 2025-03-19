@@ -8,8 +8,9 @@ import kireiko.dev.anticheat.api.commands.CommandCompleter;
 import kireiko.dev.anticheat.api.commands.CommandHandler;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
 import kireiko.dev.anticheat.listeners.*;
-import kireiko.dev.anticheat.utils.AnimatedPunishUtil;
-import kireiko.dev.anticheat.utils.FunThingsUtil;
+import kireiko.dev.anticheat.services.AnimatedPunishService;
+import kireiko.dev.anticheat.services.FunThingsService;
+import kireiko.dev.anticheat.services.SimulationFlagService;
 import kireiko.dev.anticheat.utils.FunnyPackets;
 import kireiko.dev.millennium.types.EvictingList;
 import lombok.Getter;
@@ -50,8 +51,9 @@ public final class MX extends JavaPlugin {
     }
 
     private void punishTimer() {
-        AnimatedPunishUtil.init();
-        FunThingsUtil.init();
+        AnimatedPunishService.init();
+        FunThingsService.init();
+        SimulationFlagService.init();
         //CrasherShieldNewListener.watchdog();
 
         // reset vl
@@ -85,10 +87,12 @@ public final class MX extends JavaPlugin {
         //Bukkit.getPluginManager().registerEvents(new GhostBlockTest(), this);
         Bukkit.getPluginManager().registerEvents(new DisconnectListener(), this);
         Bukkit.getPluginManager().registerEvents(new InteractSpellListener(), this);
+        Bukkit.getPluginManager().registerEvents(new JoinListener(), this);
         ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
         protocolManager.addPacketListener(new RawMovementListener());
         protocolManager.addPacketListener(new UseEntityListener());
-        protocolManager.addPacketListener(new JoinListener());
+        protocolManager.addPacketListener(new LatencyHandler());
+        protocolManager.addPacketListener(new VelocityListener());
         protocolManager.addPacketListener(new EntityActionListener());
         { // omni listener
             final Set<PacketType> listeners = new HashSet<>();

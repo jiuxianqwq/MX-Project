@@ -1,4 +1,4 @@
-package kireiko.dev.anticheat.checks;
+package kireiko.dev.anticheat.checks.aim;
 
 import kireiko.dev.anticheat.api.PacketCheckHandler;
 import kireiko.dev.anticheat.api.events.RotationEvent;
@@ -9,7 +9,6 @@ import kireiko.dev.millennium.vectors.Pair;
 import kireiko.dev.millennium.vectors.Vec2;
 import kireiko.dev.millennium.vectors.Vec2f;
 import kireiko.dev.millennium.vectors.Vec2i;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -74,9 +73,10 @@ public class AimComplexCheck implements PacketCheckHandler {
             final int disX = Statistics.getDistinct(x);
             final double shannonYaw = Statistics.getShannonEntropy(x);
             final double shannonPitch = Statistics.getShannonEntropy(y);
-            if (profile.getSensitivityProcessor().totalSensitivityClient > 85 &&
-                            profile.getSensitivityProcessor().totalSensitivityClient < 170 &&
-                            getDifference(shannonYaw, oldShannonYaw) < 1e-5
+            final boolean valid = profile.getSensitivityProcessor().totalSensitivityClient >= 60 &&
+                            profile.getSensitivityProcessor().totalSensitivityClient <= 170;
+            //profile.getPlayer().sendMessage("y: " + shannonYaw + " " + shannonPitch);
+            if (valid && getDifference(shannonYaw, oldShannonYaw) < 1e-5
                             && getDifference(shannonPitch, oldShannonPitch) < 1e-5) {
                 this.increaseBuffer(11, 1.0f);
                 if (this.buffer.get(11) > 3)
@@ -88,6 +88,18 @@ public class AimComplexCheck implements PacketCheckHandler {
                     this.buffer.set(11, 29f);
                 }
             } else this.buffer.set(11, 0f);
+
+            if (valid && getDifference(shannonYaw, shannonPitch) < 1e-5) {
+                this.increaseBuffer(12, 1.0f);
+                if (this.buffer.get(12) > 7)
+                    profile.debug("&7Aim Similar Shannon Entropy: " + this.buffer.get(11));
+                if (this.buffer.get(12) > 30) {
+                    profile.punish("Aim", "Entropy",
+                                    "[Analysis] Similar shannon entropy " + shannonYaw, 0.0f);
+                    profile.setAttackBlockToTime(System.currentTimeMillis() + 5000);
+                    this.buffer.set(12, 29f);
+                }
+            } else this.buffer.set(12, 0f);
 
             if ((disX < 8 && Math.abs(Statistics.getAverage(x)) > 2.5)) {
                 this.increaseBuffer(9, 1.7f);

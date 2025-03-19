@@ -7,8 +7,8 @@ import kireiko.dev.anticheat.api.player.fun.Hook;
 import kireiko.dev.anticheat.api.player.fun.Rocket;
 import kireiko.dev.anticheat.api.player.fun.Spell;
 import kireiko.dev.anticheat.core.AsyncScheduler;
+import kireiko.dev.anticheat.services.FunThingsService;
 import kireiko.dev.anticheat.utils.ConfigController;
-import kireiko.dev.anticheat.utils.FunThingsUtil;
 import kireiko.dev.anticheat.utils.MessageUtils;
 import kireiko.dev.millennium.math.AxisAlignedBB;
 import kireiko.dev.millennium.math.BuildSpeed;
@@ -42,14 +42,14 @@ public class InteractSpellListener extends ConfigController implements Listener 
             if (item == null || !item.hasItemMeta()) return;
             final String name = item.getItemMeta().getDisplayName();
             if (name.equals("§9Hook")) {
-                FunThingsUtil.add(new Hook(profile, profile.getTo().clone().add(0, 1.63, 0)));
+                FunThingsService.add(new Hook(profile, profile.getTo().clone().add(0, 1.63, 0)));
                 event.setCancelled(true);
             } else if (name.equals("§9Посох Винтербелла")) {
-                FunThingsUtil.add(new Spell(profile, profile.getTo().clone().add(0, 1.63, 0), 0.7, 8,
+                FunThingsService.add(new Spell(profile, profile.getTo().clone().add(0, 1.63, 0), 0.7, 8,
                                 Particle.SNOWBALL, Particle.SNOWBALL, new PotionEffect(PotionEffectType.SLOW, 60, 2)));
                 event.setCancelled(true);
             } else if (name.equals("§9Посох Пламени")) {
-                FunThingsUtil.add(new Spell(profile, profile.getTo().clone().add(0, 1.63, 0), 0.6, 10,
+                FunThingsService.add(new Spell(profile, profile.getTo().clone().add(0, 1.63, 0), 0.6, 10,
                                 Particle.FLAME, Particle.LAVA, new PotionEffect(PotionEffectType.WITHER, 45, 1)));
                 event.setCancelled(true);
             } else if (name.equals("§9Проклятое заклинание")) {
@@ -59,7 +59,7 @@ public class InteractSpellListener extends ConfigController implements Listener 
                     final Location location = profile.getTo().clone().add(0, 1.63, 0);
                     location.setYaw(location.getYaw() + f1);
                     location.setPitch(location.getPitch() + f2);
-                    FunThingsUtil.add(new Spell(profile, location, 0.8, 6,
+                    FunThingsService.add(new Spell(profile, location, 0.8, 6,
                                     Particle.FLAME, Particle.LAVA,
                                     new PotionEffect(PotionEffectType.WITHER, 70, 1)));
                 }
@@ -69,7 +69,7 @@ public class InteractSpellListener extends ConfigController implements Listener 
                     final Location location = profile.getTo().clone().add(0, 1.63, 0);
                     location.setYaw(location.getYaw() + f1);
                     location.setPitch(location.getPitch() + f2);
-                    FunThingsUtil.add(new Spell(profile, location, 0.8, 4,
+                    FunThingsService.add(new Spell(profile, location, 0.8, 4,
                                     Particle.SNOWBALL, Particle.SNOWBALL,
                                     new PotionEffect(PotionEffectType.SLOW, 70, 1)));
                 }
@@ -79,7 +79,7 @@ public class InteractSpellListener extends ConfigController implements Listener 
                     final Location location = profile.getTo().clone().add(0, 1.63, 0);
                     location.setYaw(location.getYaw() + f1);
                     location.setPitch(location.getPitch() + f2);
-                    FunThingsUtil.add(new Spell(profile, location, 0.8, 8,
+                    FunThingsService.add(new Spell(profile, location, 0.8, 8,
                                     Particle.SMOKE_NORMAL, Particle.SMOKE_NORMAL,
                                     new PotionEffect(PotionEffectType.BLINDNESS, 70, 1)));
                 }
@@ -89,7 +89,7 @@ public class InteractSpellListener extends ConfigController implements Listener 
                     final Location location = profile.getTo().clone().add(0, 1.63, 0);
                     location.setYaw(location.getYaw() + f1);
                     location.setPitch(location.getPitch() + f2);
-                    FunThingsUtil.add(new Spell(profile, location, 0.8, 2,
+                    FunThingsService.add(new Spell(profile, location, 0.8, 2,
                                     Particle.CLOUD, Particle.CLOUD,
                                     new PotionEffect(PotionEffectType.LEVITATION, 70, 2)));
                 }
@@ -99,7 +99,7 @@ public class InteractSpellListener extends ConfigController implements Listener 
                     final Location location = profile.getTo().clone().add(0, 1.63, 0);
                     location.setYaw(location.getYaw() + f1);
                     location.setPitch(location.getPitch() + f2);
-                    FunThingsUtil.add(new Spell(profile, location, 0.8, 15,
+                    FunThingsService.add(new Spell(profile, location, 0.8, 15,
                                     Particle.EXPLOSION_NORMAL, Particle.EXPLOSION_LARGE, null));
                 }
                 event.setCancelled(true);
@@ -109,7 +109,7 @@ public class InteractSpellListener extends ConfigController implements Listener 
                 final Location location = profile.getTo().clone().add(0, 1.63, 0);
                 location.setYaw(location.getYaw() + f1);
                 location.setPitch(location.getPitch() + f2);
-                FunThingsUtil.add(new Spell(profile, location, 1.5, 4,
+                FunThingsService.add(new Spell(profile, location, 1.5, 4,
                                 Particle.CRIT_MAGIC, Particle.CRIT_MAGIC, null));
                 event.setCancelled(true);
             } else if (name.equals("§9Rocket Launcher")) {
@@ -128,7 +128,7 @@ public class InteractSpellListener extends ConfigController implements Listener 
                             if (RayTrace.doRayTrace(BuildSpeed.FAST,
                                             new Vec2(profile.getTo().getPitch(), profile.getTo().getYaw()),
                                             new Vec3(profile.getTo().toVector()), axisAlignedBB, 125)) {
-                                FunThingsUtil.add(new Rocket(profile, target, profile.getTo().clone().add(0, 1.63, 0)));
+                                FunThingsService.add(new Rocket(profile, target, profile.getTo().clone().add(0, 1.63, 0)));
                                 player.sendTitle(
                                                 MessageUtils.wrapColors("&a[   +   ]"),
                                                 "", 0, 20, 20);

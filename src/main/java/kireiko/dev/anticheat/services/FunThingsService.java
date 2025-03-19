@@ -1,4 +1,4 @@
-package kireiko.dev.anticheat.utils;
+package kireiko.dev.anticheat.services;
 
 import kireiko.dev.anticheat.MX;
 import kireiko.dev.anticheat.api.player.fun.FunThing;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @UtilityClass
-public class FunThingsUtil {
+public class FunThingsService {
 
     private static final List<FunThing> things = new CopyOnWriteArrayList<>();
 

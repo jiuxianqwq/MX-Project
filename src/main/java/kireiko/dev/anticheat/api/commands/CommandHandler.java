@@ -5,7 +5,6 @@ import kireiko.dev.anticheat.api.PlayerContainer;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
 import kireiko.dev.anticheat.api.player.fun.FunItemsService;
 import kireiko.dev.anticheat.utils.ConfigController;
-import kireiko.dev.anticheat.utils.FunnyPackets;
 import kireiko.dev.millennium.math.Statistics;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
