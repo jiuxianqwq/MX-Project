@@ -10,6 +10,7 @@ import kireiko.dev.anticheat.checks.aim.AimHeuristicCheck;
 import kireiko.dev.anticheat.checks.aim.AimStatisticsCheck;
 import kireiko.dev.anticheat.checks.velocity.VelocityCheck;
 import kireiko.dev.anticheat.services.AnimatedPunishService;
+import kireiko.dev.anticheat.utils.ConfigCache;
 import kireiko.dev.anticheat.utils.ConfigController;
 import kireiko.dev.anticheat.utils.MessageUtils;
 import kireiko.dev.anticheat.utils.protocol.ProtocolLib;
@@ -59,35 +60,33 @@ public class PlayerProfile extends ConfigController {
         Bukkit.getScheduler().runTask(MX.getInstance(), () -> this.punishAsync(check, component, info, m));
     }
     public void punishAsync(final String check, final String component, final String info, final float m) {
-        if (!config().getString("bypass").equalsIgnoreCase("none")
-                        && this.player.hasPermission(config().getString("bypass"))) {
+        if (!ConfigCache.BAN_COMMAND.equalsIgnoreCase("none")
+                && this.player.hasPermission(ConfigCache.BYPASS)) {
             return;
         }
         // this.vl += 10.0f * m;
         final float tempVl = this.vl + 10.0f * m;
-        final double vlLimit = config().getDouble("vlLimit");
+        final double vlLimit = ConfigCache.VL_LIMIT;
         MXFlagEvent event = new MXFlagEvent(this.player, check, component, info, tempVl, vlLimit);
         if (!event.callEvent()) {
             return;
         }
         this.vl = tempVl;
         this.flagCount += (m == 0.0) ? 0 : 1;
-        String builder = this.wrapString(Objects.requireNonNull(
-                        config().getString("alertMsg")))
-                        .replace("%check%", check).replace("%component%", component).replace("%info%", info);
+        String builder = this.wrapString(ConfigCache.ALERT_MSG.replace("%check%", check).replace("%component%", component).replace("%info%", info));
         MessageUtils.sendMessagesToPlayers(MX.permission, builder);
         if (this.vl >= vlLimit) {
-            if (config().getBoolean("punishEffect")) {
+            if (ConfigCache.PUNISH_EFFECT) {
                 AnimatedPunishService.punish(this, new Pair<>(check, info));
-            } else forcePunish(check, info);
+            } else {
+                forcePunish(check, info);
+            }
         } else if (this.vl >= vlLimit / 1.8) {
             if (flagCount > 2) {
                 MessageUtils.sendMessagesToPlayersNative(
                         MX.permissionHead + "personal",
                         MX.permission,
-                        this.wrapString(Objects.requireNonNull(
-                                                config().getString("suspected")))
-                                .replace("%check%", check).replace("%info%", info)
+                        this.wrapString(ConfigCache.SUSPECTED.replace("%check%", check).replace("%info%", info))
                 );
                 this.flagCount = 0;
             }
@@ -95,9 +94,7 @@ public class PlayerProfile extends ConfigController {
             MessageUtils.sendMessagesToPlayersNative(
                     MX.permissionHead + "personal",
                     MX.permission,
-                    this.wrapString(Objects.requireNonNull(
-                                            config().getString("unusual")))
-                            .replace("%check%", check).replace("%info%", info)
+                    this.wrapString(ConfigCache.UNUSUAL.replace("%check%", check).replace("%info%", info))
             );
         }
     }
@@ -120,7 +117,8 @@ public class PlayerProfile extends ConfigController {
     private String wrapString(String v) {
         return MessageUtils.wrapColors(v.replace("%player%", this.getPlayer().getName())
                         .replace("%vl%", String.valueOf(this.vl))
-                        .replace("%vlLimit%", String.valueOf(config().getDouble("vlLimit"))));
+                        .replace("%vlLimit%", String.valueOf(ConfigCache.VL_LIMIT))
+        );
     }
 
     public boolean toggleAlerts() {
@@ -137,9 +135,7 @@ public class PlayerProfile extends ConfigController {
         this.ignoreExitBan = true;
         this.vl = 0;
         Bukkit.getScheduler().runTask(MX.getInstance(), () -> {
-            String banMsg = this.wrapString(Objects.requireNonNull(
-                                            config().getString("banCommand")))
-                            .replace("%check%", check).replace("%info%", info);
+            String banMsg = this.wrapString(ConfigCache.BAN_COMMAND.replace("%check%", check).replace("%info%", info));
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), banMsg);
             this.setBanAnimInfo(null);
         });
@@ -149,8 +145,8 @@ public class PlayerProfile extends ConfigController {
             this.player.sendMessage(wrapString("&9&l[Debug] &f" + msg));
     }
     public void setAttackBlockToTime(long time) {
-        if (!config().getString("bypass").equalsIgnoreCase("none")
-                        && this.player.hasPermission(config().getString("bypass"))) {
+        if (!ConfigCache.BAN_COMMAND.equalsIgnoreCase("none")
+                && this.player.hasPermission(ConfigCache.BYPASS)) {
             return;
         }
         this.attackBlockToTime = time;

@@ -4,6 +4,7 @@ import kireiko.dev.anticheat.MX;
 import kireiko.dev.anticheat.api.PlayerContainer;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
 import kireiko.dev.anticheat.api.player.fun.FunItemsService;
+import kireiko.dev.anticheat.utils.ConfigCache;
 import kireiko.dev.anticheat.utils.ConfigController;
 import kireiko.dev.millennium.math.Statistics;
 import org.bukkit.Bukkit;
@@ -95,6 +96,7 @@ public class CommandHandler extends ConfigController implements CommandExecutor 
                 }
                 case ("reload"): {
                     MX.getInstance().reloadConfig();
+                    ConfigCache.loadConfig();
                     sendToSender(sender, wrapColors("&cConfig reloaded!"));
                     break;
                 }

@@ -6,6 +6,7 @@ import kireiko.dev.anticheat.api.events.MoveEvent;
 import kireiko.dev.anticheat.api.events.SVelocityEvent;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
 import kireiko.dev.anticheat.services.SimulationFlagService;
+import kireiko.dev.anticheat.utils.ConfigCache;
 import kireiko.dev.anticheat.utils.ConfigController;
 import kireiko.dev.millennium.math.Simplification;
 import org.bukkit.Location;
@@ -29,7 +30,7 @@ public class VelocityCheck extends ConfigController implements PacketCheckHandle
     }
     @Override
     public void event(Object o) {
-        if (!config().contains("checkVelocity") || !config().getBoolean("checkVelocity")) return;
+        if (!ConfigCache.CHECK_VELOCITY) return;
         if (o instanceof SVelocityEvent) {
             SVelocityEvent event = (SVelocityEvent) o;
             this.totalVlAtY = 25;

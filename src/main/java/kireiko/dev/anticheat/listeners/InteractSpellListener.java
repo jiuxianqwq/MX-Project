@@ -8,6 +8,7 @@ import kireiko.dev.anticheat.api.player.fun.Rocket;
 import kireiko.dev.anticheat.api.player.fun.Spell;
 import kireiko.dev.anticheat.core.AsyncScheduler;
 import kireiko.dev.anticheat.services.FunThingsService;
+import kireiko.dev.anticheat.utils.ConfigCache;
 import kireiko.dev.anticheat.utils.ConfigController;
 import kireiko.dev.anticheat.utils.MessageUtils;
 import kireiko.dev.millennium.math.AxisAlignedBB;
@@ -32,7 +33,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class InteractSpellListener extends ConfigController implements Listener {
     @EventHandler
     public void interact(PlayerInteractEvent event) {
-        if (!config().getBoolean("interactSpell")) {
+        if (!ConfigCache.INTERACT_SPELL) {
             return;
         }
         final Player player = event.getPlayer();
