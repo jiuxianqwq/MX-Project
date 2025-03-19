@@ -29,10 +29,10 @@ public class UseEntityListener extends PacketAdapter {
     @Override
     public void onPacketReceiving(PacketEvent event) {
         Player player = event.getPlayer();
-        if (!PlayerContainer.getUuidPlayerProfileMap().containsKey(player.getUniqueId())) {
-            PlayerContainer.init(player);
-        }
         PlayerProfile profile = PlayerContainer.getProfile(player);
+        if (profile == null) {
+            return;
+        }
         PacketContainer packet = event.getPacket();
         if (profile.getAttackBlockToTime() > System.currentTimeMillis()) {
             event.setCancelled(true);

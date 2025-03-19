@@ -26,7 +26,7 @@ public class CommandHandler extends ConfigController implements CommandExecutor 
             return true;
         }
         if (sender instanceof Player) {
-            Player player = ((Player) sender).getPlayer();
+            Player player = (Player) sender;
             if (!player.hasPermission(MX.permission)) {
                 player.sendMessage("You don't have permission!");
                 return true;
@@ -34,7 +34,7 @@ public class CommandHandler extends ConfigController implements CommandExecutor 
         }
         if ((!label.equalsIgnoreCase(MX.command))) {
             if (sender instanceof Player) {
-                Player player = ((Player) sender).getPlayer();
+                Player player = (Player) sender;
                 player.sendMessage("Usage: /" + MX.command);
             }
             return true;
@@ -63,6 +63,10 @@ public class CommandHandler extends ConfigController implements CommandExecutor 
                     if (sender instanceof Player) {
                         Player player = (Player) sender;
                         PlayerProfile profile = PlayerContainer.getProfile(player);
+                        if (profile == null) {
+                            player.sendMessage(wrapColors("&cProfile not initialized!"));
+                            return true;
+                        }
                         player.sendMessage(wrapColors("&cAlerts: &e" + profile.toggleAlerts()));
                     }
                     break;
@@ -75,18 +79,17 @@ public class CommandHandler extends ConfigController implements CommandExecutor 
                     break;
                 }
                 case ("ban"): {
-                    Player t = null;
-                    for (Player profile : PlayerContainer.getUuid2Player().values()) {
-                        if (profile.getName().equalsIgnoreCase(args[1])) {
-                            t = profile;
+                    PlayerProfile playerProfile = null;
+                    for (PlayerProfile tempProfile : PlayerContainer.getUuidPlayerProfileMap().values()) {
+                        if (tempProfile.getPlayer().getName().equalsIgnoreCase(args[1])) {
+                            playerProfile = tempProfile;
                             break;
                         }
                     }
-                    if (t == null) {
+                    if (playerProfile == null) {
                         sendToSender(sender, "§cPlayer not found... Sorry!");
                     } else {
-                        PlayerProfile profile = PlayerContainer.getProfile(t);
-                        profile.punish("Skill issue", "Bad guy", "ForceBan (Staff)", 99.0f);
+                        playerProfile.punish("Skill issue", "Bad guy", "ForceBan (Staff)", 99.0f);
                     }
                     break;
                 }
@@ -99,6 +102,10 @@ public class CommandHandler extends ConfigController implements CommandExecutor 
                     if (sender instanceof Player) {
                         Player player = (Player) sender;
                         PlayerProfile profile = PlayerContainer.getProfile(player);
+                        if (profile == null) {
+                            player.sendMessage(wrapColors("&cProfile not initialized!"));
+                            return true;
+                        }
                         player.sendMessage(wrapColors("&cDebug: &e" + profile.toggleDebug()));
                     }
                     break;

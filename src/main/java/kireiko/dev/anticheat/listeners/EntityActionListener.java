@@ -29,6 +29,9 @@ public class EntityActionListener extends PacketAdapter {
     @Override
     public void onPacketReceiving(PacketEvent event) {
         PlayerProfile protocol = PlayerContainer.getProfile(event.getPlayer());
+        if (protocol == null) {
+            return;
+        }
 
         if (event.getPacket().getModifier().getValues().size() > 1) {
             String typeString = event.getPacket().getModifier().getValues().get(1).toString();

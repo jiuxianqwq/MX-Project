@@ -27,8 +27,10 @@ public class VelocityListener extends PacketAdapter {
     public void onPacketSending(PacketEvent event) {
         final Player player = event.getPlayer();
         final PlayerProfile protocol = PlayerContainer.getProfile(player);
+        if (protocol == null) {
+            return;
+        }
         PacketContainer packet = event.getPacket();
-
         if (!packet.getIntegers().getValues().isEmpty()) {
             int id = packet.getIntegers().getValues().get(0);
             if (protocol.getEntityId() == id) {

@@ -37,6 +37,9 @@ public class InteractSpellListener extends ConfigController implements Listener 
         }
         final Player player = event.getPlayer();
         final PlayerProfile profile = PlayerContainer.getProfile(player);
+        if (profile == null) {
+            return;
+        }
         if (event.getAction().equals(Action.RIGHT_CLICK_AIR) && event.hasItem()) {
             final ItemStack item = event.getItem();
             if (item == null || !item.hasItemMeta()) return;
