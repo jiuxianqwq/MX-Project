@@ -1,15 +1,19 @@
 package kireiko.dev.anticheat.listeners;
 
 import kireiko.dev.anticheat.api.PlayerContainer;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
-public class JoinListener implements Listener {
+public class JoinQuitListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        PlayerContainer.init(player);
+        PlayerContainer.init(event.getPlayer());
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        PlayerContainer.unload(event.getPlayer());
     }
 }

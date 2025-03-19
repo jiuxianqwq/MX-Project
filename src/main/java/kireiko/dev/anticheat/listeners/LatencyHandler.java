@@ -38,6 +38,9 @@ public class LatencyHandler extends PacketAdapter {
     public void onPacketReceiving(PacketEvent event) {
         final Player player = event.getPlayer();
         final PlayerProfile protocol = PlayerContainer.getProfile(player);
+        if (protocol == null) {
+            return;
+        }
         final PacketContainer packet = event.getPacket();
         int id;
         if (!packet.getShorts().getFields().isEmpty()) {
@@ -61,6 +64,9 @@ public class LatencyHandler extends PacketAdapter {
     public void onPacketSending(PacketEvent event) {
         final Player player = event.getPlayer();
         final PlayerProfile protocol = PlayerContainer.getProfile(player);
+        if (protocol == null) {
+            return;
+        }
         protocol.transactionSentKeep = true;
         protocol.transactionTime = System.currentTimeMillis();
     }

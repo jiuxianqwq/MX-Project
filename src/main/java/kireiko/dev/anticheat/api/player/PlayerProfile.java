@@ -31,14 +31,16 @@ import java.util.*;
 @Getter
 public class PlayerProfile extends ConfigController {
 
-    public boolean transactionSentKeep, transactionBoot;
+    public boolean transactionSentKeep;
+    public boolean transactionBoot = true;
     public long transactionTime, transactionLastTime, transactionPing;
     public short transactionId;
     private Player player;
-    private Location to, from;
-    private Set<PacketCheckHandler> checks;
+    private Location to = ProtocolTools.getLoadLocation(player);
+    private Location from = ProtocolTools.getLoadLocation(player);
+    private Set<PacketCheckHandler> checks = new HashSet<>();
     private List<Location> pastLoc = new EvictingList<>(20);
-    private SensitivityProcessor sensitivityProcessor;
+    private SensitivityProcessor sensitivityProcessor = new SensitivityProcessor(player);
     private float vl;
 
     @Setter
@@ -51,7 +53,6 @@ public class PlayerProfile extends ConfigController {
 
     public PlayerProfile(Player player) {
         this.player = player;
-        initClass();
     }
 
     public void punish(final String check, final String component, final String info, final float m) {
@@ -105,16 +106,13 @@ public class PlayerProfile extends ConfigController {
         if (this.vl < 0) this.vl = 0;
     }
     public void initChecks() {
-        if (!this.checks.isEmpty()) return;
         this.checks.add(new AimHeuristicCheck(this));
         this.checks.add(new AimComplexCheck(this));
         this.checks.add(new AimStatisticsCheck(this));
         this.checks.add(new AimAnalysisCheck(this));
         this.checks.add(new VelocityCheck(this));
     }
-    public void unload() {
-        this.checks.clear();
-    }
+
     public void run(Object handler) {
         CheckPacketRegister.runCustom(handler, checks);
     }
@@ -133,31 +131,7 @@ public class PlayerProfile extends ConfigController {
         this.debug = !this.debug;
         return this.debug;
     }
-    private void initClass() {
-        this.banAnimInfo = null;
-        this.banAnimPositions = null;
-        this.sensitivityProcessor = new SensitivityProcessor(player);
-        this.to = ProtocolTools.getLoadLocation(player);
-        this.from = ProtocolTools.getLoadLocation(player);
-        this.checks = new HashSet<>();
-        this.vl = 0.0f;
-        this.alerts = false;
-        this.debug = false;
-        this.ignoreExitBan = false;
-        this.flagCount = 0;
-        this.punishAnimation = 0;
-        this.attackBlockToTime = 0L;
-        this.airTicks = 0;
-        this.horrowStage = 0;
-        this.transactionPing = 0;
-        this.transactionLastTime = 0;
-        this.transactionTime = 0;
-        this.transactionSentKeep = false;
-        this.transactionBoot = true;
-        this.transactionId = (short) 0;
-        // init checks
-        this.initChecks();
-    }
+
     public void forcePunish(String check, String info) {
         MX.bannedPerMinuteCount++;
         this.ignoreExitBan = true;

@@ -2,6 +2,7 @@ package kireiko.dev.anticheat.api.player;
 
 import kireiko.dev.anticheat.api.PlayerContainer;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -55,8 +56,10 @@ public class SensitivityProcessor {
         };
     }
 
+    @Setter
     private float deltaPitch = 0;
     public double totalSensitivity = 0, totalSensitivityClient = 0;
+    @Setter
     @Getter
     private float lastDeltaPitch = 0;
     @Getter
@@ -137,11 +140,4 @@ public class SensitivityProcessor {
         return sensitivity >= 0 && sensitivity <= 200;
     }
 
-    public void setDeltaPitch(float deltaPitch) {
-        this.deltaPitch = deltaPitch;
-    }
-
-    public void setLastDeltaPitch(float lastDeltaPitch) {
-        this.lastDeltaPitch = lastDeltaPitch;
-    }
 }

@@ -85,9 +85,8 @@ public final class MX extends JavaPlugin {
 
     private void loadListeners() {
         //Bukkit.getPluginManager().registerEvents(new GhostBlockTest(), this);
-        Bukkit.getPluginManager().registerEvents(new DisconnectListener(), this);
         Bukkit.getPluginManager().registerEvents(new InteractSpellListener(), this);
-        Bukkit.getPluginManager().registerEvents(new JoinListener(), this);
+        Bukkit.getPluginManager().registerEvents(new JoinQuitListener(), this);
         ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
         protocolManager.addPacketListener(new RawMovementListener());
         protocolManager.addPacketListener(new UseEntityListener());

@@ -39,10 +39,10 @@ public class RawMovementListener extends PacketAdapter {
     @Override
     public void onPacketReceiving(PacketEvent event) {
         final Player player = event.getPlayer();
-        if (!PlayerContainer.getUuidPlayerProfileMap().containsKey(player.getUniqueId())) {
-            PlayerContainer.init(player);
-        }
         final PlayerProfile profile = PlayerContainer.getProfile(player);
+        if (profile == null) {
+            return;
+        }
         profile.setGround(event.getPacket().getBooleans().read(0));
         profile.setAirTicks((profile.isGround()) ? 0 : profile.getAirTicks() + 1);
         final PacketContainer packet = event.getPacket();

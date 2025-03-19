@@ -22,6 +22,9 @@ public class InventoryListener extends PacketAdapter {
     @Override
     public void onPacketReceiving(PacketEvent event) {
         PlayerProfile protocol = PlayerContainer.getProfile(event.getPlayer());
+        if (protocol == null) {
+            return;
+        }
         protocol.run(new WindowClickEvent(event));
     }
 }
