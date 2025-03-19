@@ -58,9 +58,6 @@ public class PlayerProfile extends ConfigController {
     }
 
     public void punish(final String check, final String component, final String info, final float m) {
-        Bukkit.getScheduler().runTask(MX.getInstance(), () -> this.punishAsync(check, component, info, m));
-    }
-    public void punishAsync(final String check, final String component, final String info, final float m) {
         if (!ConfigCache.BAN_COMMAND.equalsIgnoreCase("none")
                 && this.player.hasPermission(ConfigCache.BYPASS)) {
             return;

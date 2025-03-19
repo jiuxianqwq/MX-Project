@@ -13,6 +13,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.util.Vector;
 
+import java.util.regex.Pattern;
+
 public class VelocityCheck extends ConfigController implements PacketCheckHandler  {
     private final PlayerProfile profile;
     private final double[] jumpReset = new double[]{0.248136, 0.3332};
@@ -163,7 +165,8 @@ public class VelocityCheck extends ConfigController implements PacketCheckHandle
         return Simplification.scaleVal(v, 6);
     }
 
+    private static final Pattern pattern = Pattern.compile("(?i)(.*(snow|step|frame|table|water|lava|web|slab|stair|ladder|vine|waterlily|wall|carpet|fence|rod|bed|skull|pot|hopper|door|bars|piston|lily).*)");
     private static boolean ignore(final String block) {
-        return block.matches(".*(snow|step|frame|table|water|lava|web|slab|stair|ladder|vine|waterlily|wall|carpet|fence|rod|bed|skull|pot|hopper|door|bars|piston|lily).*");
+        return pattern.matcher(block).matches();
     }
 }
