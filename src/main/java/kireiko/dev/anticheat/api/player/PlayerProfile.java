@@ -37,11 +37,11 @@ public class PlayerProfile extends ConfigController {
     public long transactionTime, transactionLastTime, transactionPing;
     public short transactionId;
     private Player player;
-    private Location to = ProtocolTools.getLoadLocation(player);
-    private Location from = ProtocolTools.getLoadLocation(player);
+    private Location to;
+    private Location from;
     private Set<PacketCheckHandler> checks = new HashSet<>();
     private List<Location> pastLoc = new EvictingList<>(20);
-    private SensitivityProcessor sensitivityProcessor = new SensitivityProcessor(player);
+    private SensitivityProcessor sensitivityProcessor = new SensitivityProcessor(this);
     private float vl;
 
     @Setter
@@ -54,6 +54,7 @@ public class PlayerProfile extends ConfigController {
 
     public PlayerProfile(Player player) {
         this.player = player;
+        this.to = this.from = player.getLocation();
     }
 
     public void punish(final String check, final String component, final String info, final float m) {
