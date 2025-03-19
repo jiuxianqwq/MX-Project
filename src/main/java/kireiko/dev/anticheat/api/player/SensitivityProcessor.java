@@ -1,9 +1,7 @@
 package kireiko.dev.anticheat.api.player;
 
-import kireiko.dev.anticheat.api.PlayerContainer;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.entity.Player;
 
 import java.util.*;
 
@@ -67,10 +65,10 @@ public class SensitivityProcessor {
     @Getter
     private int sensitivity;
     private final List<Integer> sensitivitySamples = new ArrayList<>();
-    private final Player player;
+    private final PlayerProfile playerProfile;
 
-    public SensitivityProcessor(Player player) {
-        this.player = player;
+    public SensitivityProcessor(PlayerProfile playerProfile) {
+        this.playerProfile = playerProfile;
     }
 
     public void processSensitivity() {
@@ -83,7 +81,7 @@ public class SensitivityProcessor {
         if (this.sensitivitySamples.size() == 40) {
             this.sensitivity = getMode(this.sensitivitySamples);
             if (this.hasValidSensitivity()) {
-                PlayerContainer.getProfile(player).debug("&7Sensitivity: " + this.sensitivity);
+                playerProfile.debug("&7Sensitivity: " + this.sensitivity);
                 this.totalSensitivityClient = this.sensitivity;
                 this.totalSensitivity = SENSITIVITY_MCP_VALUES[this.sensitivity];
             }
