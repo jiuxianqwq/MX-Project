@@ -60,7 +60,8 @@ public class PlayerProfile extends ConfigController {
         Bukkit.getScheduler().runTask(MX.getInstance(), () -> this.punishAsync(check, component, info, m));
     }
     public void punishAsync(final String check, final String component, final String info, final float m) {
-        if (!this.player.hasPermission(ConfigCache.BYPASS)) {
+        if (!ConfigCache.BAN_COMMAND.equalsIgnoreCase("none")
+                && this.player.hasPermission(ConfigCache.BYPASS)) {
             return;
         }
         // this.vl += 10.0f * m;
@@ -144,7 +145,8 @@ public class PlayerProfile extends ConfigController {
             this.player.sendMessage(wrapString("&9&l[Debug] &f" + msg));
     }
     public void setAttackBlockToTime(long time) {
-        if (!this.player.hasPermission(ConfigCache.BYPASS)) {
+        if (!ConfigCache.BAN_COMMAND.equalsIgnoreCase("none")
+                && this.player.hasPermission(ConfigCache.BYPASS)) {
             return;
         }
         this.attackBlockToTime = time;
