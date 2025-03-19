@@ -11,6 +11,7 @@ import kireiko.dev.anticheat.listeners.*;
 import kireiko.dev.anticheat.services.AnimatedPunishService;
 import kireiko.dev.anticheat.services.FunThingsService;
 import kireiko.dev.anticheat.services.SimulationFlagService;
+import kireiko.dev.anticheat.utils.ConfigCache;
 import kireiko.dev.anticheat.utils.FunnyPackets;
 import kireiko.dev.millennium.types.EvictingList;
 import lombok.Getter;
@@ -43,6 +44,7 @@ public final class MX extends JavaPlugin {
     public void onEnable() {
         instance = this;
         saveDefaultConfig();
+        ConfigCache.loadConfig();
         loadListeners();
         punishTimer();
         this.getCommand(command).setExecutor(new CommandHandler());
@@ -58,7 +60,7 @@ public final class MX extends JavaPlugin {
 
         // reset vl
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
-            float r = (float) this.getConfig().getDouble("vlReset");
+            float r = ConfigCache.VL_RESET;
             bannedPerMinuteList.add(bannedPerMinuteCount);
             bannedPerMinuteCount = 0;
             blockedPerMinuteList.add(blockedPerMinuteCount);
