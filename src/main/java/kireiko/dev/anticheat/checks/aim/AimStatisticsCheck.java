@@ -84,14 +84,21 @@ public class AimStatisticsCheck implements PacketCheckHandler {
                     this.increaseBuffer(2, (kTest > 100)
                                     ? 2.0f : (kTest > 45) ? 1.25f : 0.1f);
                     if (kTest > 10) total++;
-                    profile.debug("&7Aim Kolmogorov Smirnov Test: " + kTest + " VL: " + this.buffer.get(2));
+                    this.increaseBuffer(14, 1.0f);
+                    profile.debug("&7Aim Kolmogorov Smirnov Test: " + kTest + " VL: "
+                                    + this.buffer.get(2) + " Streak: " + buffer.get(14));
+                    if (buffer.get(14) >= 15) {
+                        this.profile.punish("Aim", "KS Test", "[Statistics] Kolmogorov Smirnov Test (Streak) " + buffer.get(14), 0.0f);
+                        this.profile.setAttackBlockToTime(System.currentTimeMillis() + 4000);
+                    }
                     if (this.buffer.get(2) >= 5  && (kTest > 90 || this.buffer.get(2) >= 7)) {
-                        this.profile.punish("Aim", "KS Test", "[Statistics] Kolmogorov Smirnov Test " + kTest, 0.0f);
+                        this.profile.punish("Aim", "KS Test", "[Statistics] Kolmogorov Smirnov Test (Spikes) " + kTest, 0.0f);
                         this.profile.setAttackBlockToTime(System.currentTimeMillis() + 4000);
                         this.buffer.set(2, (this.buffer.get(2) >= 7) ? 6.5f : 4.5f);
                     }
                 } else {
                     this.increaseBuffer(2, -2f);
+                    this.buffer.set(14, 0f);
                 }
             }
             shannonAnalysis.add(Statistics.getShannonEntropy(jiffYaw));
