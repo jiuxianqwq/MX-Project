@@ -45,10 +45,7 @@ public class InteractSpellListener extends ConfigController implements Listener 
             final ItemStack item = event.getItem();
             if (item == null || !item.hasItemMeta()) return;
             final String name = item.getItemMeta().getDisplayName();
-            if (name == null) {
-                System.out.println(1);
-                return; // why nulled?? (@NotNull String getDisplayName())
-            }
+            if (name == null) return; // why nulled?? (@NotNull String getDisplayName())
             switch (name) {
                 case "§9Hook":
                     FunThingsService.add(new Hook(profile, profile.getTo().clone().add(0, 1.63, 0)));
