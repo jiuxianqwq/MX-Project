@@ -45,122 +45,135 @@ public class InteractSpellListener extends ConfigController implements Listener 
             final ItemStack item = event.getItem();
             if (item == null || !item.hasItemMeta()) return;
             final String name = item.getItemMeta().getDisplayName();
-            if (name.equals("§9Hook")) {
-                FunThingsService.add(new Hook(profile, profile.getTo().clone().add(0, 1.63, 0)));
-                event.setCancelled(true);
-            } else if (name.equals("§9Посох Винтербелла")) {
-                FunThingsService.add(new Spell(profile, profile.getTo().clone().add(0, 1.63, 0), 0.7, 8,
-                                Particle.SNOWBALL, Particle.SNOWBALL, new PotionEffect(PotionEffectType.SLOW, 60, 2)));
-                event.setCancelled(true);
-            } else if (name.equals("§9Посох Пламени")) {
-                FunThingsService.add(new Spell(profile, profile.getTo().clone().add(0, 1.63, 0), 0.6, 10,
-                                Particle.FLAME, Particle.LAVA, new PotionEffect(PotionEffectType.WITHER, 45, 1)));
-                event.setCancelled(true);
-            } else if (name.equals("§9Проклятое заклинание")) {
-                { // fire
-                    final float f1 = -10f;
-                    final float f2 = 0f;
-                    final Location location = profile.getTo().clone().add(0, 1.63, 0);
-                    location.setYaw(location.getYaw() + f1);
-                    location.setPitch(location.getPitch() + f2);
-                    FunThingsService.add(new Spell(profile, location, 0.8, 6,
-                                    Particle.FLAME, Particle.LAVA,
-                                    new PotionEffect(PotionEffectType.WITHER, 70, 1)));
-                }
-                { // ice
-                    final float f1 = 10f;
-                    final float f2 = 0f;
-                    final Location location = profile.getTo().clone().add(0, 1.63, 0);
-                    location.setYaw(location.getYaw() + f1);
-                    location.setPitch(location.getPitch() + f2);
-                    FunThingsService.add(new Spell(profile, location, 0.8, 4,
-                                    Particle.SNOWBALL, Particle.SNOWBALL,
-                                    new PotionEffect(PotionEffectType.SLOW, 70, 1)));
-                }
-                { // smoke
-                    final float f1 = 0f;
-                    final float f2 = 10f;
-                    final Location location = profile.getTo().clone().add(0, 1.63, 0);
-                    location.setYaw(location.getYaw() + f1);
-                    location.setPitch(location.getPitch() + f2);
-                    FunThingsService.add(new Spell(profile, location, 0.8, 8,
-                                    Particle.SMOKE_NORMAL, Particle.SMOKE_NORMAL,
-                                    new PotionEffect(PotionEffectType.BLINDNESS, 70, 1)));
-                }
-                { // cloud
-                    final float f1 = 0f;
-                    final float f2 = -10f;
-                    final Location location = profile.getTo().clone().add(0, 1.63, 0);
-                    location.setYaw(location.getYaw() + f1);
-                    location.setPitch(location.getPitch() + f2);
-                    FunThingsService.add(new Spell(profile, location, 0.8, 2,
-                                    Particle.CLOUD, Particle.CLOUD,
-                                    new PotionEffect(PotionEffectType.LEVITATION, 70, 2)));
-                }
-                { // explosion
-                    final float f1 = 0f;
-                    final float f2 = 0f;
-                    final Location location = profile.getTo().clone().add(0, 1.63, 0);
-                    location.setYaw(location.getYaw() + f1);
-                    location.setPitch(location.getPitch() + f2);
-                    FunThingsService.add(new Spell(profile, location, 0.8, 15,
-                                    Particle.EXPLOSION_NORMAL, Particle.EXPLOSION_LARGE, null));
-                }
-                event.setCancelled(true);
-            } else if (name.equals("§9AK-47")) {
-                final float f1 = (ThreadLocalRandom.current().nextFloat() * 6f) - 3f;
-                final float f2 = (ThreadLocalRandom.current().nextFloat() * 6f) - 3f;
-                final Location location = profile.getTo().clone().add(0, 1.63, 0);
-                location.setYaw(location.getYaw() + f1);
-                location.setPitch(location.getPitch() + f2);
-                FunThingsService.add(new Spell(profile, location, 1.5, 4,
-                                Particle.CRIT_MAGIC, Particle.CRIT_MAGIC, null));
-                event.setCancelled(true);
-            } else if (name.equals("§9Rocket Launcher")) {
-                AsyncScheduler.run(() -> {
-                    for (PlayerProfile target : PlayerContainer.getUuidPlayerProfileMap().values()) {
-                        if (target.getPlayer().getUniqueId().equals(player.getUniqueId())) continue;
-                        if (player.getWorld().equals(target.getPlayer().getWorld())
-                                        && player.getLocation().distance(target.getPlayer().getLocation()) < 125) {
-                            final Location t = target.getPlayer().getLocation();
-                            final double x = t.getX(), y = t.getY(), z = t.getZ();
-                            final double hitbox = 1.8;
-                            final AxisAlignedBB axisAlignedBB = new AxisAlignedBB(
-                                            x - hitbox, y - hitbox, z - hitbox,
-                                            x + hitbox,y + hitbox, z + hitbox
-                            );
-                            if (RayTrace.doRayTrace(BuildSpeed.FAST,
-                                            new Vec2(profile.getTo().getPitch(), profile.getTo().getYaw()),
-                                            new Vec3(profile.getTo().toVector()), axisAlignedBB, 125)) {
-                                FunThingsService.add(new Rocket(profile, target, profile.getTo().clone().add(0, 1.63, 0)));
-                                player.sendTitle(
-                                                MessageUtils.wrapColors("&a[   +   ]"),
-                                                "", 0, 20, 20);
-                                Bukkit.getScheduler().runTaskLater(MX.getInstance(), () -> {
-                                    player.sendTitle(
-                                                    MessageUtils.wrapColors("&e[  +  ]"),
-                                                    "", 0, 20, 20);
-                                }, 1L);
-                                Bukkit.getScheduler().runTaskLater(MX.getInstance(), () -> {
-                                    player.sendTitle(
-                                                    MessageUtils.wrapColors("&c[ + ]"),
-                                                    "", 0, 20, 20);
-                                }, 2L);
-                                Bukkit.getScheduler().runTaskLater(MX.getInstance(), () -> {
-                                    player.sendTitle(
-                                                    MessageUtils.wrapColors("&4[+]"),
-                                                    "", 0, 20, 20);
-                                    player.sendMessage(MessageUtils.wrapColors("&4//TARGET SPOTTED: " + target.getPlayer().getName().toUpperCase() + "//"));
-                                }, 3L);
-                                break;
-                            }
-                        }
-                        player.sendTitle(
-                                        MessageUtils.wrapColors("&f[     +     ]"),
-                                        "", 0, 5, 5);
+            if (name == null) {
+                System.out.println(1);
+                return; // why nulled?? (@NotNull String getDisplayName())
+            }
+            switch (name) {
+                case "§9Hook":
+                    FunThingsService.add(new Hook(profile, profile.getTo().clone().add(0, 1.63, 0)));
+                    event.setCancelled(true);
+                    break;
+                case "§9Посох Винтербелла":
+                    FunThingsService.add(new Spell(profile, profile.getTo().clone().add(0, 1.63, 0), 0.7, 8,
+                            Particle.SNOWBALL, Particle.SNOWBALL, new PotionEffect(PotionEffectType.SLOW, 60, 2)));
+                    event.setCancelled(true);
+                    break;
+                case "§9Посох Пламени":
+                    FunThingsService.add(new Spell(profile, profile.getTo().clone().add(0, 1.63, 0), 0.6, 10,
+                            Particle.FLAME, Particle.LAVA, new PotionEffect(PotionEffectType.WITHER, 45, 1)));
+                    event.setCancelled(true);
+                    break;
+                case "§9Проклятое заклинание": {
+                    { // fire
+                        final float f1 = -10f;
+                        final float f2 = 0f;
+                        final Location location = profile.getTo().clone().add(0, 1.63, 0);
+                        location.setYaw(location.getYaw() + f1);
+                        location.setPitch(location.getPitch() + f2);
+                        FunThingsService.add(new Spell(profile, location, 0.8, 6,
+                                Particle.FLAME, Particle.LAVA,
+                                new PotionEffect(PotionEffectType.WITHER, 70, 1)));
                     }
-                });
-                event.setCancelled(true);
+                    { // ice
+                        final float f1 = 10f;
+                        final float f2 = 0f;
+                        final Location location = profile.getTo().clone().add(0, 1.63, 0);
+                        location.setYaw(location.getYaw() + f1);
+                        location.setPitch(location.getPitch() + f2);
+                        FunThingsService.add(new Spell(profile, location, 0.8, 4,
+                                Particle.SNOWBALL, Particle.SNOWBALL,
+                                new PotionEffect(PotionEffectType.SLOW, 70, 1)));
+                    }
+                    { // smoke
+                        final float f1 = 0f;
+                        final float f2 = 10f;
+                        final Location location = profile.getTo().clone().add(0, 1.63, 0);
+                        location.setYaw(location.getYaw() + f1);
+                        location.setPitch(location.getPitch() + f2);
+                        FunThingsService.add(new Spell(profile, location, 0.8, 8,
+                                Particle.SMOKE_NORMAL, Particle.SMOKE_NORMAL,
+                                new PotionEffect(PotionEffectType.BLINDNESS, 70, 1)));
+                    }
+                    { // cloud
+                        final float f1 = 0f;
+                        final float f2 = -10f;
+                        final Location location = profile.getTo().clone().add(0, 1.63, 0);
+                        location.setYaw(location.getYaw() + f1);
+                        location.setPitch(location.getPitch() + f2);
+                        FunThingsService.add(new Spell(profile, location, 0.8, 2,
+                                Particle.CLOUD, Particle.CLOUD,
+                                new PotionEffect(PotionEffectType.LEVITATION, 70, 2)));
+                    }
+                    { // explosion
+                        final float f1 = 0f;
+                        final float f2 = 0f;
+                        final Location location = profile.getTo().clone().add(0, 1.63, 0);
+                        location.setYaw(location.getYaw() + f1);
+                        location.setPitch(location.getPitch() + f2);
+                        FunThingsService.add(new Spell(profile, location, 0.8, 15,
+                                Particle.EXPLOSION_NORMAL, Particle.EXPLOSION_LARGE, null));
+                    }
+                    event.setCancelled(true);
+                    break;
+                }
+                case "§9AK-47": {
+                    final float f1 = (ThreadLocalRandom.current().nextFloat() * 6f) - 3f;
+                    final float f2 = (ThreadLocalRandom.current().nextFloat() * 6f) - 3f;
+                    final Location location = profile.getTo().clone().add(0, 1.63, 0);
+                    location.setYaw(location.getYaw() + f1);
+                    location.setPitch(location.getPitch() + f2);
+                    FunThingsService.add(new Spell(profile, location, 1.5, 4,
+                            Particle.CRIT_MAGIC, Particle.CRIT_MAGIC, null));
+                    event.setCancelled(true);
+                    break;
+                }
+                case "§9Rocket Launcher":
+                    AsyncScheduler.run(() -> {
+                        for (PlayerProfile target : PlayerContainer.getUuidPlayerProfileMap().values()) {
+                            if (target.getPlayer().getUniqueId().equals(player.getUniqueId())) continue;
+                            if (player.getWorld().equals(target.getPlayer().getWorld())
+                                    && player.getLocation().distance(target.getPlayer().getLocation()) < 125) {
+                                final Location t = target.getPlayer().getLocation();
+                                final double x = t.getX(), y = t.getY(), z = t.getZ();
+                                final double hitbox = 1.8;
+                                final AxisAlignedBB axisAlignedBB = new AxisAlignedBB(
+                                        x - hitbox, y - hitbox, z - hitbox,
+                                        x + hitbox, y + hitbox, z + hitbox
+                                );
+                                if (RayTrace.doRayTrace(BuildSpeed.FAST,
+                                        new Vec2(profile.getTo().getPitch(), profile.getTo().getYaw()),
+                                        new Vec3(profile.getTo().toVector()), axisAlignedBB, 125)) {
+                                    FunThingsService.add(new Rocket(profile, target, profile.getTo().clone().add(0, 1.63, 0)));
+                                    player.sendTitle(
+                                            MessageUtils.wrapColors("&a[   +   ]"),
+                                            "", 0, 20, 20);
+                                    Bukkit.getScheduler().runTaskLater(MX.getInstance(), () -> {
+                                        player.sendTitle(
+                                                MessageUtils.wrapColors("&e[  +  ]"),
+                                                "", 0, 20, 20);
+                                    }, 1L);
+                                    Bukkit.getScheduler().runTaskLater(MX.getInstance(), () -> {
+                                        player.sendTitle(
+                                                MessageUtils.wrapColors("&c[ + ]"),
+                                                "", 0, 20, 20);
+                                    }, 2L);
+                                    Bukkit.getScheduler().runTaskLater(MX.getInstance(), () -> {
+                                        player.sendTitle(
+                                                MessageUtils.wrapColors("&4[+]"),
+                                                "", 0, 20, 20);
+                                        player.sendMessage(MessageUtils.wrapColors("&4//TARGET SPOTTED: " + target.getPlayer().getName().toUpperCase() + "//"));
+                                    }, 3L);
+                                    break;
+                                }
+                            }
+                            player.sendTitle(
+                                    MessageUtils.wrapColors("&f[     +     ]"),
+                                    "", 0, 5, 5);
+                        }
+                    });
+                    event.setCancelled(true);
+                    break;
             }
         }
     }
