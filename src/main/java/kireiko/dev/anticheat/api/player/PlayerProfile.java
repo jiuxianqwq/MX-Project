@@ -58,8 +58,8 @@ public class PlayerProfile extends ConfigController {
     }
 
     public void punish(final String check, final String component, final String info, final float m) {
-        if (!ConfigCache.BAN_COMMAND.equalsIgnoreCase("none")
-                && this.player.hasPermission(ConfigCache.BYPASS)) {
+        if (!ConfigCache.BYPASS.equalsIgnoreCase("none")
+                 && this.player.hasPermission(ConfigCache.BYPASS)) {
             return;
         }
         // this.vl += 10.0f * m;

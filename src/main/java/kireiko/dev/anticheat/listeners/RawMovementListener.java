@@ -77,7 +77,6 @@ public class RawMovementListener extends PacketAdapter {
             controller.setDeltaPitch(rotationEvent.getDelta().getY());
             controller.processSensitivity();
             profile.run(rotationEvent);
-            //player.sendMessage("v: " + rotationEvent.getDelta().getX());
         }
         profile.getPastLoc().add(profile.getTo());
         profile.run(new MoveEvent(profile, profile.getTo(), profile.getFrom()));
