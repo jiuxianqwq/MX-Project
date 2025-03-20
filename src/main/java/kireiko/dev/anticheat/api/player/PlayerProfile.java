@@ -14,6 +14,7 @@ import kireiko.dev.anticheat.utils.ConfigCache;
 import kireiko.dev.anticheat.utils.ConfigController;
 import kireiko.dev.anticheat.utils.MessageUtils;
 import kireiko.dev.anticheat.utils.protocol.ProtocolLib;
+import kireiko.dev.millennium.math.Statistics;
 import kireiko.dev.millennium.types.EvictingList;
 import kireiko.dev.millennium.vectors.Pair;
 import lombok.Data;
@@ -157,5 +158,16 @@ public class PlayerProfile extends ConfigController {
         return ProtocolLib.isTemporary(this.getPlayer())
                         ? new Random().nextInt()
                         : this.getPlayer().getEntityId();
+    }
+    public int calculateSensitivity() {
+        if (Statistics.getDistinct(getSensitivity()) != getSensitivity().size()) {
+            final Set<Integer> prev = new HashSet<>();
+            for (int i : getSensitivity()) {
+                if (prev.contains(i / 5)) {
+                    return i;
+                } else prev.add(i / 5);
+            }
+        }
+        return -1;
     }
 }

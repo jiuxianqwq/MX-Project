@@ -97,14 +97,9 @@ public class CommandHandler extends ConfigController implements CommandExecutor 
                         sendToSender(sender, "§cPlayer not found... Sorry!");
                     } else {
                         String sens = wrapColors("&4Not enough info!");
-                        if (Statistics.getDistinct(playerProfile.getSensitivity()) != playerProfile.getSensitivity().size()) {
-                            final Set<Integer> prev = new HashSet<>();
-                            for (int i : playerProfile.getSensitivity()) {
-                                if (prev.contains(i / 5)) {
-                                    sens = "&9" + i;
-                                } else prev.add(i / 5);
-                            }
-                        }
+                        final int calculated = playerProfile.calculateSensitivity();
+                        if (calculated > -1)
+                            sens = "&9" + calculated;
                         StringBuilder pingLabel = new StringBuilder();
                         for (long ping : playerProfile.getPing()) {
                             final String color = (ping > 1000) ? "&4" : (ping > 300) ? "&c" : (ping > 100) ? "&e" : "&a";

@@ -65,6 +65,7 @@ public class AimComplexCheck implements PacketCheckHandler {
 
     private void checkRaw() {
         { // uh
+            final int sens = profile.calculateSensitivity();
             final List<Float> x = new ArrayList<>(), y = new ArrayList<>();
             for (Vec2f vec2 : this.rawRotations) {
                 x.add(vec2.getX());
@@ -73,8 +74,7 @@ public class AimComplexCheck implements PacketCheckHandler {
             final int disX = Statistics.getDistinct(x);
             final double shannonYaw = Statistics.getShannonEntropy(x);
             final double shannonPitch = Statistics.getShannonEntropy(y);
-            final boolean valid = profile.getSensitivityProcessor().totalSensitivityClient >= 60 &&
-                            profile.getSensitivityProcessor().totalSensitivityClient <= 170;
+            final boolean valid = sens >= 60 && sens <= 150;
             //profile.getPlayer().sendMessage("y: " + shannonYaw + " " + shannonPitch);
             if (valid && getDifference(shannonYaw, oldShannonYaw) < 1e-5
                             && getDifference(shannonPitch, oldShannonPitch) < 1e-5) {

@@ -89,7 +89,8 @@ public class AimHeuristicCheck implements PacketCheckHandler {
                 oldPitchResult = rotation.getY();
                 oldYawChange = yawChange;
             }
-            if (profile.getSensitivityProcessor().totalSensitivityClient > 65) {
+            final int sens = profile.calculateSensitivity();
+            if (sens > 65) {
                 if (robotizedAmount > 7) addNewPunish("heuristic(sync)", 125);
                 if (aggressiveAim > 8) addNewPunish("heuristic(aggressive)", 50);
                 if (machineKnownMovement > 5) addNewPunish("heuristic(aim)", 100);
