@@ -10,7 +10,6 @@ import kireiko.dev.anticheat.api.PlayerContainer;
 import kireiko.dev.anticheat.api.events.WindowClickEvent;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
 
-import java.util.Collection;
 import java.util.Collections;
 
 public class InventoryListener extends PacketAdapter {

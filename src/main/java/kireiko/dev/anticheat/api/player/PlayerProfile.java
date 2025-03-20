@@ -14,7 +14,6 @@ import kireiko.dev.anticheat.utils.ConfigCache;
 import kireiko.dev.anticheat.utils.ConfigController;
 import kireiko.dev.anticheat.utils.MessageUtils;
 import kireiko.dev.anticheat.utils.protocol.ProtocolLib;
-import kireiko.dev.anticheat.utils.protocol.ProtocolTools;
 import kireiko.dev.millennium.types.EvictingList;
 import kireiko.dev.millennium.vectors.Pair;
 import lombok.Data;
@@ -25,7 +24,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -41,6 +43,8 @@ public class PlayerProfile extends ConfigController {
     private Location from;
     private Set<PacketCheckHandler> checks = new HashSet<>();
     private List<Location> pastLoc = new EvictingList<>(20);
+    private final List<Long> ping = new EvictingList<>(10);
+    private final List<Integer> sensitivity = new EvictingList<>(14);
     private SensitivityProcessor sensitivityProcessor = new SensitivityProcessor(this);
     private float vl;
 
@@ -143,7 +147,7 @@ public class PlayerProfile extends ConfigController {
             this.player.sendMessage(wrapString("&9&l[Debug] &f" + msg));
     }
     public void setAttackBlockToTime(long time) {
-        if (!ConfigCache.BAN_COMMAND.equalsIgnoreCase("none")
+        if (!ConfigCache.BYPASS.equalsIgnoreCase("none")
                 && this.player.hasPermission(ConfigCache.BYPASS)) {
             return;
         }

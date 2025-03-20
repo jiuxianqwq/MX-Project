@@ -117,7 +117,6 @@ public class AimStatisticsCheck implements PacketCheckHandler {
             if (jiffPatterns > 2 && Statistics.getAverage(x) > 3.0
                             && jiffPatterns != 6 && jiffPatterns != 12 && jiffPatterns != 4) {
                 this.profile.punish("Aim", "Pattern", "[Statistics] AimBot pattern " + jiffPatterns, 3.0f);
-                this.profile.setAttackBlockToTime(System.currentTimeMillis() + 4600L);
             }
             //profile.getPlayer().sendMessage("j: " + Arrays.toString(jiffYaw.toArray()));
 

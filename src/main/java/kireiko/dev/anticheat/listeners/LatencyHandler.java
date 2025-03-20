@@ -52,6 +52,7 @@ public class LatencyHandler extends PacketAdapter {
         } else return;
         if (id <= -1939 && id >= -1945) {
             protocol.transactionPing = System.currentTimeMillis() - protocol.transactionTime;
+            protocol.getPing().add(protocol.transactionPing);
             protocol.transactionLastTime = System.currentTimeMillis();
             protocol.transactionSentKeep = false;
             CTransactionEvent transactionEvent = new CTransactionEvent(protocol);

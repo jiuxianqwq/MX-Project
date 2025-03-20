@@ -68,14 +68,14 @@ public class AimAnalysisCheck implements PacketCheckHandler {
                     }
                 }
                 { // rank
-                    if (distinctRank < 1.0 && distinctRank > 0.7 && Math.abs(Statistics.getAverage(x)) > 0.35) {
-                        this.increaseBuffer(1, (distinctRank > 0.91) ? 0.2f : (distinctRank > 0.85) ? 2.0f : 3.0f);
+                    if (distinctRank < 1.0 && distinctRank > 0.7 && Statistics.getAverage(xAbs) > 0.35 && Statistics.getAverage(xAbs) < 4) {
+                        this.increaseBuffer(1, (distinctRank > 0.90) ? 0.05f : (distinctRank > 0.83) ? 2.0f : 3.0f);
                         profile.debug("&7Aim Incorrect rank: " + this.buffer.get(1) + " (" + distinctRank + ")");
                         if (this.buffer.get(1) >= 7.0f) {
                             this.profile.punish("Aim", "Rank", "[Analysis] Incorrect rank " + distinctRank, 2.0f);
                             this.buffer.set(1, 6.0f);
                         }
-                    } else this.increaseBuffer(1, -3.0f);
+                    } else this.increaseBuffer(1, -2.75f);
                 }
             }
             { // distribution

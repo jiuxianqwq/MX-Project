@@ -56,7 +56,8 @@ public class SensitivityProcessor {
 
     @Setter
     private float deltaPitch = 0;
-    public double totalSensitivity = 0, totalSensitivityClient = 0;
+    public double totalSensitivity = 0;
+    public int totalSensitivityClient = 0;
     @Setter
     @Getter
     private float lastDeltaPitch = 0;
@@ -84,6 +85,7 @@ public class SensitivityProcessor {
                 playerProfile.debug("&7Sensitivity: " + this.sensitivity);
                 this.totalSensitivityClient = this.sensitivity;
                 this.totalSensitivity = SENSITIVITY_MCP_VALUES[this.sensitivity];
+                playerProfile.getSensitivity().add(this.totalSensitivityClient);
             }
             this.sensitivitySamples.clear();
         }
