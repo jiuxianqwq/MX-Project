@@ -45,6 +45,7 @@ public final class MX extends JavaPlugin {
         instance = this;
         saveDefaultConfig();
         ConfigCache.loadConfig();
+
         loadListeners();
         punishTimer();
         this.getCommand(command).setExecutor(new CommandHandler());

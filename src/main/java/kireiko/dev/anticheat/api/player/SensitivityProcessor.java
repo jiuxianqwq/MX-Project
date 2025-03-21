@@ -7,6 +7,7 @@ import java.util.*;
 
 public class SensitivityProcessor {
 
+    @Getter
     private static final double[] SENSITIVITY_MCP_VALUES;
     static {
         SENSITIVITY_MCP_VALUES = new double[]{

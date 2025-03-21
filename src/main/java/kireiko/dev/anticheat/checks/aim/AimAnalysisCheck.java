@@ -4,6 +4,7 @@ import kireiko.dev.anticheat.api.PacketCheckHandler;
 import kireiko.dev.anticheat.api.events.RotationEvent;
 import kireiko.dev.anticheat.api.events.UseEntityEvent;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
+import kireiko.dev.anticheat.api.player.SensitivityProcessor;
 import kireiko.dev.millennium.math.Statistics;
 import kireiko.dev.millennium.vectors.Vec2f;
 
@@ -43,10 +44,14 @@ public class AimAnalysisCheck implements PacketCheckHandler {
     private void checkRaw() {
         { // uh
             final List<Float> x = new ArrayList<>(), xAbs = new ArrayList<>(), y = new ArrayList<>();
+            final List<Long> xGcd = new ArrayList<>();
+            final int sens = profile.calculateSensitivity();
+            final float gcdValue = (sens > 0) ? Statistics.getGCDValue(SensitivityProcessor.getSENSITIVITY_MCP_VALUES()[sens - 1]) : 0;
             for (Vec2f vec2 : this.rawRotations) {
                 x.add(vec2.getX());
                 xAbs.add(vec2.getX());
                 y.add(vec2.getY());
+                xGcd.add((long) (vec2.getX() / gcdValue));
             }
             { // score
                 final List<Float> yawStack = new ArrayList<>();
@@ -62,21 +67,25 @@ public class AimAnalysisCheck implements PacketCheckHandler {
                 }
                 final List<Double> outliers5 = Statistics.getZScoreOutliers(resultDeviation, 0.5f);
                 final float distinctRank = (float) resultDistinct / 60;
-                { // post
+                { // linear
                     if (outliers5.isEmpty() || outliers5.size() == 1 && Math.abs(outliers5.get(0)) > 10 &&  Math.abs(outliers5.get(0)) < 100) {
-                        this.profile.punish("Aim", "Post", "[Analysis] Invalid outliers " + Arrays.toString(outliers5.toArray()), 3.0f);
+                        this.profile.punish("Aim", "Linear", "[Analysis] Invalid outliers " + Arrays.toString(outliers5.toArray()), 3.0f);
                     }
                 }
                 { // rank
-                    final int sens = profile.calculateSensitivity();
                     final boolean valid = profile.calculateSensitivity() > 20 && sens < 140;
-                    if (distinctRank < 1.0 && distinctRank > 0.7 && Statistics.getAverage(xAbs) > 0.3 && valid) {
-                        this.increaseBuffer(1, (distinctRank > 0.90) ? 0.08f : (distinctRank > 0.83) ? 2.25f : 3.0f);
-                        profile.debug("&7Aim Incorrect rank: " + this.buffer.get(1) + " (" + distinctRank + ")");
-                        if (this.buffer.get(1) >= 7.0f) {
-                            this.profile.punish("Aim", "Rank", "[Analysis] Incorrect rank " + distinctRank, 2.0f);
-                            this.buffer.set(1, 6.0f);
+                    if (distinctRank < 1.0 && distinctRank > 0.7 && Statistics.getAverage(xAbs) > 1.8 && valid) {
+                        if (this.buffer.get(1) < 0.01) {
+                            if (distinctRank < 0.8) this.increaseBuffer(1, 0.2f);
+                        } else {
+                            this.increaseBuffer(1, (distinctRank > 0.9) ? 0.08f : (distinctRank > 0.8) ? 2f : 3f);
+                            profile.debug("&7Aim Incorrect rank: " + this.buffer.get(1) + " (" + distinctRank + ")");
+                            if (this.buffer.get(1) >= 6.0f) {
+                                this.profile.punish("Aim", "Rank", "[Analysis] Incorrect rank " + distinctRank, 2.0f);
+                                this.buffer.set(1, 5.0f);
+                            }
                         }
+
                     } else this.increaseBuffer(1, -2.25f);
                 }
             }

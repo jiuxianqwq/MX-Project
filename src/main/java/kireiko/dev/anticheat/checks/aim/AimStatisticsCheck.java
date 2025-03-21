@@ -87,7 +87,7 @@ public class AimStatisticsCheck implements PacketCheckHandler {
                     this.increaseBuffer(14, 1.0f);
                     profile.debug("&7Aim Kolmogorov Smirnov Test: " + kTest + " VL: "
                                     + this.buffer.get(2) + " Streak: " + buffer.get(14));
-                    if (buffer.get(14) >= 15) {
+                    if (buffer.get(14) >= 15 && kTest > 9) {
                         this.profile.punish("Aim", "KS Test", "[Statistics] Kolmogorov Smirnov Test (Streak) " + buffer.get(14), 0.0f);
                         this.profile.setAttackBlockToTime(System.currentTimeMillis() + 4000);
                     }

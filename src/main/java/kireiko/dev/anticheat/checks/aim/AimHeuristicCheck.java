@@ -31,6 +31,10 @@ public class AimHeuristicCheck implements PacketCheckHandler {
             RotationEvent event = (RotationEvent) o;
             if (System.currentTimeMillis() > this.lastAttack + 3500) return;
             this.rawRotations.add(new Vec2(event.getTo().getX(), event.getTo().getY()));
+            if ((event.getDelta().getY() > 1.5f || event.getDelta().getX() > 3.0f)
+                            && (profile.getTo().getPitch() == 0 || profile.getTo().getPitch() % 0.01f == 0)) {
+                this.profile.punish("Aim", "Randomizer", "[Heuristic] Randomizer flaw", 1.0f);
+            }
             if (this.rawRotations.size() >= 10)
                 checkDefaultAim();
         } else if (o instanceof UseEntityEvent) {
