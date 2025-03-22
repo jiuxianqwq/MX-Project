@@ -35,4 +35,14 @@ public class PlayerContainer {
     public static PlayerProfile getProfile(Player player) {
         return uuidPlayerProfileMap.get(player.getUniqueId());
     }
+
+    @Nullable
+    public static PlayerProfile getProfileByName(String name) {
+        for (PlayerProfile profile : uuidPlayerProfileMap.values()) {
+            if (profile.getPlayer().getName().equalsIgnoreCase(name)) {
+                return profile;
+            }
+        }
+        return null;
+    }
 }
