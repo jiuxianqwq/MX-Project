@@ -4,9 +4,8 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import kireiko.dev.anticheat.api.PlayerContainer;
-import kireiko.dev.anticheat.api.commands.CommandCompleter;
-import kireiko.dev.anticheat.api.commands.CommandHandler;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
+import kireiko.dev.anticheat.commands.MXCommandHandler;
 import kireiko.dev.anticheat.listeners.*;
 import kireiko.dev.anticheat.services.AnimatedPunishService;
 import kireiko.dev.anticheat.services.FunThingsService;
@@ -16,6 +15,7 @@ import kireiko.dev.anticheat.utils.FunnyPackets;
 import kireiko.dev.millennium.types.EvictingList;
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashSet;
@@ -48,8 +48,12 @@ public final class MX extends JavaPlugin {
 
         loadListeners();
         punishTimer();
-        this.getCommand(command).setExecutor(new CommandHandler());
-        this.getCommand(command).setTabCompleter(new CommandCompleter());
+        PluginCommand pCommand = this.getCommand(command);
+        if (pCommand != null) {
+            MXCommandHandler handler = new MXCommandHandler();
+            pCommand.setExecutor(handler);
+            pCommand.setTabCompleter(handler);
+        }
         getLogger().info("Launched!");
     }
 

@@ -1,4 +1,5 @@
-package kireiko.dev.anticheat.api.commands;
+/*
+package kireiko.dev.anticheat.commands;
 
 import kireiko.dev.anticheat.MX;
 import kireiko.dev.anticheat.api.PlayerContainer;
@@ -15,9 +16,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import static kireiko.dev.anticheat.utils.MessageUtils.wrapColors;
 
@@ -199,3 +197,4 @@ public class CommandHandler extends ConfigController implements CommandExecutor 
     }
 
 }
+*/
