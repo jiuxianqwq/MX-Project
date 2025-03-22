@@ -36,7 +36,6 @@ public class UseEntityListener extends PacketAdapter {
             event.setCancelled(true);
             profile.debug("UseEntity packet blocked");
             MX.blockedPerMinuteCount++;
-            return;
         }
         boolean attack = !packet.getEntityUseActions().getValues().isEmpty() ?
                         packet.getEntityUseActions().read(0).toString().equals("ATTACK")
