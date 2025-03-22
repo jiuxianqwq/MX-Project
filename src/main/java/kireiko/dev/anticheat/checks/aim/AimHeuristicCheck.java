@@ -4,9 +4,12 @@ import kireiko.dev.anticheat.api.PacketCheckHandler;
 import kireiko.dev.anticheat.api.events.RotationEvent;
 import kireiko.dev.anticheat.api.events.UseEntityEvent;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
+import kireiko.dev.anticheat.checks.aim.heuristic.AimConstant;
+import kireiko.dev.anticheat.checks.aim.heuristic.HeuristicComponent;
 import kireiko.dev.millennium.math.Simplification;
 import kireiko.dev.millennium.math.Statistics;
 import kireiko.dev.millennium.vectors.Vec2;
+import lombok.Getter;
 
 import java.util.HashSet;
 import java.util.List;
@@ -14,16 +17,23 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class AimHeuristicCheck implements PacketCheckHandler {
+
+    @Getter
     private final PlayerProfile profile;
     private final List<Vec2> rawRotations;
     private int streak = 0;
     private long lastAttack;
     private float vl = 0, vlL2 = 0;
     private String reason = "";
+    private final Set<HeuristicComponent> components;
     public AimHeuristicCheck(PlayerProfile profile) {
         this.profile = profile;
         this.rawRotations = new CopyOnWriteArrayList<>();
         this.lastAttack = System.currentTimeMillis() + 3500;
+        this.components = new HashSet<>();
+        { // components
+            this.components.add(new AimConstant(this));
+        }
     }
     @Override
     public void event(Object o) {
@@ -35,8 +45,8 @@ public class AimHeuristicCheck implements PacketCheckHandler {
                             && (profile.getTo().getPitch() == 0 || profile.getTo().getPitch() % 0.01f == 0)) {
                 this.profile.punish("Aim", "Randomizer", "[Heuristic] Randomizer flaw", 1.0f);
             }
-            if (this.rawRotations.size() >= 10)
-                checkDefaultAim();
+            for (HeuristicComponent component : components) component.process(event);
+            if (this.rawRotations.size() >= 10) checkDefaultAim();
         } else if (o instanceof UseEntityEvent) {
             UseEntityEvent event = (UseEntityEvent) o;
             if (event.isAttack()) {

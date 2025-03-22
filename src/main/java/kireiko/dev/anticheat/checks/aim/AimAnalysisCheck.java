@@ -5,12 +5,12 @@ import kireiko.dev.anticheat.api.events.RotationEvent;
 import kireiko.dev.anticheat.api.events.UseEntityEvent;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
 import kireiko.dev.anticheat.api.player.SensitivityProcessor;
+import kireiko.dev.anticheat.checks.aim.heuristic.AimConstant;
+import kireiko.dev.anticheat.checks.aim.heuristic.HeuristicComponent;
 import kireiko.dev.millennium.math.Statistics;
 import kireiko.dev.millennium.vectors.Vec2f;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class AimAnalysisCheck implements PacketCheckHandler {
@@ -95,7 +95,7 @@ public class AimAnalysisCheck implements PacketCheckHandler {
                 final double kurtosis = Statistics.getKurtosis(x);
                 final double pearson = Statistics.getPearsonCorrelation(x, y);
                 final int spikes = Statistics.getZScoreOutliers(x, 1.0f).size() + Statistics.getZScoreOutliers(y, 1.0f).size();
-                if (max > 8 && pearson < 0.25 && distinctX < 85 && distinctX > 40 && kurtosis > 0 && spikes >= 40) {
+                if (max > 8 && pearson < 0.25 && distinctX < 85 && distinctX > 65 && kurtosis > 0 && spikes >= 40) {
                     this.increaseBuffer(0, (distinctX < 80) ? 1.1f : 0.85f);
                     profile.debug("&7Aim Incorrect distribution: " + this.buffer.get(0));
                     if (this.buffer.get(0) > 3.2f) {
