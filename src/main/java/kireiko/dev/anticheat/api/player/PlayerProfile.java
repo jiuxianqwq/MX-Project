@@ -11,16 +11,12 @@ import kireiko.dev.anticheat.checks.aim.AimStatisticsCheck;
 import kireiko.dev.anticheat.checks.velocity.VelocityCheck;
 import kireiko.dev.anticheat.services.AnimatedPunishService;
 import kireiko.dev.anticheat.utils.ConfigCache;
-import kireiko.dev.anticheat.utils.ConfigController;
 import kireiko.dev.anticheat.utils.MessageUtils;
 import kireiko.dev.anticheat.utils.protocol.ProtocolLib;
 import kireiko.dev.millennium.math.Statistics;
 import kireiko.dev.millennium.types.EvictingList;
 import kireiko.dev.millennium.vectors.Pair;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -30,26 +26,23 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
-@Getter
-public class PlayerProfile extends ConfigController {
+public class PlayerProfile {
 
     public boolean transactionSentKeep;
     public boolean transactionBoot = true;
     public long transactionTime, transactionLastTime, transactionPing;
     public short transactionId;
-    private Player player;
+    private final Player player;
     private Location to;
     private Location from;
-    private Set<PacketCheckHandler> checks = new HashSet<>();
-    private List<Location> pastLoc = new EvictingList<>(20);
+    private final Set<PacketCheckHandler> checks = new HashSet<>();
+    private final List<Location> pastLoc = new EvictingList<>(20);
     private final List<Long> ping = new EvictingList<>(10);
     private final List<Integer> sensitivity = new EvictingList<>(14);
-    private SensitivityProcessor sensitivityProcessor = new SensitivityProcessor(this);
+    private final SensitivityProcessor sensitivityProcessor = new SensitivityProcessor(this);
     private float vl;
 
-    @Setter
     public int airTicks, flagCount, punishAnimation, teleportTicks, horrowStage;
     private long attackBlockToTime;
     private boolean alerts, debug, ignoreExitBan;

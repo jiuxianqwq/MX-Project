@@ -7,7 +7,6 @@ import kireiko.dev.anticheat.api.events.SVelocityEvent;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
 import kireiko.dev.anticheat.services.SimulationFlagService;
 import kireiko.dev.anticheat.utils.ConfigCache;
-import kireiko.dev.anticheat.utils.ConfigController;
 import kireiko.dev.millennium.math.Simplification;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,7 +14,7 @@ import org.bukkit.util.Vector;
 
 import java.util.regex.Pattern;
 
-public class VelocityCheck extends ConfigController implements PacketCheckHandler  {
+public class VelocityCheck implements PacketCheckHandler  {
     private final PlayerProfile profile;
     private final double[] jumpReset = new double[]{0.248136, 0.3332};
 

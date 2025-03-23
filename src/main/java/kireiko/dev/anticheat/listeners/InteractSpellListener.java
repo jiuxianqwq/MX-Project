@@ -9,7 +9,6 @@ import kireiko.dev.anticheat.api.player.fun.Spell;
 import kireiko.dev.anticheat.core.AsyncScheduler;
 import kireiko.dev.anticheat.services.FunThingsService;
 import kireiko.dev.anticheat.utils.ConfigCache;
-import kireiko.dev.anticheat.utils.ConfigController;
 import kireiko.dev.anticheat.utils.MessageUtils;
 import kireiko.dev.millennium.math.AxisAlignedBB;
 import kireiko.dev.millennium.math.BuildSpeed;
@@ -30,7 +29,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class InteractSpellListener extends ConfigController implements Listener {
+public class InteractSpellListener implements Listener {
     @EventHandler
     public void interact(PlayerInteractEvent event) {
         if (!ConfigCache.INTERACT_SPELL) {
@@ -44,8 +43,8 @@ public class InteractSpellListener extends ConfigController implements Listener 
         if (event.getAction().equals(Action.RIGHT_CLICK_AIR) && event.hasItem()) {
             final ItemStack item = event.getItem();
             if (item == null || !item.hasItemMeta()) return;
+            if (!item.getItemMeta().hasDisplayName()) return;
             final String name = item.getItemMeta().getDisplayName();
-            if (name == null) return; // why nulled?? (@NotNull String getDisplayName())
             switch (name) {
                 case "§9Hook":
                     FunThingsService.add(new Hook(profile, profile.getTo().clone().add(0, 1.63, 0)));
