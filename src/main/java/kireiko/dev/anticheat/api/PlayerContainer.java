@@ -1,6 +1,7 @@
 package kireiko.dev.anticheat.api;
 
 import kireiko.dev.anticheat.api.player.PlayerProfile;
+import kireiko.dev.anticheat.utils.LogUtils;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import org.bukkit.entity.Player;
@@ -22,8 +23,12 @@ public class PlayerContainer {
     }
     public static void unload(Player player) {
         PlayerProfile profile = uuidPlayerProfileMap.get(player.getUniqueId());
-        if (profile == null) {
-            return;
+        if (!profile.getLogs().isEmpty()) {
+            final StringBuilder logBuilder = new StringBuilder();
+            LogUtils.createLog(player.getName());
+            for (final String l : profile.getLogs()) logBuilder.append("\n").append(l);
+            LogUtils.addLog(player.getName(), logBuilder.toString());
+            profile.getLogs().clear();
         }
         uuidPlayerProfileMap.remove(player.getUniqueId());
         if (profile.getBanAnimInfo() != null && !profile.isIgnoreExitBan()) {

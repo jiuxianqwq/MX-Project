@@ -10,7 +10,6 @@ import kireiko.dev.anticheat.api.events.MoveEvent;
 import kireiko.dev.anticheat.api.events.RotationEvent;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
 import kireiko.dev.anticheat.api.player.SensitivityProcessor;
-import kireiko.dev.anticheat.api.player.fun.HorrowProcessor;
 import kireiko.dev.anticheat.utils.protocol.ProtocolLib;
 import kireiko.dev.anticheat.utils.protocol.ProtocolTools;
 import kireiko.dev.millennium.vectors.Vec2f;
@@ -76,11 +75,11 @@ public class RawMovementListener extends PacketAdapter {
             RotationEvent rotationEvent = new RotationEvent(profile, to, from);
             controller.setDeltaPitch(rotationEvent.getDelta().getY());
             controller.processSensitivity();
+            profile.getCinematicComponent().process(rotationEvent);
             profile.run(rotationEvent);
         }
         profile.getPastLoc().add(profile.getTo());
         profile.run(new MoveEvent(profile, profile.getTo(), profile.getFrom()));
-        if (profile.horrowStage > 0) HorrowProcessor.tick(profile);
 
         if (profile.transactionBoot) LatencyHandler.startChecking(profile);
     }

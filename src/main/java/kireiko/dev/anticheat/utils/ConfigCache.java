@@ -15,6 +15,8 @@ public class ConfigCache {
     public static boolean PUNISH_EFFECT;
     public static boolean INTERACT_SPELL;
     public static boolean CHECK_VELOCITY;
+    public static boolean IGNORE_CINEMATIC;
+    public static boolean LOG_IN_FILES;
 
 
     public static void loadConfig() {
@@ -29,5 +31,7 @@ public class ConfigCache {
         PUNISH_EFFECT = MX.getInstance().getConfig().getBoolean("punishEffect", false);
         INTERACT_SPELL = MX.getInstance().getConfig().getBoolean("interactSpell", false);
         CHECK_VELOCITY = MX.getInstance().getConfig().getBoolean("checkVelocity", true);
+        IGNORE_CINEMATIC = MX.getInstance().getConfig().getBoolean("ignoreCinematic", false);
+        LOG_IN_FILES = MX.getInstance().getConfig().getBoolean("logInFiles", true);
     }
 }

@@ -64,7 +64,7 @@ public class AimComplexCheck implements PacketCheckHandler {
     }
 
     private void checkRaw() {
-        { // uh
+        if (!profile.ignoreCinematic()) { // uh
             final int sens = profile.calculateSensitivity();
             final List<Float> x = new ArrayList<>(), y = new ArrayList<>();
             for (Vec2f vec2 : this.rawRotations) {

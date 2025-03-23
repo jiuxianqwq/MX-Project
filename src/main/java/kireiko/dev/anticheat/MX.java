@@ -11,7 +11,6 @@ import kireiko.dev.anticheat.services.AnimatedPunishService;
 import kireiko.dev.anticheat.services.FunThingsService;
 import kireiko.dev.anticheat.services.SimulationFlagService;
 import kireiko.dev.anticheat.utils.ConfigCache;
-import kireiko.dev.anticheat.utils.FunnyPackets;
 import kireiko.dev.millennium.types.EvictingList;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -75,19 +74,6 @@ public final class MX extends JavaPlugin {
                 profile.setFlagCount(0);
             }
         }, 20L, 1200L);
-
-        // horrow
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
-            for (PlayerProfile profile : PlayerContainer.getUuidPlayerProfileMap().values()) {
-                if (profile.horrowStage > 0) {
-                    profile.horrowStage++;
-                    if (profile.horrowStage > 4) {
-                        FunnyPackets.closeMinecraft(profile.getPlayer());
-                        profile.horrowStage = 0;
-                    }
-                }
-            }
-        }, 20L, 160L);
     }
 
     private void loadListeners() {

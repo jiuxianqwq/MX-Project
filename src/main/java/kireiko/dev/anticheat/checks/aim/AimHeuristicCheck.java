@@ -39,7 +39,7 @@ public class AimHeuristicCheck implements PacketCheckHandler {
     public void event(Object o) {
         if (o instanceof RotationEvent) {
             RotationEvent event = (RotationEvent) o;
-            if (System.currentTimeMillis() > this.lastAttack + 3500) return;
+            if (System.currentTimeMillis() > this.lastAttack + 3500 || profile.ignoreCinematic()) return;
             this.rawRotations.add(new Vec2(event.getTo().getX(), event.getTo().getY()));
             if ((event.getDelta().getY() > 1.5f || event.getDelta().getX() > 3.0f)
                             && (profile.getTo().getPitch() == 0 || profile.getTo().getPitch() % 0.01f == 0)) {

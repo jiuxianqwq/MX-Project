@@ -21,16 +21,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 @Data
 public class PlayerProfile {
 
     public boolean transactionSentKeep;
     public boolean transactionBoot = true;
+    private boolean cinematic = false;
     public long transactionTime, transactionLastTime, transactionPing;
     public short transactionId;
     private final Player player;
@@ -41,9 +39,11 @@ public class PlayerProfile {
     private final List<Long> ping = new EvictingList<>(10);
     private final List<Integer> sensitivity = new EvictingList<>(14);
     private final SensitivityProcessor sensitivityProcessor = new SensitivityProcessor(this);
+    private final CinematicComponent cinematicComponent = new CinematicComponent(this);
+    private final List<String> logs = new ArrayList<>();
     private float vl;
 
-    public int airTicks, flagCount, punishAnimation, teleportTicks, horrowStage;
+    public int airTicks, flagCount, punishAnimation, teleportTicks;
     private long attackBlockToTime;
     private boolean alerts, debug, ignoreExitBan;
     private Pair<String, String> banAnimInfo;
@@ -71,6 +71,14 @@ public class PlayerProfile {
         this.flagCount += (m == 0.0) ? 0 : 1;
         String builder = this.wrapString(ConfigCache.ALERT_MSG.replace("%check%", check).replace("%component%", component).replace("%info%", info));
         MessageUtils.sendMessagesToPlayers(MX.permission, builder);
+        if (ConfigCache.LOG_IN_FILES) {
+            logs.add("[" + MessageUtils.getDate() + "] "
+                            + this.getPlayer().getName()
+                            + " >> " + check + " (" + component + ") " + info + " ["
+                            + ((int) this.vl) + "/"
+                            + ConfigCache.VL_LIMIT
+                            + "]");
+        }
         if (this.vl >= vlLimit) {
             if (ConfigCache.PUNISH_EFFECT) {
                 AnimatedPunishService.punish(this, new Pair<>(check, info));
@@ -117,6 +125,9 @@ public class PlayerProfile {
         );
     }
 
+    public boolean ignoreCinematic() {
+        return cinematic && ConfigCache.IGNORE_CINEMATIC;
+    }
     public boolean toggleAlerts() {
         this.alerts = !this.alerts;
         return this.alerts;
