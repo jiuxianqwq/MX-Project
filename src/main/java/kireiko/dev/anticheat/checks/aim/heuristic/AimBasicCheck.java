@@ -107,12 +107,12 @@ public final class AimBasicCheck implements HeuristicComponent {
             } else streak = 0;
             if (this.vl > 400) {
                 this.check.getProfile().punish("Aim", "Heuristic", "[Component] " + this.reason, 0.0f);
-                this.check.getProfile().setAttackBlockToTime(System.currentTimeMillis() + 3000L);
+                this.check.getProfile().setAttackBlockToTime(System.currentTimeMillis() + 3500L);
                 this.vl = 360;
             }
             if (this.vlL2 > 400) {
                 this.check.getProfile().punish("Aim", "Flaw", "[Flaw] Interpolation", 0.0f);
-                this.check.getProfile().setAttackBlockToTime(System.currentTimeMillis() + 1600L);
+                this.check.getProfile().setAttackBlockToTime(System.currentTimeMillis() + 2600L);
                 this.vlL2 -= 65;
             }
             if (this.vl > 0) this.vl -= 5;

@@ -8,6 +8,7 @@ import kireiko.dev.millennium.vectors.Vec2f;
 
 public final class AimInvalidCheck implements HeuristicComponent {
     private final AimHeuristicCheck check;
+    private int buffer = 0;
 
     public AimInvalidCheck(final AimHeuristicCheck check) {
         this.check = check;
@@ -20,9 +21,14 @@ public final class AimInvalidCheck implements HeuristicComponent {
         final Vec2f delta = event.getAbsDelta();
         if ((Statistics.isExponentiallySmall(delta.getY())
                         && delta.getY() > 0.0
-                        && delta.getX() > 0.5f)
-                        || delta.getY() > 90.1f) {
-            profile.punish("Aim", "Invalid", "Invalid Pitch " + event.getDelta().getY(), 10.0f);
+                        && delta.getX() > 0.5f)) {
+            buffer += 20;
+            if (buffer > 70) {
+                profile.punish("Aim", "Invalid", "Invalid Pitch " + event.getDelta().getY(), 10.0f);
+            }
+        } else buffer--;
+        if (delta.getY() > 90.1f) {
+            profile.punish("Aim", "Invalid", "Unlimited Pitch " + event.getDelta().getY(), 10.0f);
         }
     }
 }
