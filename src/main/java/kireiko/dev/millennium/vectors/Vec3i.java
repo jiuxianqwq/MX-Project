@@ -12,24 +12,21 @@ public class Vec3i implements Comparable {
     /**
      * X coordinate
      * -- GETTER --
-     *  Get the X coordinate
-
+     * Get the X coordinate
      */
     private final int x;
 
     /**
      * Y coordinate
      * -- GETTER --
-     *  Get the Y coordinate
-
+     * Get the Y coordinate
      */
     private final int y;
 
     /**
      * Z coordinate
      * -- GETTER --
-     *  Get the Z coordinate
-
+     * Get the Z coordinate
      */
     private final int z;
 

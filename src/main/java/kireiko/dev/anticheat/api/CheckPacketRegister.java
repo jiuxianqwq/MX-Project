@@ -15,12 +15,15 @@ public class CheckPacketRegister {
     public static void addListener(PacketCheckHandler packetListener) {
         listeners.add(packetListener);
     }
+
     public static void removeListener(PacketCheckHandler packetListener) {
         listeners.remove(packetListener);
     }
+
     public static void run(Object event) {
         runCustom(event, listeners);
     }
+
     public static void runCustom(Object event, Set<PacketCheckHandler> stack) {
         for (PacketCheckHandler packetListener : stack) {
             packetListener.event(event);

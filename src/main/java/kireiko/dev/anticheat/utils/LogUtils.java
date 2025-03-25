@@ -27,6 +27,7 @@ public class LogUtils {
         if (!logFile.exists()) return logFile.createNewFile();
         return false;
     }
+
     public static void addLog(String playerName, String logMessage) {
         File logFile = new File(LOGS_FOLDER, playerName + ".log");
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(logFile, true))) {
@@ -36,6 +37,7 @@ public class LogUtils {
             e.printStackTrace();
         }
     }
+
     public static void overwriteLog(String playerName, String logMessage) {
         AsyncScheduler.run(() -> {
             File logFile = new File(LOGS_FOLDER, playerName + ".log");
@@ -47,6 +49,7 @@ public class LogUtils {
             }
         });
     }
+
     public static List<String> getLog(String playerName) {
         File logFile = new File(LOGS_FOLDER, playerName + ".log");
         List<String> logs = new ArrayList<>();
@@ -62,6 +65,7 @@ public class LogUtils {
         }
         return logs;
     }
+
     public static String getSimpleLog(String playerName) {
         List<String> logs = getLog(playerName);
         StringBuilder r = new StringBuilder();
@@ -70,6 +74,7 @@ public class LogUtils {
         }
         return r.toString();
     }
+
     public static boolean deleteLog(String playerName) {
         File logFile = new File(LOGS_FOLDER, playerName + ".log");
         return logFile.delete();

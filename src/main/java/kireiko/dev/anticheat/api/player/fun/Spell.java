@@ -24,8 +24,8 @@ import static kireiko.dev.anticheat.utils.protocol.ProtocolTools.getBlockAsync;
 public class Spell implements FunThing {
     private final PlayerProfile linked;
     private final Location location;
-    private double speed, damage;
     private final Particle effect, explosion;
+    private double speed, damage;
     private boolean destroyed;
     private boolean optimizer3000;
     private PotionEffect potionEffect;
@@ -54,9 +54,9 @@ public class Spell implements FunThing {
         final float yaw = location.getYaw();
         final float pitch = location.getPitch();
         final Vector direction = new Vector(
-                        -GeneralMath.sin((float) Math.toRadians(yaw), BuildSpeed.FAST),
-                        -GeneralMath.sin((float) Math.toRadians(pitch), BuildSpeed.FAST),
-                        GeneralMath.cos((float) Math.toRadians(yaw), BuildSpeed.FAST));
+                -GeneralMath.sin((float) Math.toRadians(yaw), BuildSpeed.FAST),
+                -GeneralMath.sin((float) Math.toRadians(pitch), BuildSpeed.FAST),
+                GeneralMath.cos((float) Math.toRadians(yaw), BuildSpeed.FAST));
         final double interpolatePitch = 1 - ((Math.abs(pitch) * 1.1111) / 100);
         direction.setX(direction.getX() * interpolatePitch);
         direction.setZ(direction.getZ() * interpolatePitch);
@@ -67,16 +67,16 @@ public class Spell implements FunThing {
             for (PlayerProfile target : PlayerContainer.getUuidPlayerProfileMap().values()) {
                 if (target.getPlayer().getUniqueId().equals(linked.getPlayer().getUniqueId())) continue;
                 if (location.getWorld().equals(target.getPlayer().getWorld())
-                                && location.distance(target.getPlayer().getLocation()) < 5) {
+                        && location.distance(target.getPlayer().getLocation()) < 5) {
                     double x = target.getTo().getX(),
-                                    y = target.getTo().getY(),
-                                    z = target.getTo().getZ();
+                            y = target.getTo().getY(),
+                            z = target.getTo().getZ();
                     if (RayTrace.doRayTrace(BuildSpeed.FAST,
-                                    new Vec2(linked.getTo().getPitch(), linked.getTo().getYaw()), new Vec3(location.toVector()),
-                                    new AxisAlignedBB(
-                                                    x - hitbox, y - 0.1f, z - hitbox,
-                                                    x + hitbox,y + 1.9f, z + hitbox
-                                    ), speed + 0.4)) {
+                            new Vec2(linked.getTo().getPitch(), linked.getTo().getYaw()), new Vec3(location.toVector()),
+                            new AxisAlignedBB(
+                                    x - hitbox, y - 0.1f, z - hitbox,
+                                    x + hitbox, y + 1.9f, z + hitbox
+                            ), speed + 0.4)) {
                         { // boom!
                             this.destroyed = true;
                             Bukkit.getScheduler().runTask(MX.getInstance(), () -> {
@@ -85,7 +85,7 @@ public class Spell implements FunThing {
                             location.getWorld().spawnParticle(explosion, location, 1, 0, 0, 0, 0);
                             if (potionEffect != null)
                                 Bukkit.getScheduler().runTask(MX.getInstance(),
-                                                () -> target.getPlayer().addPotionEffect(potionEffect));
+                                        () -> target.getPlayer().addPotionEffect(potionEffect));
                             break;
                         }
                     }
@@ -94,19 +94,19 @@ public class Spell implements FunThing {
         }
         { // bound block
             double x = location.getX(),
-                            y = location.getY(),
-                            z = location.getZ();
+                    y = location.getY(),
+                    z = location.getZ();
 
             for (int dx = -1; dx <= 1; dx++) {
                 for (int dy = -1; dy <= 1; dy++) {
                     for (int dz = -1; dz <= 1; dz++) {
                         final Block block = getBlockAsync(
-                                        new Location(
-                                                        this.linked.getPlayer().getWorld(),
-                                                        x + (dx * 0.3),
-                                                        y + (dy * 0.3),
-                                                        z + (dz * 0.3)
-                                        )
+                                new Location(
+                                        this.linked.getPlayer().getWorld(),
+                                        x + (dx * 0.3),
+                                        y + (dy * 0.3),
+                                        z + (dz * 0.3)
+                                )
                         );
                         if (block == null) continue;
                         final Material material = block.getType();

@@ -33,6 +33,40 @@ public class LatencyHandler extends PacketAdapter {
         );
     }
 
+    public static void startChecking(PlayerProfile protocol) {
+        protocol.transactionId = -1939;
+        protocol.transactionBoot = false;
+        sendTransaction(protocol, protocol.transactionId);
+    }
+
+    public static void sendTransaction(PlayerProfile protocol, short id) {
+
+        PacketContainer packet = new PacketContainer(
+                (ProtocolLibrary.getProtocolManager().getMinecraftVersion().compareTo(new MinecraftVersion("1.17")) >= 0)
+                        ? PacketType.Play.Server.PING
+                        : (ProtocolLibrary.getProtocolManager().getMinecraftVersion().compareTo(new MinecraftVersion("1.12")) >= 0)
+                        ? PacketType.Play.Server.TRANSACTION
+                        : PacketType.Play.Server.KEEP_ALIVE
+        );
+
+
+        if (!packet.getShorts().getFields().isEmpty()) {
+            packet.getShorts().write(0, id);
+            if (packet.getType().equals(PacketType.Play.Server.TRANSACTION)) {
+                packet.getIntegers().write(0, 0);
+                packet.getBooleans().write(0, false);
+            }
+        } else if (!packet.getIntegers().getFields().isEmpty()) {
+            packet.getIntegers().write(0, (int) id);
+        } else if (!packet.getLongs().getFields().isEmpty()) {
+            packet.getLongs().write(0, (long) id);
+        } else return;
+
+        ProtocolLibrary.getProtocolManager().sendServerPacket(protocol.getPlayer(), packet);
+        protocol.transactionId--;
+        if (protocol.transactionId < -1945)
+            protocol.transactionId = -1939;
+    }
 
     @Override
     public void onPacketReceiving(PacketEvent event) {
@@ -71,40 +105,5 @@ public class LatencyHandler extends PacketAdapter {
         }
         protocol.transactionSentKeep = true;
         protocol.transactionTime = System.currentTimeMillis();
-    }
-
-    public static void startChecking(PlayerProfile protocol) {
-        protocol.transactionId = -1939;
-        protocol.transactionBoot = false;
-        sendTransaction(protocol, protocol.transactionId);
-    }
-
-    public static void sendTransaction(PlayerProfile protocol, short id) {
-
-        PacketContainer packet = new PacketContainer(
-                (ProtocolLibrary.getProtocolManager().getMinecraftVersion().compareTo(new MinecraftVersion("1.17")) >= 0)
-                        ? PacketType.Play.Server.PING
-                        : (ProtocolLibrary.getProtocolManager().getMinecraftVersion().compareTo(new MinecraftVersion("1.12")) >= 0)
-                        ? PacketType.Play.Server.TRANSACTION
-                        : PacketType.Play.Server.KEEP_ALIVE
-        );
-
-
-        if (!packet.getShorts().getFields().isEmpty()) {
-            packet.getShorts().write(0, id);
-            if (packet.getType().equals(PacketType.Play.Server.TRANSACTION)) {
-                packet.getIntegers().write(0, 0);
-                packet.getBooleans().write(0, false);
-            }
-        } else if (!packet.getIntegers().getFields().isEmpty()) {
-            packet.getIntegers().write(0, (int) id);
-        } else if (!packet.getLongs().getFields().isEmpty()) {
-            packet.getLongs().write(0, (long) id);
-        } else return;
-
-        ProtocolLibrary.getProtocolManager().sendServerPacket(protocol.getPlayer(), packet);
-        protocol.transactionId--;
-        if (protocol.transactionId < -1945)
-            protocol.transactionId = -1939;
     }
 }

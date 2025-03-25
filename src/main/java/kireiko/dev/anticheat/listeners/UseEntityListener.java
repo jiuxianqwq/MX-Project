@@ -19,10 +19,12 @@ import java.util.Collections;
 public class UseEntityListener extends PacketAdapter {
 
     private static final boolean modern = ProtocolLibrary.getProtocolManager().getMinecraftVersion()
-                    .compareTo(new MinecraftVersion("1.13")) >= 0;
+            .compareTo(new MinecraftVersion("1.13")) >= 0;
+
     public UseEntityListener() {
         super(MX.getInstance(), ListenerPriority.HIGHEST, Collections.singletonList(PacketType.Play.Client.USE_ENTITY), ListenerOptions.ASYNC);
     }
+
     @SneakyThrows
     @Override
     public void onPacketReceiving(PacketEvent event) {
@@ -38,14 +40,14 @@ public class UseEntityListener extends PacketAdapter {
             MX.blockedPerMinuteCount++;
         }
         boolean attack = !packet.getEntityUseActions().getValues().isEmpty() ?
-                        packet.getEntityUseActions().read(0).toString().equals("ATTACK")
-                        : packet.getEnumEntityUseActions().read(0).getAction().equals(
-                        EnumWrappers.EntityUseAction.ATTACK);
+                packet.getEntityUseActions().read(0).toString().equals("ATTACK")
+                : packet.getEnumEntityUseActions().read(0).getAction().equals(
+                EnumWrappers.EntityUseAction.ATTACK);
         if (packet.getIntegers().getValues().isEmpty()) return;
         int entityId = packet.getIntegers().read(0);
         Entity entity = (modern) ? AsyncEntityFetcher.getEntityFromIDAsync(event.getPlayer().getWorld(), entityId).get()
-                        : ProtocolLibrary.getProtocolManager().
-                        getEntityFromID(event.getPlayer().getWorld(), entityId);
+                : ProtocolLibrary.getProtocolManager().
+                getEntityFromID(event.getPlayer().getWorld(), entityId);
         UseEntityEvent e = new UseEntityEvent(entity, attack, entityId, false);
         profile.run(e);
         if (e.isCancelled()) {

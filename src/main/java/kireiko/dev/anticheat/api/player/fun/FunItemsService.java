@@ -13,7 +13,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class FunItemsService {
     public static void give(final Player player) {
         final boolean modern = ProtocolLibrary.getProtocolManager().getMinecraftVersion()
-                        .compareTo(new MinecraftVersion("1.13")) >= 0.0;
+                .compareTo(new MinecraftVersion("1.13")) >= 0.0;
         { // hook
             final ItemStack rod = new ItemStack(Material.FISHING_ROD);
             final ItemMeta meta = rod.getItemMeta();

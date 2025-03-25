@@ -21,20 +21,21 @@ import java.util.Arrays;
 public class RawMovementListener extends PacketAdapter {
     public RawMovementListener() {
         super(
-                        MX.getInstance(),
-                        ListenerPriority.LOWEST,
-                        Arrays.asList(
-                                        PacketType.Play.Client.POSITION,
-                                        PacketType.Play.Client.POSITION_LOOK,
-                                        PacketType.Play.Client.LOOK,
-                                        (ProtocolLibrary.getProtocolManager().getMinecraftVersion().compareTo(
-                                                        new MinecraftVersion("1.17")) >= 0)
-                                                        ? PacketType.Play.Client.GROUND
-                                                        : PacketType.Play.Client.FLYING
-                        ),
-                        ListenerOptions.ASYNC
+                MX.getInstance(),
+                ListenerPriority.LOWEST,
+                Arrays.asList(
+                        PacketType.Play.Client.POSITION,
+                        PacketType.Play.Client.POSITION_LOOK,
+                        PacketType.Play.Client.LOOK,
+                        (ProtocolLibrary.getProtocolManager().getMinecraftVersion().compareTo(
+                                new MinecraftVersion("1.17")) >= 0)
+                                ? PacketType.Play.Client.GROUND
+                                : PacketType.Play.Client.FLYING
+                ),
+                ListenerOptions.ASYNC
         );
     }
+
     @Override
     public void onPacketReceiving(PacketEvent event) {
         final Player player = event.getPlayer();
@@ -54,15 +55,19 @@ public class RawMovementListener extends PacketAdapter {
             if (r == null) return;
             double[] v = new double[]{r.getX(), r.getY(), r.getZ()};
             for (Double check : v)
-                if (check.isNaN() || check.isInfinite() || Math.abs(check) > 3E8) { return;
-            }
-            l.setX(r.getX()); l.setY(r.getY()); l.setZ(r.getZ());
+                if (check.isNaN() || check.isInfinite() || Math.abs(check) > 3E8) {
+                    return;
+                }
+            l.setX(r.getX());
+            l.setY(r.getY());
+            l.setZ(r.getZ());
         }
         l.setWorld(ProtocolLib.getWorld(player));
         if (hasRotation) {
             for (Float check : Arrays.asList(packet.getFloat().read(0), packet.getFloat().read(1)))
-                if (check.isNaN() || check.isInfinite() || Math.abs(check) > 3E8) { return;
-            }
+                if (check.isNaN() || check.isInfinite() || Math.abs(check) > 3E8) {
+                    return;
+                }
             l.setYaw(packet.getFloat().read(0));
             l.setPitch(packet.getFloat().read(1));
         }

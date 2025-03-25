@@ -23,6 +23,7 @@ public class PhantomWorld {
             e.printStackTrace();
         }
     }
+
     public static void setLocalTime(Player player, long time) {
         try {
             PacketContainer timePacket = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.UPDATE_TIME);
@@ -33,6 +34,7 @@ public class PhantomWorld {
             e.printStackTrace();
         }
     }
+
     public static void setLocalHealthAndHunger(Player player, float hp, int hunger) {
         try {
             PacketContainer healthPacket = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.UPDATE_HEALTH);

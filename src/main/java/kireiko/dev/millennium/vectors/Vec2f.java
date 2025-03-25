@@ -6,10 +6,12 @@ import lombok.Data;
 public class Vec2f {
 
     private float x, y;
+
     public Vec2f(float x, float y) {
         this.x = x;
         this.y = y;
     }
+
     public Vec2f(Number x, Number y) {
         this.x = x.floatValue();
         this.y = y.floatValue();

@@ -16,6 +16,7 @@ Draw a circle to ArrayList
 @Data
 public class Circle {
     private final List<Vec2> vectors;
+
     public Circle() {
         this.vectors = new ArrayList<>();
     }

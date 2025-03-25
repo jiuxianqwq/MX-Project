@@ -16,11 +16,13 @@ public class PlayerContainer {
 
     @Getter
     private static final Map<UUID, PlayerProfile> uuidPlayerProfileMap = new ConcurrentHashMap<>();
+
     public static void init(Player player) {
         PlayerProfile profile = new PlayerProfile(player);
         uuidPlayerProfileMap.put(player.getUniqueId(), profile);
         profile.initChecks();
     }
+
     public static void unload(Player player) {
         PlayerProfile profile = uuidPlayerProfileMap.get(player.getUniqueId());
         if (!profile.getLogs().isEmpty()) {

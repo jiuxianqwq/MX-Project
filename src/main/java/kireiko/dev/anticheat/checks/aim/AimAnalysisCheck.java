@@ -5,12 +5,12 @@ import kireiko.dev.anticheat.api.events.RotationEvent;
 import kireiko.dev.anticheat.api.events.UseEntityEvent;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
 import kireiko.dev.anticheat.api.player.SensitivityProcessor;
-import kireiko.dev.anticheat.checks.aim.heuristic.AimConstant;
-import kireiko.dev.anticheat.checks.aim.heuristic.HeuristicComponent;
 import kireiko.dev.millennium.math.Statistics;
 import kireiko.dev.millennium.vectors.Vec2f;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class AimAnalysisCheck implements PacketCheckHandler {
@@ -18,6 +18,7 @@ public class AimAnalysisCheck implements PacketCheckHandler {
     private final PlayerProfile profile;
     private final List<Vec2f> rawRotations;
     private long lastAttack;
+
     public AimAnalysisCheck(PlayerProfile profile) {
         this.profile = profile;
         this.rawRotations = new CopyOnWriteArrayList<>();
@@ -25,6 +26,7 @@ public class AimAnalysisCheck implements PacketCheckHandler {
         this.buffer = new CopyOnWriteArrayList<>();
         for (int i = 0; i < 16; i++) this.buffer.add(0.0f);
     }
+
     @Override
     public void event(Object o) {
         if (o instanceof RotationEvent) {
@@ -68,7 +70,7 @@ public class AimAnalysisCheck implements PacketCheckHandler {
                 final List<Double> outliers5 = Statistics.getZScoreOutliers(resultDeviation, 0.5f);
                 final float distinctRank = (float) resultDistinct / 60;
                 { // linear
-                    if (outliers5.isEmpty() || outliers5.size() == 1 && Math.abs(outliers5.get(0)) > 10 &&  Math.abs(outliers5.get(0)) < 100) {
+                    if (outliers5.isEmpty() || outliers5.size() == 1 && Math.abs(outliers5.get(0)) > 10 && Math.abs(outliers5.get(0)) < 100) {
                         this.profile.punish("Aim", "Linear", "[Analysis] Invalid outliers " + Arrays.toString(outliers5.toArray()), 3.0f);
                     }
                 }
@@ -100,7 +102,7 @@ public class AimAnalysisCheck implements PacketCheckHandler {
                     profile.debug("&7Aim Incorrect distribution: " + this.buffer.get(0));
                     if (this.buffer.get(0) > 3.2f) {
                         this.profile.punish("Aim", "Distribution", "[Analysis] Incorrect distribution [" + distinctX + ", "
-                                        + pearson + ", " + max + ", " + spikes + "]", 2.0f);
+                                + pearson + ", " + max + ", " + spikes + "]", 2.0f);
                         this.buffer.set(0, 2.5f);
                     }
                 } else this.increaseBuffer(0, -0.5f);
@@ -114,6 +116,7 @@ public class AimAnalysisCheck implements PacketCheckHandler {
         float r = this.buffer.get(index) + v;
         this.buffer.set(index, (r < 0) ? 0 : r);
     }
+
     private void mulBuffer(int index, float v) {
         float r = this.buffer.get(index) * v;
         this.buffer.set(index, (r < 0) ? 0 : r);

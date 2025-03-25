@@ -10,6 +10,10 @@ public class OptifineMath implements ClientMath {
         }
     }
 
+    public static float roundToFloat(double d) {
+        return (float) ((double) Math.round(d * 1.0E8D) / 1.0E8D);
+    }
+
     @Override
     public float sin(float value) {
         return SIN_TABLE_FAST[(int) (value * radToIndex) & 4095];
@@ -18,9 +22,5 @@ public class OptifineMath implements ClientMath {
     @Override
     public float cos(float value) {
         return SIN_TABLE_FAST[(int) (value * radToIndex + 1024.0F) & 4095];
-    }
-
-    public static float roundToFloat(double d) {
-        return (float) ((double) Math.round(d * 1.0E8D) / 1.0E8D);
     }
 }

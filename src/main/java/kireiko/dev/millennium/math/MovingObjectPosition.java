@@ -2,30 +2,28 @@ package kireiko.dev.millennium.math;
 
 import kireiko.dev.millennium.vectors.Vec3;
 
-public class MovingObjectPosition
-{
-    private BlockPos blockPos;
-
-    /** What type of ray trace hit was this? 0 = block, 1 = entity */
+public class MovingObjectPosition {
+    /**
+     * What type of ray trace hit was this? 0 = block, 1 = entity
+     */
     public MovingObjectType typeOfHit;
     public EnumFacing sideHit;
-
-    /** The vector position of the hit */
+    /**
+     * The vector position of the hit
+     */
     public Vec3 hitVec;
+    private BlockPos blockPos;
 
 
-    public MovingObjectPosition(Vec3 hitVecIn, EnumFacing facing, BlockPos blockPosIn)
-    {
+    public MovingObjectPosition(Vec3 hitVecIn, EnumFacing facing, BlockPos blockPosIn) {
         this(MovingObjectType.BLOCK, hitVecIn, facing, blockPosIn);
     }
 
-    public MovingObjectPosition(Vec3 vec3, EnumFacing facing)
-    {
+    public MovingObjectPosition(Vec3 vec3, EnumFacing facing) {
         this(MovingObjectType.BLOCK, vec3, facing, BlockPos.ORIGIN);
     }
 
-    public MovingObjectPosition(MovingObjectType typeOfHitIn, Vec3 hitVecIn, EnumFacing sideHitIn, BlockPos blockPosIn)
-    {
+    public MovingObjectPosition(MovingObjectType typeOfHitIn, Vec3 hitVecIn, EnumFacing sideHitIn, BlockPos blockPosIn) {
         this.typeOfHit = typeOfHitIn;
         this.blockPos = blockPosIn;
         this.sideHit = sideHitIn;
@@ -39,24 +37,20 @@ public class MovingObjectPosition
 //        this.hitVec = hitVecIn;
 //    }
 
-    public MovingObjectPosition(Vec3 hitVecIn)
-    {
+    public MovingObjectPosition(Vec3 hitVecIn) {
         this.typeOfHit = MovingObjectType.ENTITY;
         this.hitVec = hitVecIn;
     }
 
-    public BlockPos getBlockPos()
-    {
+    public BlockPos getBlockPos() {
         return this.blockPos;
     }
 
-    public String toString()
-    {
+    public String toString() {
         return "HitResult{type=" + this.typeOfHit + ", blockpos=" + this.blockPos + ", f=" + this.sideHit + ", pos=" + this.hitVec + '}';
     }
 
-    public static enum MovingObjectType
-    {
+    public static enum MovingObjectType {
         MISS,
         BLOCK,
         ENTITY;

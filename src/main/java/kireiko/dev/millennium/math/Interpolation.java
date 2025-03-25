@@ -5,12 +5,6 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class Interpolation {
 
-    public enum Ease {
-        IN, OUT, IN_OUT
-    }
-    public enum Type {
-        LINEAR, SINE, QUAD, CUBIC, QUART, QUINT, EXPO, CIRC, BACK, BOUNCE, ELASTIC
-    }
     public static double interpolate(double from, double to, double percent, Type type, Ease ease) {
         switch (type) {
             case SINE:
@@ -251,5 +245,13 @@ public class Interpolation {
                 break;
         }
         return from + (to - from) * percent;
+    }
+
+    public enum Ease {
+        IN, OUT, IN_OUT
+    }
+
+    public enum Type {
+        LINEAR, SINE, QUAD, CUBIC, QUART, QUINT, EXPO, CIRC, BACK, BOUNCE, ELASTIC
     }
 }

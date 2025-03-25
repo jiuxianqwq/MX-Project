@@ -18,7 +18,7 @@ public final class Motion {
     }
 
     /**
-     *  Set an initial value for our base motion.
+     * Set an initial value for our base motion.
      */
     public Motion(final double x, final double y, final double z) {
         this.x = new MotionValue(x);
@@ -27,7 +27,7 @@ public final class Motion {
     }
 
     /**
-     *  Set an initial value for our base motion.
+     * Set an initial value for our base motion.
      */
     public Motion(final MotionValue x, final MotionValue y, final MotionValue z) {
         this.x = new MotionValue(x.get());

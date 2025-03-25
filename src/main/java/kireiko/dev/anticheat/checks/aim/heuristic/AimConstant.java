@@ -5,12 +5,11 @@ import kireiko.dev.anticheat.checks.aim.AimHeuristicCheck;
 import kireiko.dev.millennium.math.Statistics;
 
 public final class AimConstant implements HeuristicComponent {
-    private float lastDeltaYaw = 0.0f, lastDeltaPitch = 0.0f;
-    private float buffer = 0, buffer2 = 0;
-
     private static final double MODULO_THRESHOLD = 90F;
     private static final double LINEAR_THRESHOLD = 0.1F;
     private final AimHeuristicCheck check;
+    private float lastDeltaYaw = 0.0f, lastDeltaPitch = 0.0f;
+    private float buffer = 0, buffer2 = 0;
 
     public AimConstant(final AimHeuristicCheck check) {
         this.check = check;
@@ -21,8 +20,8 @@ public final class AimConstant implements HeuristicComponent {
         final float deltaYaw = rotationUpdate.getAbsDelta().getX();
         final float deltaPitch = rotationUpdate.getAbsDelta().getY();
         { // type 1
-            final long expandedPitch = (long)(Statistics.EXPANDER * deltaPitch);
-            final long expandedLastPitch = (long)(Statistics.EXPANDER * lastDeltaPitch);
+            final long expandedPitch = (long) (Statistics.EXPANDER * deltaPitch);
+            final long expandedLastPitch = (long) (Statistics.EXPANDER * lastDeltaPitch);
             final long gcd = Statistics.getGcd(expandedPitch, expandedLastPitch);
             final boolean sensitivityIsValid = check.getProfile().calculateSensitivity() > 5;
             final boolean validAngles = deltaYaw > 0.25f && deltaPitch > 0.25f && deltaPitch < 20.0f && deltaYaw < 20.0f;

@@ -18,8 +18,9 @@ import java.util.Set;
 @UtilityClass
 public class AnimatedPunishService {
     private static final List<PlayerProfile> punished
-                    = new ArrayList<>();
+            = new ArrayList<>();
     private static List<Object[]> endAnim = new ArrayList<>();
+
     public static void punish(PlayerProfile profile, Pair<String, String> bane) {
         profile.setBanAnimPositions(new Pair<>(profile.getTo().clone(), profile.getTo().clone()));
         profile.setBanAnimInfo(bane);
@@ -64,6 +65,7 @@ public class AnimatedPunishService {
             punished.remove(profile);
         rm.clear();
     }
+
     private static void outAnim() {
         // animation after kick/ban
         List<Object[]> endAnimCopy = new ArrayList<>(endAnim); // iteration-safe
@@ -79,8 +81,8 @@ public class AnimatedPunishService {
                     double angle = Math.toRadians(i);
                     for (double y = -7; y < 4; y++) {
                         p(w, new Location(w, l.getX() + -Math.sin(angle) * d,
-                                                        l.getY() + y, l.getZ() + Math.cos(angle) * d),
-                                        Particle.CRIT_MAGIC, 1);
+                                        l.getY() + y, l.getZ() + Math.cos(angle) * d),
+                                Particle.CRIT_MAGIC, 1);
                     }
                 }
                 object[1] = ((int) object[1]) + 4;
@@ -122,8 +124,9 @@ public class AnimatedPunishService {
             }
         }
         Bukkit.getScheduler().runTask(MX.getInstance(),
-                        () -> iPlayer.getPlayer().teleport(l));
+                () -> iPlayer.getPlayer().teleport(l));
     }
+
     private static void p(World w, Location l, Particle p, int c) {
         // thread-safe
         Bukkit.getScheduler().runTask(MX.getInstance(), () -> w.spawnParticle(p, l, c));
@@ -132,7 +135,7 @@ public class AnimatedPunishService {
     private static void p2(World w, Location l, Particle p) {
         // thread-safe
         Bukkit.getScheduler().runTask(MX.getInstance(),
-                        () -> w.spawnParticle(p, l, 1, 0, 0, 0, 0));
+                () -> w.spawnParticle(p, l, 1, 0, 0, 0, 0));
     }
 
 
