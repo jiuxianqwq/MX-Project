@@ -25,6 +25,7 @@ public final class AimBasicCheck implements HeuristicComponent {
 
     @Override
     public void process(final RotationEvent event) {
+        if (check.getProfile().ignoreCinematic()) return;
         this.rawRotations.add(new Vec2(event.getTo().getX(), event.getTo().getY()));
         if ((event.getDelta().getY() > 1.5f || event.getDelta().getX() > 3.0f)
                         && (check.getProfile().getTo().getPitch() == 0
