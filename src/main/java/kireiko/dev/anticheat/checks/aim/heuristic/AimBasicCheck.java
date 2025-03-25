@@ -85,9 +85,9 @@ public final class AimBasicCheck implements HeuristicComponent {
             }
             final int sens = check.getProfile().calculateSensitivity();
             if (sens > 65) {
-                if (robotizedAmount > 7) addNewPunish("heuristic(sync)", 125);
+                if (robotizedAmount > 8) addNewPunish("heuristic(sync)", 125);
                 if (aggressiveAim > 8) addNewPunish("heuristic(aggressive)", 50);
-                if (machineKnownMovement > 5) addNewPunish("heuristic(aim)", 100);
+                if (machineKnownMovement > 7) addNewPunish("heuristic(aim)", 100);
                 if (constantRotations > 3) addNewPunish("heuristic(constant)", 60);
             } else {
                 if (machineKnownMovement > 8) addNewPunish("heuristic(aim)", 100);

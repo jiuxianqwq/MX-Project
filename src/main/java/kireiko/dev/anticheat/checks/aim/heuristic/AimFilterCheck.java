@@ -41,15 +41,15 @@ public final class AimFilterCheck implements HeuristicComponent {
                 final List<Float> linearPredict = predict(a, b, Interpolation.Type.LINEAR, Interpolation.Ease.IN_OUT);
                 final List<Float> jiffA = Statistics.getJiffDelta(stack, 2), jiffB = Statistics.getJiffDelta(linearPredict, 2);
                 final double r = Math.abs(Statistics.getRSquared(jiffA, jiffB));
-                if (r > 1.2) {
+                if (r > 1.0) {
                     buffer = 0;
                 } else {
-                    buffer += (r < 0.4) ? 2.0f : (r < 0.9) ? 1.25f : -0.25f;
+                    buffer += (r < 0.4) ? 2.0f : (r < 0.7) ? 1.0f : -0.5f;
                     profile.debug("&7Aim A/B: " + buffer + " (r: " + r + ")");
                 }
                 if (buffer < 0) {
                     buffer = 0;
-                } else if (buffer > 8.5) {
+                } else if (buffer >= 9 && r < 0.3) {
                     profile.punish("Aim", "A/B", "Rate: " + Simplification.scaleVal((1.0 - r), 2) + " [Machine-like rotations]", 0.0f);
                     profile.setAttackBlockToTime(System.currentTimeMillis() + 5000);
                     buffer = 7;
