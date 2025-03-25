@@ -109,7 +109,7 @@ public class SensitivityProcessor {
         final double finalSensitivity = sensitivityStepTwo * 200.0;
         this.finalSensitivity = finalSensitivity;
         this.sensitivitySamples.add((int) finalSensitivity);
-        if (this.sensitivitySamples.size() == 40) {
+        if (this.sensitivitySamples.size() >= 40) {
             this.sensitivity = getMode(this.sensitivitySamples);
             if (this.hasValidSensitivity()) {
                 playerProfile.debug("&7Sensitivity: " + this.sensitivity);
