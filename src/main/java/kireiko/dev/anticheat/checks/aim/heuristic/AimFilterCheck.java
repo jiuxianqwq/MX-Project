@@ -44,7 +44,7 @@ public final class AimFilterCheck implements HeuristicComponent {
                 if (r > 1.2) {
                     buffer = 0;
                 } else {
-                    buffer += (r < 0.4) ? 3.0f : (r < 0.9) ? 1.5f : -0.2f;
+                    buffer += (r < 0.4) ? 2.0f : (r < 0.9) ? 1.25f : -0.25f;
                     profile.debug("&7Aim A/B: " + buffer + " (r: " + r + ")");
                 }
                 if (buffer < 0) {
