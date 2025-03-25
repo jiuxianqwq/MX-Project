@@ -6,13 +6,11 @@ import kireiko.dev.anticheat.api.player.fun.Hook;
 import kireiko.dev.anticheat.api.player.fun.Rocket;
 import kireiko.dev.anticheat.api.player.fun.Spell;
 import kireiko.dev.anticheat.core.AsyncScheduler;
-import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-@UtilityClass
 public class FunThingsService {
 
     private static final List<FunThing> things = new CopyOnWriteArrayList<>();

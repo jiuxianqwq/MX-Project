@@ -12,11 +12,18 @@ import java.util.List;
 
 public final class AimFilterCheck implements HeuristicComponent {
     private final AimHeuristicCheck check;
-    private float buffer = 0;
     private final List<Float> stack = new ArrayList<>();
+    private float buffer = 0;
 
     public AimFilterCheck(final AimHeuristicCheck check) {
         this.check = check;
+    }
+
+    private static List<Float> predict(final float a, final float b, final Interpolation.Type type, final Interpolation.Ease ease) {
+        final List<Float> predicted = new ArrayList<>();
+        for (double d = 0.0d; d <= 1.0d; d += 0.05)
+            predicted.add((float) Interpolation.interpolate(a, b, d, type, ease));
+        return predicted;
     }
 
     @Override
@@ -50,12 +57,5 @@ public final class AimFilterCheck implements HeuristicComponent {
             }
             stack.clear();
         }
-    }
-
-    private static List<Float> predict(final float a, final float b, final Interpolation.Type type, final Interpolation.Ease ease) {
-        final List<Float> predicted = new ArrayList<>();
-        for (double d = 0.0d; d <= 1.0d; d += 0.05)
-            predicted.add((float) Interpolation.interpolate(a, b, d, type, ease));
-        return predicted;
     }
 }

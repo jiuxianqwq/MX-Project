@@ -1,12 +1,10 @@
 package kireiko.dev.anticheat.api;
 
 import lombok.Getter;
-import lombok.experimental.UtilityClass;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@UtilityClass
 public class CheckPacketRegister {
 
     @Getter

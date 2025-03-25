@@ -1,8 +1,5 @@
 package kireiko.dev.millennium.math;
 
-import lombok.experimental.UtilityClass;
-
-@UtilityClass
 public class Interpolation {
 
     public static double interpolate(double from, double to, double percent, Type type, Ease ease) {

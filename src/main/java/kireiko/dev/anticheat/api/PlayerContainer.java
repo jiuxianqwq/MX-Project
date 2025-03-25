@@ -3,7 +3,6 @@ package kireiko.dev.anticheat.api;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
 import kireiko.dev.anticheat.utils.LogUtils;
 import lombok.Getter;
-import lombok.experimental.UtilityClass;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,7 +10,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-@UtilityClass
 public class PlayerContainer {
 
     @Getter

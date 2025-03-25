@@ -2,7 +2,6 @@ package kireiko.dev.anticheat.utils;
 
 import kireiko.dev.anticheat.api.PlayerContainer;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
-import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -10,7 +9,6 @@ import org.bukkit.entity.Player;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-@UtilityClass
 public class MessageUtils {
     public static void sendMessagesToPlayers(String permission, String message) {
         for (Player player : Bukkit.getOnlinePlayers()) {

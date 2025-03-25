@@ -1,8 +1,5 @@
 package kireiko.dev.millennium.math;
 
-import lombok.experimental.UtilityClass;
-
-@UtilityClass
 public class GeneralMath {
     public static float sin(float value, BuildSpeed s) {
         return (s.equals(BuildSpeed.NORMAL))

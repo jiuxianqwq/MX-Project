@@ -3,15 +3,13 @@ package kireiko.dev.anticheat.utils;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.UtilityClass;
 import org.bukkit.ChatColor;
 
 import java.util.List;
 
-@UtilityClass
 public class GraphUtil {
 
-    public GraphResult getGraph(List<Double> values) {
+    public static GraphResult getGraph(List<Double> values) {
         StringBuilder graph = new StringBuilder();
 
         double largest = 0;
@@ -39,7 +37,7 @@ public class GraphUtil {
                 }
             }
 
-            graph.append(sb.toString());
+            graph.append(sb);
         }
 
         return new GraphResult(graph.toString(), positives, negatives);
@@ -48,8 +46,7 @@ public class GraphUtil {
     @Getter
     @Setter
     @RequiredArgsConstructor
-
-    public class GraphResult {
+    public static class GraphResult {
         private final String graph;
         private final int positives, negatives;
     }

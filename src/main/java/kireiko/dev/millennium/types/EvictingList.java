@@ -5,9 +5,9 @@ import lombok.Getter;
 import java.util.Collection;
 import java.util.LinkedList;
 
+@Getter
 public final class EvictingList<T> extends LinkedList<T> {
 
-    @Getter
     private final int maxSize;
 
     public EvictingList(final int maxSize) {

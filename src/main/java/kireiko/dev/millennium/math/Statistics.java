@@ -2,13 +2,11 @@ package kireiko.dev.millennium.math;
 
 import com.google.common.collect.Lists;
 import kireiko.dev.millennium.vectors.Pair;
-import lombok.experimental.UtilityClass;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@UtilityClass
 public class Statistics {
 
     public static final double EXPANDER = Math.pow(2, 24);
@@ -345,11 +343,6 @@ public class Statistics {
     public static double getCoefficientOfVariation(final Collection<? extends Number> data) {
         double mean = getAverage(data);
         return mean == 0 ? 0 : getStandardDeviation(data) / mean;
-    }
-
-    public double getIQR(final Collection<? extends Number> data) {
-        List<Double> sorted = data.stream().map(Number::doubleValue).sorted().collect(Collectors.toList());
-        return calculatePercentile(sorted, 75) - calculatePercentile(sorted, 25);
     }
 
     public static double getPearsonCorrelation(final List<? extends Number> x, final List<? extends Number> y) {
@@ -761,5 +754,10 @@ public class Statistics {
 
     public static double hypot(final double a, final double b) {
         return Math.sqrt(a * a + b * b);
+    }
+
+    public static double getIQR(final Collection<? extends Number> data) {
+        List<Double> sorted = data.stream().map(Number::doubleValue).sorted().collect(Collectors.toList());
+        return calculatePercentile(sorted, 75) - calculatePercentile(sorted, 25);
     }
 }
