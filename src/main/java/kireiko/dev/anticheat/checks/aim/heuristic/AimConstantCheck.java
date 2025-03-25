@@ -2,6 +2,7 @@ package kireiko.dev.anticheat.checks.aim.heuristic;
 
 import kireiko.dev.anticheat.api.events.RotationEvent;
 import kireiko.dev.anticheat.checks.aim.AimHeuristicCheck;
+import kireiko.dev.anticheat.utils.ConfigCache;
 import kireiko.dev.millennium.math.Statistics;
 
 public final class AimConstantCheck implements HeuristicComponent {
@@ -19,7 +20,7 @@ public final class AimConstantCheck implements HeuristicComponent {
     public void process(final RotationEvent rotationUpdate) {
         final float deltaYaw = rotationUpdate.getAbsDelta().getX();
         final float deltaPitch = rotationUpdate.getAbsDelta().getY();
-        if (check.getProfile().ignoreCinematic()) return;
+        if (ConfigCache.IGNORE_CINEMATIC) return;
         { // type 1
             final long expandedPitch = (long) (Statistics.EXPANDER * deltaPitch);
             final long expandedLastPitch = (long) (Statistics.EXPANDER * lastDeltaPitch);
