@@ -28,16 +28,12 @@ public final class MX extends JavaPlugin {
             name = "MX",
             permissionHead = "mx.",
             permission = permissionHead + "admin";
-
-    @Getter
-    private static MX instance;
-
     public static int bannedPerMinuteCount = 0;
     public static List<Integer> bannedPerMinuteList = new EvictingList<>(60);
-
     public static int blockedPerMinuteCount = 0;
     public static List<Integer> blockedPerMinuteList = new EvictingList<>(60);
-
+    @Getter
+    private static MX instance;
 
     @Override
     public void onEnable() {

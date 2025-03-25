@@ -23,6 +23,7 @@ public class MessageUtils {
             }
         }
     }
+
     public static void sendMessagesToPlayersNative(String permission, String permission2, String message) {
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player.hasPermission(permission) || player.hasPermission(permission2)) {
@@ -30,9 +31,11 @@ public class MessageUtils {
             }
         }
     }
+
     public static String wrapColors(String v) {
         return ChatColor.translateAlternateColorCodes('&', v);
     }
+
     public static String getDate() {
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss dd:MM:yyyy");

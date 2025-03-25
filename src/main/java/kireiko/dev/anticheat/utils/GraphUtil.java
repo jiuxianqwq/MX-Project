@@ -11,15 +11,6 @@ import java.util.List;
 @UtilityClass
 public class GraphUtil {
 
-    @Getter
-    @Setter
-    @RequiredArgsConstructor
-
-    public class GraphResult {
-        private final String graph;
-        private final int positives, negatives;
-    }
-
     public GraphResult getGraph(List<Double> values) {
         StringBuilder graph = new StringBuilder();
 
@@ -52,5 +43,14 @@ public class GraphUtil {
         }
 
         return new GraphResult(graph.toString(), positives, negatives);
+    }
+
+    @Getter
+    @Setter
+    @RequiredArgsConstructor
+
+    public class GraphResult {
+        private final String graph;
+        private final int positives, negatives;
     }
 }

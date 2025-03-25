@@ -38,6 +38,19 @@ public class AxisAlignedBB {
     }
 
     /**
+     * returns an AABB with corners x1, y1, z1 and x2, y2, z2
+     */
+    public static AxisAlignedBB fromBounds(double p_178781_0_, double p_178781_2_, double p_178781_4_, double p_178781_6_, double p_178781_8_, double p_178781_10_) {
+        double var12 = Math.min(p_178781_0_, p_178781_6_);
+        double var14 = Math.min(p_178781_2_, p_178781_8_);
+        double var16 = Math.min(p_178781_4_, p_178781_10_);
+        double var18 = Math.max(p_178781_0_, p_178781_6_);
+        double var20 = Math.max(p_178781_2_, p_178781_8_);
+        double var22 = Math.max(p_178781_4_, p_178781_10_);
+        return new AxisAlignedBB(var12, var14, var16, var18, var20, var22);
+    }
+
+    /**
      * Adds the coordinates to the bounding box extending it if the point lies outside the current ranges. Args: x, y, z
      */
     public AxisAlignedBB addCoord(double x, double y, double z) {
@@ -91,19 +104,6 @@ public class AxisAlignedBB {
         double var10 = Math.max(this.maxY, other.maxY);
         double var12 = Math.max(this.maxZ, other.maxZ);
         return new AxisAlignedBB(var2, var4, var6, var8, var10, var12);
-    }
-
-    /**
-     * returns an AABB with corners x1, y1, z1 and x2, y2, z2
-     */
-    public static AxisAlignedBB fromBounds(double p_178781_0_, double p_178781_2_, double p_178781_4_, double p_178781_6_, double p_178781_8_, double p_178781_10_) {
-        double var12 = Math.min(p_178781_0_, p_178781_6_);
-        double var14 = Math.min(p_178781_2_, p_178781_8_);
-        double var16 = Math.min(p_178781_4_, p_178781_10_);
-        double var18 = Math.max(p_178781_0_, p_178781_6_);
-        double var20 = Math.max(p_178781_2_, p_178781_8_);
-        double var22 = Math.max(p_178781_4_, p_178781_10_);
-        return new AxisAlignedBB(var12, var14, var16, var18, var20, var22);
     }
 
     /**

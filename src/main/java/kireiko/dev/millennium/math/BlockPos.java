@@ -7,16 +7,16 @@ import kireiko.dev.millennium.vectors.Vec3i;
 import java.util.Iterator;
 
 public class BlockPos extends Vec3i {
-    
+
     public static final BlockPos ORIGIN = new BlockPos(0, 0, 0);
     private static final int field_177990_b = 1 + FastMath.calculateLogBaseTwo(FastMath.roundUpToPowerOfTwo(30000000));
     private static final int field_177991_c = field_177990_b;
     private static final int field_177989_d = 64 - field_177990_b - field_177991_c;
+    private static final long field_177995_i = (1L << field_177989_d) - 1L;
     private static final int field_177987_f = field_177991_c;
     private static final int field_177988_g = field_177987_f + field_177989_d;
-    private static final long field_177994_h = (1L << field_177990_b) - 1L;
-    private static final long field_177995_i = (1L << field_177989_d) - 1L;
     private static final long field_177993_j = (1L << field_177991_c) - 1L;
+    private static final long field_177994_h = (1L << field_177990_b) - 1L;
     // private static final String __OBFID = "CL_00002334";
 
     public BlockPos(int x, int y, int z) {
@@ -34,6 +34,121 @@ public class BlockPos extends Vec3i {
 
     public BlockPos(Vec3i p_i46034_1_) {
         this(p_i46034_1_.getX(), p_i46034_1_.getY(), p_i46034_1_.getZ());
+    }
+
+    /**
+     * Create a BlockPos from a serialized long value (created by toLong)
+     */
+    public static BlockPos fromLong(long serialized) {
+        int var2 = (int) (serialized << 64 - field_177988_g - field_177990_b >> 64 - field_177990_b);
+        int var3 = (int) (serialized << 64 - field_177987_f - field_177989_d >> 64 - field_177989_d);
+        int var4 = (int) (serialized << 64 - field_177991_c >> 64 - field_177991_c);
+        return new BlockPos(var2, var3, var4);
+    }
+
+    /**
+     * Create an Iterable that returns all positions in the box specified by the given corners
+     *
+     * @param from The first corner (inclusive)
+     * @param to   the second corner (exclusive)
+     */
+    public static Iterable getAllInBox(BlockPos from, BlockPos to) {
+        final BlockPos var2 = new BlockPos(Math.min(from.getX(), to.getX()), Math.min(from.getY(), to.getY()), Math.min(from.getZ(), to.getZ()));
+        final BlockPos var3 = new BlockPos(Math.max(from.getX(), to.getX()), Math.max(from.getY(), to.getY()), Math.max(from.getZ(), to.getZ()));
+        return new Iterable() {
+            // private static final String __OBFID = "CL_00002333";
+            public Iterator iterator() {
+                return new AbstractIterator() {
+                    private BlockPos lastReturned = null;
+
+                    // private static final String __OBFID = "CL_00002332";
+                    protected BlockPos computeNext0() {
+                        if (this.lastReturned == null) {
+                            this.lastReturned = var2;
+                            return this.lastReturned;
+                        } else if (this.lastReturned.equals(var3)) {
+                            return (BlockPos) this.endOfData();
+                        } else {
+                            int var1 = this.lastReturned.getX();
+                            int var2x = this.lastReturned.getY();
+                            int var3x = this.lastReturned.getZ();
+
+                            if (var1 < var3.getX()) {
+                                ++var1;
+                            } else if (var2x < var3.getY()) {
+                                var1 = var2.getX();
+                                ++var2x;
+                            } else if (var3x < var3.getZ()) {
+                                var1 = var2.getX();
+                                var2x = var2.getY();
+                                ++var3x;
+                            }
+
+                            this.lastReturned = new BlockPos(var1, var2x, var3x);
+                            return this.lastReturned;
+                        }
+                    }
+
+                    protected Object computeNext() {
+                        return this.computeNext0();
+                    }
+                };
+            }
+        };
+    }
+
+    /**
+     * Like getAllInBox but reuses a single MutableBlockPos instead. If this method is used, the resulting BlockPos
+     * instances can only be used inside the iteration loop.
+     *
+     * @param from The first corner (inclusive)
+     * @param to   the second corner (exclusive)
+     */
+    public static Iterable getAllInBoxMutable(BlockPos from, BlockPos to) {
+        final BlockPos var2 = new BlockPos(Math.min(from.getX(), to.getX()), Math.min(from.getY(), to.getY()), Math.min(from.getZ(), to.getZ()));
+        final BlockPos var3 = new BlockPos(Math.max(from.getX(), to.getX()), Math.max(from.getY(), to.getY()), Math.max(from.getZ(), to.getZ()));
+        return new Iterable() {
+            // private static final String __OBFID = "CL_00002331";
+            public Iterator iterator() {
+                return new AbstractIterator() {
+                    private MutableBlockPos theBlockPos = null;
+
+                    // private static final String __OBFID = "CL_00002330";
+                    protected MutableBlockPos computeNext0() {
+                        if (this.theBlockPos == null) {
+                            this.theBlockPos = new MutableBlockPos(var2.getX(), var2.getY(), var2.getZ(), null);
+                            return this.theBlockPos;
+                        } else if (this.theBlockPos.equals(var3)) {
+                            return (MutableBlockPos) this.endOfData();
+                        } else {
+                            int var1 = this.theBlockPos.getX();
+                            int var2xx = this.theBlockPos.getY();
+                            int var3x = this.theBlockPos.getZ();
+
+                            if (var1 < var3.getX()) {
+                                ++var1;
+                            } else if (var2xx < var3.getY()) {
+                                var1 = var2.getX();
+                                ++var2xx;
+                            } else if (var3x < var3.getZ()) {
+                                var1 = var2.getX();
+                                var2xx = var2.getY();
+                                ++var3x;
+                            }
+
+                            this.theBlockPos.x = var1;
+                            this.theBlockPos.y = var2xx;
+                            this.theBlockPos.z = var3x;
+                            return this.theBlockPos;
+                        }
+                    }
+
+                    protected Object computeNext() {
+                        return this.computeNext0();
+                    }
+                };
+            }
+        };
     }
 
     /**
@@ -193,121 +308,6 @@ public class BlockPos extends Vec3i {
     }
 
     /**
-     * Create a BlockPos from a serialized long value (created by toLong)
-     */
-    public static BlockPos fromLong(long serialized) {
-        int var2 = (int) (serialized << 64 - field_177988_g - field_177990_b >> 64 - field_177990_b);
-        int var3 = (int) (serialized << 64 - field_177987_f - field_177989_d >> 64 - field_177989_d);
-        int var4 = (int) (serialized << 64 - field_177991_c >> 64 - field_177991_c);
-        return new BlockPos(var2, var3, var4);
-    }
-
-    /**
-     * Create an Iterable that returns all positions in the box specified by the given corners
-     *
-     * @param from The first corner (inclusive)
-     * @param to   the second corner (exclusive)
-     */
-    public static Iterable getAllInBox(BlockPos from, BlockPos to) {
-        final BlockPos var2 = new BlockPos(Math.min(from.getX(), to.getX()), Math.min(from.getY(), to.getY()), Math.min(from.getZ(), to.getZ()));
-        final BlockPos var3 = new BlockPos(Math.max(from.getX(), to.getX()), Math.max(from.getY(), to.getY()), Math.max(from.getZ(), to.getZ()));
-        return new Iterable() {
-            // private static final String __OBFID = "CL_00002333";
-            public Iterator iterator() {
-                return new AbstractIterator() {
-                    private BlockPos lastReturned = null;
-
-                    // private static final String __OBFID = "CL_00002332";
-                    protected BlockPos computeNext0() {
-                        if (this.lastReturned == null) {
-                            this.lastReturned = var2;
-                            return this.lastReturned;
-                        } else if (this.lastReturned.equals(var3)) {
-                            return (BlockPos) this.endOfData();
-                        } else {
-                            int var1 = this.lastReturned.getX();
-                            int var2x = this.lastReturned.getY();
-                            int var3x = this.lastReturned.getZ();
-
-                            if (var1 < var3.getX()) {
-                                ++var1;
-                            } else if (var2x < var3.getY()) {
-                                var1 = var2.getX();
-                                ++var2x;
-                            } else if (var3x < var3.getZ()) {
-                                var1 = var2.getX();
-                                var2x = var2.getY();
-                                ++var3x;
-                            }
-
-                            this.lastReturned = new BlockPos(var1, var2x, var3x);
-                            return this.lastReturned;
-                        }
-                    }
-
-                    protected Object computeNext() {
-                        return this.computeNext0();
-                    }
-                };
-            }
-        };
-    }
-
-    /**
-     * Like getAllInBox but reuses a single MutableBlockPos instead. If this method is used, the resulting BlockPos
-     * instances can only be used inside the iteration loop.
-     *
-     * @param from The first corner (inclusive)
-     * @param to   the second corner (exclusive)
-     */
-    public static Iterable getAllInBoxMutable(BlockPos from, BlockPos to) {
-        final BlockPos var2 = new BlockPos(Math.min(from.getX(), to.getX()), Math.min(from.getY(), to.getY()), Math.min(from.getZ(), to.getZ()));
-        final BlockPos var3 = new BlockPos(Math.max(from.getX(), to.getX()), Math.max(from.getY(), to.getY()), Math.max(from.getZ(), to.getZ()));
-        return new Iterable() {
-            // private static final String __OBFID = "CL_00002331";
-            public Iterator iterator() {
-                return new AbstractIterator() {
-                    private MutableBlockPos theBlockPos = null;
-
-                    // private static final String __OBFID = "CL_00002330";
-                    protected MutableBlockPos computeNext0() {
-                        if (this.theBlockPos == null) {
-                            this.theBlockPos = new MutableBlockPos(var2.getX(), var2.getY(), var2.getZ(), null);
-                            return this.theBlockPos;
-                        } else if (this.theBlockPos.equals(var3)) {
-                            return (MutableBlockPos) this.endOfData();
-                        } else {
-                            int var1 = this.theBlockPos.getX();
-                            int var2xx = this.theBlockPos.getY();
-                            int var3x = this.theBlockPos.getZ();
-
-                            if (var1 < var3.getX()) {
-                                ++var1;
-                            } else if (var2xx < var3.getY()) {
-                                var1 = var2.getX();
-                                ++var2xx;
-                            } else if (var3x < var3.getZ()) {
-                                var1 = var2.getX();
-                                var2xx = var2.getY();
-                                ++var3x;
-                            }
-
-                            this.theBlockPos.x = var1;
-                            this.theBlockPos.y = var2xx;
-                            this.theBlockPos.z = var3x;
-                            return this.theBlockPos;
-                        }
-                    }
-
-                    protected Object computeNext() {
-                        return this.computeNext0();
-                    }
-                };
-            }
-        };
-    }
-
-    /**
      * Calculate the cross product of this and the given Vector
      */
     public Vec3i crossProduct(Vec3i vec) {
@@ -327,6 +327,10 @@ public class BlockPos extends Vec3i {
             this.z = z_;
         }
 
+        MutableBlockPos(int p_i46025_1_, int p_i46025_2_, int p_i46025_3_, Object p_i46025_4_) {
+            this(p_i46025_1_, p_i46025_2_, p_i46025_3_);
+        }
+
         public int getX() {
             return this.x;
         }
@@ -341,10 +345,6 @@ public class BlockPos extends Vec3i {
 
         public Vec3i crossProduct(Vec3i vec) {
             return super.crossProductBP(vec);
-        }
-
-        MutableBlockPos(int p_i46025_1_, int p_i46025_2_, int p_i46025_3_, Object p_i46025_4_) {
-            this(p_i46025_1_, p_i46025_2_, p_i46025_3_);
         }
     }
 }

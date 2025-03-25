@@ -26,18 +26,19 @@ public class ProtocolTools {
             return null;
         }
     }
+
     public static boolean isFlying(PacketEvent event, Location to, Location from) {
         PacketType p = event.getPacket().getType();
         if (p.equals(PacketType.Play.Client.POSITION) && to.toVector().equals(from.toVector()))
             return true;
         else return
-        (
-        p.equals(
-        PacketType.Play.Client.FLYING)
-        ||
-        p.equals(
-        PacketType.Play.Client.GROUND)
-        );
+                (
+                        p.equals(
+                                PacketType.Play.Client.FLYING)
+                                ||
+                                p.equals(
+                                        PacketType.Play.Client.GROUND)
+                );
     }
 
     public static boolean onGroundPacketLevel(PacketEvent event) {
@@ -61,6 +62,7 @@ public class ProtocolTools {
                 || location.getX() == 8.5D
                 || location.getZ() == 8.5D;
     }
+
     public static boolean isLoadLocation(Location location) {
         return (location.getX() == 1 && location.getY() == 1 && location.getZ() == 1);
     }
@@ -71,20 +73,23 @@ public class ProtocolTools {
 
     public static boolean hasPosition(PacketType type) {
         return (type.equals(PacketType.Play.Client.POSITION)
-                        || type.equals(PacketType.Play.Client.POSITION_LOOK));
+                || type.equals(PacketType.Play.Client.POSITION_LOOK));
     }
+
     public static boolean hasRotation(PacketType type) {
         return (type.equals(PacketType.Play.Client.LOOK)
-                        || type.equals(PacketType.Play.Client.POSITION_LOOK));
+                || type.equals(PacketType.Play.Client.POSITION_LOOK));
     }
-    public enum tpFlags {
-        X, Y, Z, Y_ROT, X_ROT
-    }
+
     public static Block getBlockAsync(final Location location) {
         if (location.getWorld().isChunkLoaded(location.getBlockX() >> 4, location.getBlockZ() >> 4)) {
             return location.getWorld().getBlockAt(location);
         } else {
             return null;
         }
+    }
+
+    public enum tpFlags {
+        X, Y, Z, Y_ROT, X_ROT
     }
 }

@@ -21,11 +21,12 @@ public class AimHeuristicCheck implements PacketCheckHandler {
     @Getter
     private final PlayerProfile profile;
     private final List<Vec2> rawRotations;
+    private final Set<HeuristicComponent> components;
     private int streak = 0;
     private long lastAttack;
     private float vl = 0, vlL2 = 0;
     private String reason = "";
-    private final Set<HeuristicComponent> components;
+
     public AimHeuristicCheck(PlayerProfile profile) {
         this.profile = profile;
         this.rawRotations = new CopyOnWriteArrayList<>();
@@ -35,6 +36,7 @@ public class AimHeuristicCheck implements PacketCheckHandler {
             this.components.add(new AimConstant(this));
         }
     }
+
     @Override
     public void event(Object o) {
         if (o instanceof RotationEvent) {
@@ -42,7 +44,7 @@ public class AimHeuristicCheck implements PacketCheckHandler {
             if (System.currentTimeMillis() > this.lastAttack + 3500 || profile.ignoreCinematic()) return;
             this.rawRotations.add(new Vec2(event.getTo().getX(), event.getTo().getY()));
             if ((event.getDelta().getY() > 1.5f || event.getDelta().getX() > 3.0f)
-                            && (profile.getTo().getPitch() == 0 || profile.getTo().getPitch() % 0.01f == 0)) {
+                    && (profile.getTo().getPitch() == 0 || profile.getTo().getPitch() % 0.01f == 0)) {
                 this.profile.punish("Aim", "Randomizer", "[Heuristic] Randomizer flaw", 1.0f);
             }
             for (HeuristicComponent component : components) component.process(event);
@@ -71,9 +73,9 @@ public class AimHeuristicCheck implements PacketCheckHandler {
             double oldYawChange = Math.abs(rotations.get(0).getX() - oldYawResult);
             double yawChangeFirst = Math.abs(rotations.get(0).getX() - rotations.get(1).getX());
             int machineKnownMovement = 0,
-                            constantRotations = 0, gcd = 0, aggressivePatternI = 0,
-                            aggressivePatternD = 0, aggressivePatternI2 = 0, aggressivePatternD2 = 0,
-                            robotizedAmount = 0, aggressiveAim = 0,infinitives = 0;
+                    constantRotations = 0, gcd = 0, aggressivePatternI = 0,
+                    aggressivePatternD = 0, aggressivePatternI2 = 0, aggressivePatternD2 = 0,
+                    robotizedAmount = 0, aggressiveAim = 0, infinitives = 0;
             for (Vec2 rotation : rotations) {
                 double yawChange = Math.abs(rotation.getX() - oldYawResult);
                 double pitchChange = Math.abs(rotation.getY() - oldPitchResult);
@@ -121,7 +123,7 @@ public class AimHeuristicCheck implements PacketCheckHandler {
             if (aggressivePatternI > 3 && aggressivePatternD > 3)
                 addNewPunishL2("pattern(random)", 25);
             if (aggressivePatternI2 > 3 && aggressivePatternD2 > 3
-                            && (aggressivePatternI2 + aggressivePatternD2) > 8) {
+                    && (aggressivePatternI2 + aggressivePatternD2) > 8) {
                 streak++;
                 if (streak > 2) addNewPunish("pattern(snap)", 55);
             } else streak = 0;
@@ -142,15 +144,17 @@ public class AimHeuristicCheck implements PacketCheckHandler {
         }
         this.rawRotations.clear();
     }
+
     private void addNewPunish(String reason, float vl) {
         this.reason = reason;
         this.vl += vl;
         profile.debug("&7Aim Component: " + reason
-                        + " " + this.vl + " (+" + vl + ")");
+                + " " + this.vl + " (+" + vl + ")");
     }
+
     private void addNewPunishL2(String reason, float vl) {
         this.vlL2 += vl;
         profile.debug("&7Interpolation Component: " + reason
-                        + " " + this.vlL2 + " (+" + vl + ")");
+                + " " + this.vlL2 + " (+" + vl + ")");
     }
 }

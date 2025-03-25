@@ -20,6 +20,7 @@ public class AimStatisticsCheck implements PacketCheckHandler {
     private final List<Vec2f> rawRotations;
     private final List<Double> shannonAnalysis;
     private long lastAttack;
+
     public AimStatisticsCheck(PlayerProfile profile) {
         this.profile = profile;
         this.rawRotations = new CopyOnWriteArrayList<>();
@@ -28,6 +29,11 @@ public class AimStatisticsCheck implements PacketCheckHandler {
         this.shannonAnalysis = new CopyOnWriteArrayList<>();
         for (int i = 0; i < 16; i++) this.buffer.add(0.0f);
     }
+
+    private static double getDifference(double a, double b) {
+        return Math.abs(Math.abs(a) - Math.abs(b));
+    }
+
     @Override
     public void event(Object o) {
         if (o instanceof RotationEvent) {
@@ -82,16 +88,16 @@ public class AimStatisticsCheck implements PacketCheckHandler {
             { // Kolmogorov Smirnov Test
                 if (kTest > 7 && Math.abs(Statistics.getAverage(x)) < 13) {
                     this.increaseBuffer(2, (kTest > 100)
-                                    ? 2.0f : (kTest > 45) ? 1.25f : 0.1f);
+                            ? 2.0f : (kTest > 45) ? 1.25f : 0.1f);
                     if (kTest > 10) total++;
                     this.increaseBuffer(14, 1.0f);
                     profile.debug("&7Aim Kolmogorov Smirnov Test: " + kTest + " VL: "
-                                    + this.buffer.get(2) + " Streak: " + buffer.get(14));
+                            + this.buffer.get(2) + " Streak: " + buffer.get(14));
                     if (buffer.get(14) >= 15 && kTest > 9) {
                         this.profile.punish("Aim", "KS Test", "[Statistics] Kolmogorov Smirnov Test (Streak) " + buffer.get(14), 0.0f);
                         this.profile.setAttackBlockToTime(System.currentTimeMillis() + 4000);
                     }
-                    if (this.buffer.get(2) >= 5  && (kTest > 90 || this.buffer.get(2) >= 7)) {
+                    if (this.buffer.get(2) >= 5 && (kTest > 90 || this.buffer.get(2) >= 7)) {
                         this.profile.punish("Aim", "KS Test", "[Statistics] Kolmogorov Smirnov Test (Spikes) " + kTest, 0.0f);
                         this.profile.setAttackBlockToTime(System.currentTimeMillis() + 4000);
                         this.buffer.set(2, (this.buffer.get(2) >= 7) ? 6.5f : 4.5f);
@@ -105,9 +111,9 @@ public class AimStatisticsCheck implements PacketCheckHandler {
             if (shannonAnalysis.size() > 9) {
                 final Set<Double> uniq = new HashSet<>(shannonAnalysis);
                 final double diff =
-                getDifference(Statistics.getMin(uniq), Statistics.getMax(uniq));
+                        getDifference(Statistics.getMin(uniq), Statistics.getMax(uniq));
                 if (uniq.size() <= 5 && uniq.size() > 3 && diff < 0.38) {
-                   // this.profile.punish("Aim", "[Statistics] AimBot Entropy Heuristic " + uniq.size() + " " + diff, 3.0f);
+                    // this.profile.punish("Aim", "[Statistics] AimBot Entropy Heuristic " + uniq.size() + " " + diff, 3.0f);
                 }
                 shannonAnalysis.clear();
             }
@@ -122,7 +128,7 @@ public class AimStatisticsCheck implements PacketCheckHandler {
                 }
             }
             if (jiffPatterns > 2 && Statistics.getAverage(x) > 3.0
-                            && jiffPatterns != 6 && jiffPatterns != 12 && jiffPatterns != 4) {
+                    && jiffPatterns != 6 && jiffPatterns != 12 && jiffPatterns != 4) {
                 this.profile.punish("Aim", "Pattern", "[Statistics] AimBot pattern " + jiffPatterns, 3.0f);
             }
             //profile.getPlayer().sendMessage("j: " + Arrays.toString(jiffYaw.toArray()));
@@ -133,7 +139,7 @@ public class AimStatisticsCheck implements PacketCheckHandler {
                 if (d < -12) negative = true;
             }
             if (zFactorYaw.size() == 2 && positive && negative
-                            && Statistics.getMax(zFactorYaw) < 55) {
+                    && Statistics.getMax(zFactorYaw) < 55) {
                 this.increaseBuffer(0, 1.5f);
                 if (this.buffer.get(0) > 4)
                     total++;
@@ -160,11 +166,9 @@ public class AimStatisticsCheck implements PacketCheckHandler {
         }
         this.rawRotations.clear();
     }
+
     private void increaseBuffer(int index, float v) {
         float r = this.buffer.get(index) + v;
         this.buffer.set(index, (r < 0) ? 0 : r);
-    }
-    private static double getDifference(double a, double b) {
-        return Math.abs(Math.abs(a) - Math.abs(b));
     }
 }

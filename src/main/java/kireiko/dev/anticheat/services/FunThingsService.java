@@ -27,8 +27,8 @@ public class FunThingsService {
                 things.removeIf(thing -> {
                     thing.tick();
                     return (thing instanceof Hook && ((Hook) thing).getHoverTicks() >= 20) ||
-                                    (thing instanceof Rocket && ((Rocket) thing).isDestroyed()) ||
-                                    (thing instanceof Spell && ((Spell) thing).isDestroyed());
+                            (thing instanceof Rocket && ((Rocket) thing).isDestroyed()) ||
+                            (thing instanceof Spell && ((Spell) thing).isDestroyed());
                 });
             });
         }, 0L, 1L);

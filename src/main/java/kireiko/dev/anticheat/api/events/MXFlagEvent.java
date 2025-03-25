@@ -31,14 +31,13 @@ public class MXFlagEvent extends Event implements Cancellable {
         this.vlLimit = vlLimit;
     }
 
-
-    @Override
-    public @NotNull HandlerList getHandlers() {
+    @SuppressWarnings("unused")
+    public static HandlerList getHandlerList() {
         return handlers;
     }
 
-    @SuppressWarnings("unused")
-    public static HandlerList getHandlerList() {
+    @Override
+    public @NotNull HandlerList getHandlers() {
         return handlers;
     }
 }

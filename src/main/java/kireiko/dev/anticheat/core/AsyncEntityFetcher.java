@@ -19,7 +19,7 @@ public class AsyncEntityFetcher {
                 future.completeExceptionally(ex);
             }
         });
-        
+
         return future;
     }
 }

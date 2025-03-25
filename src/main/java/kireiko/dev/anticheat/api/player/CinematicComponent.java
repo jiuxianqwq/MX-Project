@@ -8,12 +8,11 @@ import java.util.List;
 
 public final class CinematicComponent {
 
-    private long lastSmooth = 0L, lastHighRate = 0L;
-    private double lastDeltaYaw = 0.0d, lastDeltaPitch = 0.0d;
-
     private final List<Double> yawSamples = Lists.newArrayList();
     private final List<Double> pitchSamples = Lists.newArrayList();
     private final PlayerProfile profile;
+    private long lastSmooth = 0L, lastHighRate = 0L;
+    private double lastDeltaYaw = 0.0d, lastDeltaPitch = 0.0d;
 
     public CinematicComponent(final PlayerProfile profile) {
         this.profile = profile;

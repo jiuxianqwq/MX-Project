@@ -32,7 +32,7 @@ public abstract class MXSubCommand {
      * @return permission of the subcommand
      */
     public String getPermission() {
-        return  null;
+        return null;
     }
 
     public boolean hasPermission(CommandSender sender) {

@@ -66,6 +66,7 @@ public class FastMath {
         int var2 = (int) value;
         return value < (double) var2 ? var2 - 1 : var2;
     }
+
     public static int calculateLogBaseTwo(int i) {
         return calculateLogBaseTwoDeBruijn(i) - (isPowerOfTwo(i) ? 0 : 1);
     }

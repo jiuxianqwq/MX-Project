@@ -20,6 +20,7 @@ public class Euler {
 
         return angleDiff <= Math.toRadians(radi);
     }
+
     public static double calculateTwoVectorAngleDifference(@NonNull Vec2 a, @NonNull Vec2 b) {
         double angleA = Math.atan2(a.getY(), a.getX());
         double angleB = Math.atan2(b.getY(), b.getX());
@@ -51,31 +52,24 @@ public class Euler {
         return new Vec2(wrapDegrees(yaw), clamp(pitch, -90, 90));
     }
 
-    public static float wrapDegrees(float value)
-    {
+    public static float wrapDegrees(float value) {
         float f = value % 360.0F;
 
-        if (f >= 180.0F)
-        {
+        if (f >= 180.0F) {
             f -= 360.0F;
         }
 
-        if (f < -180.0F)
-        {
+        if (f < -180.0F) {
             f += 360.0F;
         }
 
         return f;
     }
 
-    public static float clamp(float num, float min, float max)
-    {
-        if (num < min)
-        {
+    public static float clamp(float num, float min, float max) {
+        if (num < min) {
             return min;
-        }
-        else
-        {
+        } else {
             return Math.min(num, max);
         }
     }

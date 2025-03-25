@@ -38,16 +38,18 @@ public class Statistics {
     public static double getMin(final Collection<? extends Number> collection) {
         double min = Double.MAX_VALUE;
 
-        for (final Number number : collection){
+        for (final Number number : collection) {
             min = Math.min(min, number.doubleValue());
         }
 
         return min;
     }
+
     public static float getGCD(double s) {
         float f1 = (float) ((float) s * 0.6 + 0.2);
         return f1 * f1 * f1 * 8.0F;
     }
+
     public static float getGCDValue(double s) {
         return getGCD(s) * 0.15F;
     }
@@ -148,7 +150,7 @@ public class Statistics {
 
         return mode;
     }
-    
+
 
     public static float distanceBetweenAngles(final float alpha, final float beta) {
         final float alphaX = alpha % 360;
@@ -278,7 +280,6 @@ public class Statistics {
     /**
      * @param - The collection of numbers you want analyze
      * @return - A pair of the high and low outliers
-     *
      * @See - https://en.wikipedia.org/wiki/Outlier
      */
     public static Pair<List<Double>, List<Double>> getOutliers(final Collection<? extends Number> collection) {
@@ -299,8 +300,7 @@ public class Statistics {
         for (final Double value : values) {
             if (value < lowThreshold) {
                 tuple.getX().add(value);
-            }
-            else if (value > highThreshold) {
+            } else if (value > highThreshold) {
                 tuple.getY().add(value);
             }
         }
@@ -322,8 +322,8 @@ public class Statistics {
 
     public static double getKireikoGeneric(final Collection<? extends Number> collection) {
         return (Statistics.getKurtosis(collection)
-                        + (Statistics.getVariance(collection)
-                        * 3.0)) / 20.0;
+                + (Statistics.getVariance(collection)
+                * 3.0)) / 20.0;
     }
 
     public static double calculatePercentile(final Collection<? extends Number> data, double percentile) {
@@ -331,9 +331,9 @@ public class Statistics {
             throw new IllegalArgumentException("Collection cannot be empty");
         }
         List<Double> sortedValues = data.stream()
-                        .map(Number::doubleValue)
-                        .sorted()
-                        .collect(Collectors.toList());
+                .map(Number::doubleValue)
+                .sorted()
+                .collect(Collectors.toList());
 
         int index = (int) Math.ceil(percentile / 100.0 * sortedValues.size()) - 1;
         if (index < 0) index = 0;
@@ -341,14 +341,17 @@ public class Statistics {
 
         return sortedValues.get(index);
     }
+
     public static double getCoefficientOfVariation(final Collection<? extends Number> data) {
         double mean = getAverage(data);
         return mean == 0 ? 0 : getStandardDeviation(data) / mean;
     }
+
     public double getIQR(final Collection<? extends Number> data) {
         List<Double> sorted = data.stream().map(Number::doubleValue).sorted().collect(Collectors.toList());
         return calculatePercentile(sorted, 75) - calculatePercentile(sorted, 25);
     }
+
     public static double getPearsonCorrelation(final List<? extends Number> x, final List<? extends Number> y) {
         if (x.size() != y.size() || x.isEmpty()) return 0.0;
 
@@ -366,20 +369,23 @@ public class Statistics {
 
         return sumX2 == 0 || sumY2 == 0 ? 0 : sumXY / Math.sqrt(sumX2 * sumY2);
     }
+
     public static double getZScore(final double value, final Collection<? extends Number> data) {
         double mean = getAverage(data);
         double stdDev = getStandardDeviation(data);
         return stdDev == 0 ? 0 : (value - mean) / stdDev;
     }
+
     public static double getShannonEntropy(final Collection<? extends Number> data) {
         Map<Double, Long> freqMap = data.stream()
-                        .collect(Collectors.groupingBy(Number::doubleValue, Collectors.counting()));
+                .collect(Collectors.groupingBy(Number::doubleValue, Collectors.counting()));
 
         double total = data.size();
         return -freqMap.values().stream()
-                        .mapToDouble(count -> (count / total) * (Math.log(count / total) / Math.log(2)))
-                        .sum();
+                .mapToDouble(count -> (count / total) * (Math.log(count / total) / Math.log(2)))
+                .sum();
     }
+
     public static double getHarmonicMean(final Collection<? extends Number> data) {
         double sum = 0.0;
         int count = 0;
@@ -393,6 +399,7 @@ public class Statistics {
 
         return count == 0 ? 0 : count / sum;
     }
+
     public static double getLinearTrend(final List<? extends Number> data) {
         int n = data.size();
         if (n < 2) return 0;
@@ -409,6 +416,7 @@ public class Statistics {
 
         return (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
     }
+
     public static double getCovariance(final List<? extends Number> x, final List<? extends Number> y) {
         if (x.size() != y.size() || x.isEmpty()) return 0.0;
 
@@ -422,16 +430,19 @@ public class Statistics {
 
         return sum / x.size();
     }
+
     public static double getSharpeRatio(final Collection<? extends Number> returns, double riskFreeRate) {
         double mean = getAverage(returns);
         double stdDev = getStandardDeviation(returns);
         return stdDev == 0 ? 0 : (mean - riskFreeRate) / stdDev;
     }
+
     public static double getQuantile(final Collection<? extends Number> data, double quantile) {
         List<Double> sorted = data.stream().map(Number::doubleValue).sorted().collect(Collectors.toList());
         int index = (int) Math.ceil(quantile * sorted.size()) - 1;
         return sorted.get(Math.max(0, Math.min(index, sorted.size() - 1)));
     }
+
     public static double getGiniIndex(final Collection<? extends Number> data) {
         List<Double> sorted = data.stream().map(Number::doubleValue).sorted().collect(Collectors.toList());
         int n = sorted.size();
@@ -445,6 +456,7 @@ public class Statistics {
         double mean = getAverage(data);
         return mean == 0 ? 0 : sum / (2 * n * n * mean);
     }
+
     public static List<Double> getZScoreOutliers(final Collection<? extends Number> data, double threshold) {
         List<Double> outliers = new ArrayList<>();
         double mean = getAverage(data);
@@ -459,6 +471,7 @@ public class Statistics {
 
         return outliers;
     }
+
     public static double getRSquared(final List<? extends Number> actual, final List<? extends Number> predicted) {
         if (actual.size() != predicted.size() || actual.isEmpty()) return 0.0;
 
@@ -474,6 +487,7 @@ public class Statistics {
 
         return ssTotal == 0 ? 0 : 1 - (ssResidual / ssTotal);
     }
+
     private static double pearsonCorrelation(List<? extends Number> x, List<? extends Number> y) {
         double meanX = getAverage(x);
         double meanY = getAverage(y);
@@ -489,6 +503,7 @@ public class Statistics {
 
         return numerator / Math.sqrt(denominatorX * denominatorY);
     }
+
     public static double spearmanCorrelation(List<? extends Number> x, List<? extends Number> y) {
         if (x.size() != y.size() || x.isEmpty()) {
             throw new IllegalArgumentException("Lists must be of the same size and non-empty");
@@ -499,6 +514,7 @@ public class Statistics {
 
         return pearsonCorrelation(rankX, rankY);
     }
+
     public static double rSquared(List<? extends Number> actual, List<? extends Number> predicted) {
         if (actual.size() != predicted.size() || actual.isEmpty()) {
             throw new IllegalArgumentException("Lists must be of the same size and non-empty");
@@ -540,6 +556,7 @@ public class Statistics {
         }
         return result;
     }
+
     public static List<Double> exponentialMovingAverage(List<? extends Number> data, double smoothingFactor) {
         List<Double> result = new ArrayList<>();
         double ema = data.get(0).doubleValue();
@@ -551,6 +568,7 @@ public class Statistics {
         }
         return result;
     }
+
     public static double[] linearRegression(List<? extends Number> x, List<? extends Number> y) {
         int n = x.size();
         double sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
@@ -566,9 +584,10 @@ public class Statistics {
         double intercept = (sumY - slope * sumX) / n;
         return new double[]{slope, intercept};
     }
+
     public static double regressionStandardError(
-        List<? extends Number> x, List<? extends Number> y,
-        double slope, double intercept) {
+            List<? extends Number> x, List<? extends Number> y,
+            double slope, double intercept) {
         int n = x.size();
         double sumSquaredErrors = 0;
         for (int i = 0; i < n; i++) {
@@ -579,11 +598,12 @@ public class Statistics {
         }
         return Math.sqrt(sumSquaredErrors / (n - 2));
     }
+
     public static double getWinsorizedMean(List<? extends Number> data, double trimFraction) {
         List<Double> sorted = data.stream()
-                        .map(Number::doubleValue)
-                        .sorted()
-                        .collect(Collectors.toList());
+                .map(Number::doubleValue)
+                .sorted()
+                .collect(Collectors.toList());
         int n = sorted.size();
         int trimCount = (int) (n * trimFraction);
         double lowerBound = sorted.get(trimCount - 1);
@@ -600,6 +620,7 @@ public class Statistics {
         }
         return winsorized.stream().mapToDouble(Double::doubleValue).average().orElse(0);
     }
+
     public static double kolmogorovSmirnovTest(final List<? extends Number> data, Function<Double, Double> cdfFunction) {
         List<Double> sorted = data.stream().map(Number::doubleValue).sorted().collect(Collectors.toList());
         int n = sorted.size();
@@ -611,6 +632,7 @@ public class Statistics {
         }
         return dStatistic;
     }
+
     public static double getExponentiallyWeightedVariance(final List<? extends Number> data, double alpha) {
         double ewMean = data.get(0).doubleValue();
         double ewVariance = 0;
@@ -621,8 +643,9 @@ public class Statistics {
         }
         return ewVariance;
     }
+
     public static double calculateAimSuspicionIndex(final List<? extends Number> aimDeltas,
-                                                       final List<? extends Number> reactionTimes) {
+                                                    final List<? extends Number> reactionTimes) {
         double avgDelta = Statistics.getAverage(aimDeltas);
         double stdDelta = Statistics.getStandardDeviation(aimDeltas);
         double deltaZSum = 0;
@@ -642,6 +665,7 @@ public class Statistics {
         double avgReactionZ = reactionZSum / reactionTimes.size();
         return avgDeltaZ * 0.6 + avgReactionZ * 0.4;
     }
+
     public static List<Double> kalmanFilterPredict(final List<? extends Number> measurements,
                                                    double processVariance, double measurementVariance) {
         int n = measurements.size();
@@ -664,6 +688,7 @@ public class Statistics {
 
         return predictions;
     }
+
     public static double dynamicTimeWarpingDistance(final List<Double> series1, final List<Double> series2) {
         int n = series1.size();
         int m = series2.size();
@@ -677,13 +702,14 @@ public class Statistics {
             for (int j = 1; j <= m; j++) {
                 double cost = Math.abs(series1.get(i - 1) - series2.get(j - 1));
                 dtw[i][j] = cost + Math.min(
-                                Math.min(dtw[i - 1][j],
+                        Math.min(dtw[i - 1][j],
                                 dtw[i][j - 1]),
-                                dtw[i - 1][j - 1]);
+                        dtw[i - 1][j - 1]);
             }
         }
         return dtw[n][m];
     }
+
     public static List<Integer> cusumDetection(final List<? extends Number> data, double threshold, double drift) {
         List<Double> series = data.stream().map(Number::doubleValue).collect(Collectors.toList());
         List<Integer> changePoints = new ArrayList<>();
@@ -704,6 +730,7 @@ public class Statistics {
         }
         return changePoints;
     }
+
     public static List<Float> getJiffDelta(List<? extends Number> data, int depth) {
         List<Float> result = new ArrayList<>();
         for (Number n : data) result.add(n.floatValue());
@@ -722,13 +749,16 @@ public class Statistics {
         }
         return result;
     }
+
     public static List<Double> getRanks(List<? extends Number> data) {
         List<Double> sorted = data.stream().map(Number::doubleValue).sorted().collect(Collectors.toList());
         return data.stream().map(v -> (double) (sorted.indexOf(v.doubleValue()) + 1)).collect(Collectors.toList());
     }
+
     public static int getDistinct(final Collection<? extends Number> data) {
         return (int) data.stream().distinct().count();
     }
+
     public static double hypot(final double a, final double b) {
         return Math.sqrt(a * a + b * b);
     }

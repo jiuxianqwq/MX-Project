@@ -26,14 +26,7 @@ import java.util.*;
 @Data
 public class PlayerProfile {
 
-    public boolean transactionSentKeep;
-    public boolean transactionBoot = true;
-    private boolean cinematic = false;
-    public long transactionTime, transactionLastTime, transactionPing;
-    public short transactionId;
     private final Player player;
-    private Location to;
-    private Location from;
     private final Set<PacketCheckHandler> checks = new HashSet<>();
     private final List<Location> pastLoc = new EvictingList<>(20);
     private final List<Long> ping = new EvictingList<>(10);
@@ -41,14 +34,20 @@ public class PlayerProfile {
     private final SensitivityProcessor sensitivityProcessor = new SensitivityProcessor(this);
     private final CinematicComponent cinematicComponent = new CinematicComponent(this);
     private final List<String> logs = new ArrayList<>();
-    private float vl;
-
+    public boolean transactionSentKeep;
+    public boolean transactionBoot = true;
+    public long transactionTime, transactionLastTime, transactionPing;
+    public short transactionId;
     public int airTicks, flagCount, punishAnimation, teleportTicks;
+    public boolean sneaking = false, sprinting = false, ground = false;
+    private boolean cinematic = false;
+    private Location to;
+    private Location from;
+    private float vl;
     private long attackBlockToTime;
     private boolean alerts, debug, ignoreExitBan;
     private Pair<String, String> banAnimInfo;
     private Pair<Location, Location> banAnimPositions;
-    public boolean sneaking = false, sprinting = false, ground = false;
 
     public PlayerProfile(Player player) {
         this.player = player;
@@ -57,27 +56,31 @@ public class PlayerProfile {
 
     public void punish(final String check, final String component, final String info, final float m) {
         if (!ConfigCache.BYPASS.equalsIgnoreCase("none")
-                 && this.player.hasPermission(ConfigCache.BYPASS)) {
+                && this.player.hasPermission(ConfigCache.BYPASS)) {
             return;
         }
         // this.vl += 10.0f * m;
         final float tempVl = this.vl + 10.0f * m;
         final double vlLimit = ConfigCache.VL_LIMIT;
         MXFlagEvent event = new MXFlagEvent(this.player, check, component, info, tempVl, vlLimit);
-        if (!event.callEvent()) {
+        Bukkit.getPluginManager().callEvent(event); // forget to call event?
+        if (event.isCancelled()) {
             return;
         }
         this.vl = tempVl;
         this.flagCount += (m == 0.0) ? 0 : 1;
-        String builder = this.wrapString(ConfigCache.ALERT_MSG.replace("%check%", check).replace("%component%", component).replace("%info%", info));
+        String builder = this.wrapString(ConfigCache.ALERT_MSG
+                .replace("%check%", check)
+                .replace("%component%", component)
+                .replace("%info%", info));
         MessageUtils.sendMessagesToPlayers(MX.permission, builder);
         if (ConfigCache.LOG_IN_FILES) {
             logs.add("[" + MessageUtils.getDate() + "] "
-                            + this.getPlayer().getName()
-                            + " >> " + check + " (" + component + ") " + info + " ["
-                            + ((int) this.vl) + "/"
-                            + ConfigCache.VL_LIMIT
-                            + "]");
+                    + this.getPlayer().getName()
+                    + " >> " + check + " (" + component + ") " + info + " ["
+                    + ((int) this.vl) + "/"
+                    + ConfigCache.VL_LIMIT
+                    + "]");
         }
         if (this.vl >= vlLimit) {
             if (ConfigCache.PUNISH_EFFECT) {
@@ -90,7 +93,9 @@ public class PlayerProfile {
                 MessageUtils.sendMessagesToPlayersNative(
                         MX.permissionHead + "personal",
                         MX.permission,
-                        this.wrapString(ConfigCache.SUSPECTED.replace("%check%", check).replace("%info%", info))
+                        this.wrapString(ConfigCache.SUSPECTED
+                                .replace("%check%", check)
+                                .replace("%info%", info))
                 );
                 this.flagCount = 0;
             }
@@ -98,14 +103,18 @@ public class PlayerProfile {
             MessageUtils.sendMessagesToPlayersNative(
                     MX.permissionHead + "personal",
                     MX.permission,
-                    this.wrapString(ConfigCache.UNUSUAL.replace("%check%", check).replace("%info%", info))
+                    this.wrapString(ConfigCache.UNUSUAL
+                            .replace("%check%", check)
+                            .replace("%info%", info))
             );
         }
     }
+
     public void fade(float vl) {
         this.vl -= vl;
         if (this.vl < 0) this.vl = 0;
     }
+
     public void initChecks() {
         this.checks.add(new AimHeuristicCheck(this));
         this.checks.add(new AimComplexCheck(this));
@@ -120,18 +129,20 @@ public class PlayerProfile {
 
     private String wrapString(String v) {
         return MessageUtils.wrapColors(v.replace("%player%", this.getPlayer().getName())
-                        .replace("%vl%", String.valueOf(this.vl))
-                        .replace("%vlLimit%", String.valueOf(ConfigCache.VL_LIMIT))
+                .replace("%vl%", String.valueOf(this.vl))
+                .replace("%vlLimit%", String.valueOf(ConfigCache.VL_LIMIT))
         );
     }
 
     public boolean ignoreCinematic() {
         return cinematic && ConfigCache.IGNORE_CINEMATIC;
     }
+
     public boolean toggleAlerts() {
         this.alerts = !this.alerts;
         return this.alerts;
     }
+
     public boolean toggleDebug() {
         this.debug = !this.debug;
         return this.debug;
@@ -142,15 +153,19 @@ public class PlayerProfile {
         this.ignoreExitBan = true;
         this.vl = 0;
         Bukkit.getScheduler().runTask(MX.getInstance(), () -> {
-            String banMsg = this.wrapString(ConfigCache.BAN_COMMAND.replace("%check%", check).replace("%info%", info));
+            String banMsg = this.wrapString(ConfigCache.BAN_COMMAND
+                    .replace("%check%", check)
+                    .replace("%info%", info));
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), banMsg);
             this.setBanAnimInfo(null);
         });
     }
+
     public void debug(String msg) {
         if (debug)
             this.player.sendMessage(wrapString("&9&l[Debug] &f" + msg));
     }
+
     public void setAttackBlockToTime(long time) {
         if (!ConfigCache.BYPASS.equalsIgnoreCase("none")
                 && this.player.hasPermission(ConfigCache.BYPASS)) {
@@ -158,18 +173,22 @@ public class PlayerProfile {
         }
         this.attackBlockToTime = time;
     }
+
     public int getEntityId() {
         return ProtocolLib.isTemporary(this.getPlayer())
-                        ? new Random().nextInt()
-                        : this.getPlayer().getEntityId();
+                ? new Random().nextInt()
+                : this.getPlayer().getEntityId();
     }
+
     public int calculateSensitivity() {
         if (Statistics.getDistinct(getSensitivity()) != getSensitivity().size()) {
             final Set<Integer> prev = new HashSet<>();
             for (int i : getSensitivity()) {
                 if (prev.contains(i / 5)) {
                     return i;
-                } else prev.add(i / 5);
+                } else {
+                    prev.add(i / 5);
+                }
             }
         }
         return -1;

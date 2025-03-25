@@ -22,9 +22,10 @@ public class AimComplexCheck implements PacketCheckHandler {
     private final List<Vec2i> /*rotations,*/ rotations2;
     private final List<Vec2> kireikoGeneric;
     private final List<Vec2f> rawRotations;
+    private final ReentrantLock aimLock = new ReentrantLock();
     private long lastAttack;
     private double oldShannonYaw, oldShannonPitch;
-    private final ReentrantLock aimLock = new ReentrantLock();
+
     public AimComplexCheck(PlayerProfile profile) {
         this.profile = profile;
         /*this.rotations = Collections.synchronizedList(new CopyOnWriteArrayList<>());*/
@@ -37,6 +38,11 @@ public class AimComplexCheck implements PacketCheckHandler {
         this.oldShannonPitch = 0;
         for (int i = 0; i < 16; i++) this.buffer.add(0.0f);
     }
+
+    private static double getDifference(double a, double b) {
+        return Math.abs(Math.abs(a) - Math.abs(b));
+    }
+
     @Override
     public void event(Object o) {
         if (o instanceof RotationEvent) {
@@ -49,8 +55,8 @@ public class AimComplexCheck implements PacketCheckHandler {
                             ((int) ((delta.getX() / gcdValue))),
                             ((int) ((delta.getY() / gcdValue)))));*/
             this.rotations2.add(new Vec2i(
-                            ((int) ((delta.getX() / gcdValue))),
-                            ((int) ((delta.getY() / gcdValue)))));
+                    ((int) ((delta.getX() / gcdValue))),
+                    ((int) ((delta.getY() / gcdValue)))));
             if (this.rotations2.size() >= 10) {
                 this.checkSpikes();
             }
@@ -77,13 +83,13 @@ public class AimComplexCheck implements PacketCheckHandler {
             final boolean valid = sens >= 60 && sens <= 150;
             //profile.getPlayer().sendMessage("y: " + shannonYaw + " " + shannonPitch);
             if (valid && getDifference(shannonYaw, oldShannonYaw) < 1e-5
-                            && getDifference(shannonPitch, oldShannonPitch) < 1e-5) {
+                    && getDifference(shannonPitch, oldShannonPitch) < 1e-5) {
                 this.increaseBuffer(11, 1.0f);
                 if (this.buffer.get(11) > 3)
                     profile.debug("&7Aim Perfect Shannon Entropy: " + this.buffer.get(11));
                 if (this.buffer.get(11) > 30) {
                     profile.punish("Aim", "Entropy",
-                                    "[Analysis] Perfect shannon entropy " + shannonYaw, 0.0f);
+                            "[Analysis] Perfect shannon entropy " + shannonYaw, 0.0f);
                     profile.setAttackBlockToTime(System.currentTimeMillis() + 5000);
                     this.buffer.set(11, 29f);
                 }
@@ -95,7 +101,7 @@ public class AimComplexCheck implements PacketCheckHandler {
                     profile.debug("&7Aim Similar Shannon Entropy: " + this.buffer.get(11));
                 if (this.buffer.get(12) > 30) {
                     profile.punish("Aim", "Entropy",
-                                    "[Analysis] Similar shannon entropy " + shannonYaw, 0.0f);
+                            "[Analysis] Similar shannon entropy " + shannonYaw, 0.0f);
                     profile.setAttackBlockToTime(System.currentTimeMillis() + 5000);
                     this.buffer.set(12, 29f);
                 }
@@ -106,7 +112,7 @@ public class AimComplexCheck implements PacketCheckHandler {
                 profile.debug("&7Aim Invalid Distinct: " + this.buffer.get(9));
                 if (this.buffer.get(9) >= 4.0f) {
                     profile.punish("Aim", "Distinct",
-                                    "[Flaw] Invalid distinct", 0.5f);
+                            "[Flaw] Invalid distinct", 0.5f);
                     profile.setAttackBlockToTime(System.currentTimeMillis() + 3000);
                     this.increaseBuffer(9, -0.5f);
                 }
@@ -124,8 +130,8 @@ public class AimComplexCheck implements PacketCheckHandler {
     private void checkSpikes() {
         { // check spikes
             List<Integer>
-                            gcdYaw = new ArrayList<>(),
-                            gcdPitch = new ArrayList<>();
+                    gcdYaw = new ArrayList<>(),
+                    gcdPitch = new ArrayList<>();
             for (Vec2i vec2i : this.rotations2) {
                 gcdYaw.add(vec2i.getX());
                 gcdPitch.add(vec2i.getY());
@@ -167,7 +173,7 @@ public class AimComplexCheck implements PacketCheckHandler {
                             profile.debug("&7Machine Heart: " + this.buffer.get(5));
                             if (this.buffer.get(5) >= 7.0f) {
                                 profile.punish("Aim", "MachineHeart",
-                                                "Machine Heart " + (int) xDev, 2.5f);
+                                        "Machine Heart " + (int) xDev, 2.5f);
                                 this.buffer.set(5, 6.0f);
                             }
                         } else {
@@ -194,13 +200,13 @@ public class AimComplexCheck implements PacketCheckHandler {
             }
             {
                 if (!yawY.isEmpty() && (yawY.size() < 4)
-                                && ((yawYMax == yawYMin && yawYMax > 55)
-                                || (yawYMax > 60 && (yawYMin < yawYMax / 3)))) {
+                        && ((yawYMax == yawYMin && yawYMax > 55)
+                        || (yawYMax > 60 && (yawYMin < yawYMax / 3)))) {
                     this.increaseBuffer(3, 1.25f);
                     profile.debug("&7Rough yaw(y) spikes: " + this.buffer.get(3));
                     if (this.buffer.get(3) > 4.0f) {
                         profile.punish("Aim", "Snap",
-                                        "[Analysis] Rough yaw spikes " + yawY, 0.0f);
+                                "[Analysis] Rough yaw spikes " + yawY, 0.0f);
                         profile.setAttackBlockToTime(System.currentTimeMillis() + 3500);
                         this.increaseBuffer(3, -0.75f);
                     }
@@ -210,11 +216,9 @@ public class AimComplexCheck implements PacketCheckHandler {
             }
         }
     }
+
     private void increaseBuffer(int index, float v) {
         float r = this.buffer.get(index) + v;
         this.buffer.set(index, (r < 0) ? 0 : r);
-    }
-    private static double getDifference(double a, double b) {
-        return Math.abs(Math.abs(a) - Math.abs(b));
     }
 }

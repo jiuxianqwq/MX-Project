@@ -14,10 +14,10 @@ import org.bukkit.util.Vector;
 
 import java.util.regex.Pattern;
 
-public class VelocityCheck implements PacketCheckHandler  {
+public class VelocityCheck implements PacketCheckHandler {
+    private static final Pattern pattern = Pattern.compile("(?i)(.*(snow|step|frame|table|water|lava|web|slab|stair|ladder|vine|waterlily|wall|carpet|fence|rod|bed|skull|pot|hopper|door|bars|piston|lily).*)");
     private final PlayerProfile profile;
     private final double[] jumpReset = new double[]{0.248136, 0.3332};
-
     private float vl = 0, totalVlAtY = 0;
     private long oldTime = System.currentTimeMillis();
     private double mostCloseYMotion = 1.0;
@@ -26,9 +26,23 @@ public class VelocityCheck implements PacketCheckHandler  {
     private Vector velocity = null;
     private Location from = null;
     private boolean isOnGroundFrom = false;
+
     public VelocityCheck(PlayerProfile profile) {
         this.profile = profile;
     }
+
+    private static double abs(double v) {
+        return Math.abs(v);
+    }
+
+    private static double r(double v) {
+        return Simplification.scaleVal(v, 6);
+    }
+
+    private static boolean ignore(final String block) {
+        return pattern.matcher(block).matches();
+    }
+
     @Override
     public void event(Object o) {
         if (!ConfigCache.CHECK_VELOCITY) return;
@@ -50,8 +64,8 @@ public class VelocityCheck implements PacketCheckHandler  {
     private void applyVelocity(SVelocityEvent event) {
         transactionLock = true;
         Location[] locationsToCheck = {
-                        this.profile.getTo().clone().add(event.getVelocity()),
-                        this.profile.getTo().clone().add(event.getVelocity()).add(0, 1, 0)
+                this.profile.getTo().clone().add(event.getVelocity()),
+                this.profile.getTo().clone().add(event.getVelocity()).add(0, 1, 0)
         };
         boolean allClear = true;
         for (Location loc : locationsToCheck) {
@@ -111,7 +125,7 @@ public class VelocityCheck implements PacketCheckHandler  {
                     // time for vertical flag
                     if (this.velocity.getY() != 0.003) {
                         this.flag("Velocity", "Vertical", "diff=" + r(Math.abs(velocity.getY() - mostCloseYMotion))
-                                        + ((totalVlAtY > 12) ? " [Basic]" : " [JumpReset]"), 0.0f, totalVlAtY);
+                                + ((totalVlAtY > 12) ? " [Basic]" : " [JumpReset]"), 0.0f, totalVlAtY);
                     }
                     this.velocity = null;
                 }
@@ -127,10 +141,10 @@ public class VelocityCheck implements PacketCheckHandler  {
         for (int dx = -1; dx <= 1; ++dx) {
             for (int dy = -1; dy <= 1; ++dy) {
                 for (int dz = -1; dz <= 1; ++dz) {
-                     final Material material = new Location(this.profile.getTo().getWorld(),
-                                    x + (double) dx * scale,
-                                    y + (double) dy * scale,
-                                    z + (double) dz * scale).getBlock().getType();
+                    final Material material = new Location(this.profile.getTo().getWorld(),
+                            x + (double) dx * scale,
+                            y + (double) dy * scale,
+                            z + (double) dz * scale).getBlock().getType();
 
                     if (material.isSolid() || ignore(material.toString().toLowerCase()) || material.toString().contains("GRASS")) {
                         return true;
@@ -140,6 +154,7 @@ public class VelocityCheck implements PacketCheckHandler  {
         }
         return false;
     }
+
     private void flag(final String check, final String component, final String info, final float m, float vl) {
         this.vl += vl;
         if (this.vl > 60) {
@@ -154,18 +169,5 @@ public class VelocityCheck implements PacketCheckHandler  {
             if (Math.abs(d - v) < 0.005) return true;
         }
         return false;
-    }
-
-    private static double abs(double v) {
-        return Math.abs(v);
-    }
-
-    private static double r(double v) {
-        return Simplification.scaleVal(v, 6);
-    }
-
-    private static final Pattern pattern = Pattern.compile("(?i)(.*(snow|step|frame|table|water|lava|web|slab|stair|ladder|vine|waterlily|wall|carpet|fence|rod|bed|skull|pot|hopper|door|bars|piston|lily).*)");
-    private static boolean ignore(final String block) {
-        return pattern.matcher(block).matches();
     }
 }

@@ -12,11 +12,12 @@ public class MoveEvent {
     private PlayerProfile profile;
     private Location from;
     private Location to;
+
     public Vec3 getDelta() {
         return new Vec3(
-                        to.getX() - from.getX(),
-                        to.getY() - from.getY(),
-                        to.getZ() - from.getZ()
+                to.getX() - from.getX(),
+                to.getY() - from.getY(),
+                to.getZ() - from.getZ()
         );
     }
 }

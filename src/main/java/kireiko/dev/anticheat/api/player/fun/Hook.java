@@ -43,9 +43,9 @@ public class Hook implements FunThing {
             final float yaw = location.getYaw();
             final float pitch = location.getPitch();
             final Vector direction = new Vector(
-                            -GeneralMath.sin((float) Math.toRadians(yaw), BuildSpeed.FAST),
-                            -GeneralMath.sin((float) Math.toRadians(pitch), BuildSpeed.FAST),
-                            GeneralMath.cos((float) Math.toRadians(yaw), BuildSpeed.FAST));
+                    -GeneralMath.sin((float) Math.toRadians(yaw), BuildSpeed.FAST),
+                    -GeneralMath.sin((float) Math.toRadians(pitch), BuildSpeed.FAST),
+                    GeneralMath.cos((float) Math.toRadians(yaw), BuildSpeed.FAST));
             final double interpolatePitch = 1 - ((Math.abs(pitch) * 1.1111) / 100);
             direction.setX(direction.getX() * interpolatePitch);
             direction.setZ(direction.getZ() * interpolatePitch);
@@ -54,19 +54,19 @@ public class Hook implements FunThing {
             yPhys -= 0.98e-2;
             { // bound
                 double x = location.getX(),
-                       y = location.getY(),
-                       z = location.getZ();
+                        y = location.getY(),
+                        z = location.getZ();
 
                 for (int dx = -1; dx <= 1; dx++) {
                     for (int dy = -1; dy <= 1; dy++) {
                         for (int dz = -1; dz <= 1; dz++) {
                             final Block block = getBlockAsync(
-                                            new Location(
-                                                            this.linked.getPlayer().getWorld(),
-                                                            x + (dx * 0.3),
-                                                            y + (dy * 0.3),
-                                                            z + (dz * 0.3)
-                                            )
+                                    new Location(
+                                            this.linked.getPlayer().getWorld(),
+                                            x + (dx * 0.3),
+                                            y + (dy * 0.3),
+                                            z + (dz * 0.3)
+                                    )
                             );
                             if (block == null) continue;
                             final Material material = block.getType();
@@ -86,7 +86,7 @@ public class Hook implements FunThing {
                     final double speed = linked.getPlayer().getLocation().distance(location) / 14d;
                     final double x = -Math.sin(Math.toRadians(vec2.getX())) * speed;
                     final double y = (location.getY() - linked.getTo().getY())
-                                    / Interpolation.sineInterpolation(30d, 6d, hoverTicks / 19d, Interpolation.Ease.IN);
+                            / Interpolation.sineInterpolation(30d, 6d, hoverTicks / 19d, Interpolation.Ease.IN);
                     final double z = Math.cos(Math.toRadians(vec2.getX())) * speed;
                     { // motion
                         linked.getPlayer().setVelocity(new Vector(x, y, z));
@@ -98,10 +98,10 @@ public class Hook implements FunThing {
             for (double d = 0; d < 1.0; d += 0.05) {
                 final Location to = linked.getTo();
                 final Location i = new Location(
-                             linked.getPlayer().getWorld(),
-                                Interpolation.sineInterpolation(to.getX(), location.getX(), d, Interpolation.Ease.IN),
-                                Interpolation.sineInterpolation(to.getY(), location.getY(), d, Interpolation.Ease.IN),
-                                Interpolation.sineInterpolation(to.getZ(), location.getZ(), d, Interpolation.Ease.IN)
+                        linked.getPlayer().getWorld(),
+                        Interpolation.sineInterpolation(to.getX(), location.getX(), d, Interpolation.Ease.IN),
+                        Interpolation.sineInterpolation(to.getY(), location.getY(), d, Interpolation.Ease.IN),
+                        Interpolation.sineInterpolation(to.getZ(), location.getZ(), d, Interpolation.Ease.IN)
                 );
                 i.getWorld().spawnParticle(Particle.CRIT, i, 1, 0, 0, 0, 0);
             }

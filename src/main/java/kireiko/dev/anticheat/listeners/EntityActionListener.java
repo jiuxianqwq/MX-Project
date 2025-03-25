@@ -14,13 +14,6 @@ import java.util.Collections;
 
 public class EntityActionListener extends PacketAdapter {
 
-    public enum AbilitiesEnum {
-        START_SPRINTING,
-        STOP_SPRINTING,
-        PRESS_SHIFT_KEY,
-        RELEASE_SHIFT_KEY
-    }
-
     public EntityActionListener() {
         super(
                 MX.getInstance(),
@@ -64,6 +57,13 @@ public class EntityActionListener extends PacketAdapter {
             }
         }
         return null;
+    }
+
+    public enum AbilitiesEnum {
+        START_SPRINTING,
+        STOP_SPRINTING,
+        PRESS_SHIFT_KEY,
+        RELEASE_SHIFT_KEY
     }
 
 }

@@ -39,9 +39,9 @@ public class Rocket implements FunThing {
         final float yaw = (float) vec2.getX();
         final float pitch = (float) vec2.getY();
         final Vector direction = new Vector(
-                        -GeneralMath.sin((float) Math.toRadians(yaw), BuildSpeed.FAST),
-                        -GeneralMath.sin((float) Math.toRadians(pitch), BuildSpeed.FAST),
-                        GeneralMath.cos((float) Math.toRadians(yaw), BuildSpeed.FAST));
+                -GeneralMath.sin((float) Math.toRadians(yaw), BuildSpeed.FAST),
+                -GeneralMath.sin((float) Math.toRadians(pitch), BuildSpeed.FAST),
+                GeneralMath.cos((float) Math.toRadians(yaw), BuildSpeed.FAST));
         final double interpolatePitch = 1 - ((Math.abs(pitch) * 1.1111) / 100);
         direction.setX(direction.getX() * interpolatePitch);
         direction.setZ(direction.getZ() * interpolatePitch);
@@ -49,14 +49,14 @@ public class Rocket implements FunThing {
         { // bound
             final double hitbox = 0.5;
             double x = target.getTo().getX(),
-                   y = target.getTo().getY(),
-                   z = target.getTo().getZ();
+                    y = target.getTo().getY(),
+                    z = target.getTo().getZ();
             if (RayTrace.doRayTrace(BuildSpeed.FAST,
-                            new Vec2(vec2.getY(), vec2.getX()), new Vec3(location.toVector()),
-                        new AxisAlignedBB(
-                                        x - hitbox, y - 0.1f, z - hitbox,
-                                        x + hitbox,y + 1.9f, z + hitbox
-                        ), 0.85)) {
+                    new Vec2(vec2.getY(), vec2.getX()), new Vec3(location.toVector()),
+                    new AxisAlignedBB(
+                            x - hitbox, y - 0.1f, z - hitbox,
+                            x + hitbox, y + 1.9f, z + hitbox
+                    ), 0.85)) {
                 { // boom!
                     this.destroyed = true;
                     Bukkit.getScheduler().runTask(MX.getInstance(), () -> {

@@ -9,11 +9,12 @@ import kireiko.dev.anticheat.MX;
 public class TestListener extends PacketAdapter {
     public TestListener() {
         super(MX.getInstance(), ListenerPriority.HIGHEST,
-                        PacketType.Play.Client.getInstance());
+                PacketType.Play.Client.getInstance());
     }
+
     @Override
     public void onPacketReceiving(PacketEvent event) {
         event.getPlayer().sendMessage("e: " + event.getPacket().getType().name()
-                        + " " + event.getPacket().getStructures().getValues());
+                + " " + event.getPacket().getStructures().getValues());
     }
 }

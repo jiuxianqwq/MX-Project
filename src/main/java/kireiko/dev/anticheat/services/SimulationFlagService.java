@@ -23,14 +23,6 @@ public class SimulationFlagService {
     @Getter
     private static final List<Flag> flags = new CopyOnWriteArrayList<>();
 
-    @Data
-    @AllArgsConstructor
-    public class Flag {
-        private final PlayerProfile profile;
-        private Location location;
-        private Vector vector;
-    }
-
     public static void init() {
         Bukkit.getScheduler().runTaskTimer(MX.getInstance(), () -> {
             AsyncScheduler.run(() -> {
@@ -43,9 +35,9 @@ public class SimulationFlagService {
                             flag.getProfile().getPlayer().teleport(finalLoc);
                         });
                         flag.setVector(new Vector(
-                                        flag.vector.getX() * 0.91,
-                                        flag.vector.getY() - (0.08 * 0.98),
-                                        flag.vector.getZ() * 0.91));
+                                flag.vector.getX() * 0.91,
+                                flag.vector.getY() - (0.08 * 0.98),
+                                flag.vector.getZ() * 0.91));
                     } else toRemove.add(flag);
                 }
                 flags.removeAll(toRemove);
@@ -61,9 +53,9 @@ public class SimulationFlagService {
             for (int dy = -1; dy <= 1; ++dy) {
                 for (int dz = -1; dz <= 1; ++dz) {
                     final Material material = new Location(location.getWorld(),
-                                    x + (double) dx * scale,
-                                    y + (double) dy * scale,
-                                    z + (double) dz * scale).getBlock().getType();
+                            x + (double) dx * scale,
+                            y + (double) dy * scale,
+                            z + (double) dz * scale).getBlock().getType();
 
                     if (!material.toString().equals("AIR")) {
                         return true;
@@ -72,5 +64,13 @@ public class SimulationFlagService {
             }
         }
         return false;
+    }
+
+    @Data
+    @AllArgsConstructor
+    public class Flag {
+        private final PlayerProfile profile;
+        private Location location;
+        private Vector vector;
     }
 }

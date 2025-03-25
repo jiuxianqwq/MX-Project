@@ -4,10 +4,10 @@ api-version: '1.13'
 author: pawsashatoy
 description: "Complex combat analysis anti-cheat"
 main: kireiko.dev.anticheat.MX
-depend: [ProtocolLib]
+depend: [ ProtocolLib ]
 commands:
   mx:
     description: "Main command"
     usage: "/mx"
     permission: "mx.admin"
-    aliases: [mx]
+    aliases: [ mx ]
