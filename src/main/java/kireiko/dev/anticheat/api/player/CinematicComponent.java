@@ -1,13 +1,14 @@
 package kireiko.dev.anticheat.api.player;
 
 import com.google.common.collect.Lists;
+import kireiko.dev.anticheat.api.events.RotationEvent;
+import kireiko.dev.anticheat.utils.GraphUtil;
+import kireiko.dev.millennium.math.Statistics;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import kireiko.dev.anticheat.api.events.RotationEvent;
-import kireiko.dev.anticheat.utils.GraphUtil;
-import kireiko.dev.millennium.math.Statistics;
 
 public final class CinematicComponent {
     private long lastSmooth = 0L, lastHighRate = 0L;

@@ -4,14 +4,14 @@ import kireiko.dev.anticheat.api.events.RotationEvent;
 import kireiko.dev.anticheat.checks.aim.AimHeuristicCheck;
 import kireiko.dev.millennium.math.Statistics;
 
-public final class AimConstant implements HeuristicComponent {
+public final class AimConstantCheck implements HeuristicComponent {
     private static final double MODULO_THRESHOLD = 90F;
     private static final double LINEAR_THRESHOLD = 0.1F;
     private final AimHeuristicCheck check;
     private float lastDeltaYaw = 0.0f, lastDeltaPitch = 0.0f;
     private float buffer = 0, buffer2 = 0;
 
-    public AimConstant(final AimHeuristicCheck check) {
+    public AimConstantCheck(final AimHeuristicCheck check) {
         this.check = check;
     }
 
@@ -19,6 +19,7 @@ public final class AimConstant implements HeuristicComponent {
     public void process(final RotationEvent rotationUpdate) {
         final float deltaYaw = rotationUpdate.getAbsDelta().getX();
         final float deltaPitch = rotationUpdate.getAbsDelta().getY();
+        if (check.getProfile().ignoreCinematic()) return;
         { // type 1
             final long expandedPitch = (long) (Statistics.EXPANDER * deltaPitch);
             final long expandedLastPitch = (long) (Statistics.EXPANDER * lastDeltaPitch);
