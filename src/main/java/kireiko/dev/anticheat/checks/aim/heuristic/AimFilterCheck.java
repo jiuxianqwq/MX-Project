@@ -49,7 +49,7 @@ public final class AimFilterCheck implements HeuristicComponent {
                 }
                 if (buffer < 0) {
                     buffer = 0;
-                } else if (buffer > 8) {
+                } else if (buffer > 8.5) {
                     profile.punish("Aim", "A/B", "Rate: " + Simplification.scaleVal((1.0 - r), 2) + " [Machine-like rotations]", 0.0f);
                     profile.setAttackBlockToTime(System.currentTimeMillis() + 5000);
                     buffer = 7;
