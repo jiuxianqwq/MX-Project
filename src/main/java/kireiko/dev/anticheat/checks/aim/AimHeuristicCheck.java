@@ -6,6 +6,7 @@ import kireiko.dev.anticheat.api.events.UseEntityEvent;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
 import kireiko.dev.anticheat.checks.aim.heuristic.AimBasicCheck;
 import kireiko.dev.anticheat.checks.aim.heuristic.AimConstantCheck;
+import kireiko.dev.anticheat.checks.aim.heuristic.AimInvalidCheck;
 import kireiko.dev.anticheat.checks.aim.heuristic.HeuristicComponent;
 import lombok.Getter;
 
@@ -26,6 +27,7 @@ public class AimHeuristicCheck implements PacketCheckHandler {
         { // components
             this.components.add(new AimBasicCheck(this));
             this.components.add(new AimConstantCheck(this));
+            this.components.add(new AimInvalidCheck(this));
         }
     }
 
