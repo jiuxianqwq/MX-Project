@@ -1,8 +1,5 @@
 package kireiko.dev.millennium.math;
 
-import lombok.experimental.UtilityClass;
-
-@UtilityClass
 public class Simplification {
     public static float castTo360(float num) {
         float value = Math.abs((num + 360) % 360 - 180);

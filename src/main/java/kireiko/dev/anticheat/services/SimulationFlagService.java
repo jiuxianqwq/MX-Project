@@ -6,7 +6,6 @@ import kireiko.dev.anticheat.core.AsyncScheduler;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
-import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,7 +16,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-@UtilityClass
 public class SimulationFlagService {
 
     @Getter
@@ -68,7 +66,7 @@ public class SimulationFlagService {
 
     @Data
     @AllArgsConstructor
-    public class Flag {
+    public static class Flag {
         private final PlayerProfile profile;
         private Location location;
         private Vector vector;

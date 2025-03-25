@@ -11,12 +11,12 @@ import java.util.List;
 import java.util.Set;
 
 public final class CinematicComponent {
+    private final List<Double
+            > yawSamples = Lists.newArrayList(),
+            pitchSamples = Lists.newArrayList();
+    private final PlayerProfile profile;
     private long lastSmooth = 0L, lastHighRate = 0L;
     private double lastDeltaYaw = 0.0D, lastDeltaPitch = 0.0D;
-    private final List<Double
-                    > yawSamples = Lists.newArrayList(),
-                    pitchSamples = Lists.newArrayList();
-    private final PlayerProfile profile;
     private int isTotallyNotCinematic = 0;
 
     public CinematicComponent(PlayerProfile profile) {
@@ -50,7 +50,7 @@ public final class CinematicComponent {
                 }
             }
             if (shannonYaw.size() != 1 || shannonPitch.size() != 1 || (
-                            (Double) shannonYaw.toArray()[0]).doubleValue() != ((Double) shannonPitch.toArray()[0]).doubleValue()) {
+                    (Double) shannonYaw.toArray()[0]).doubleValue() != ((Double) shannonPitch.toArray()[0]).doubleValue()) {
                 this.isTotallyNotCinematic = 20;
             }
             GraphUtil.GraphResult resultsYaw = GraphUtil.getGraph(this.yawSamples);

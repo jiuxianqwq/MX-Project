@@ -2,14 +2,12 @@ package kireiko.dev.anticheat.api.player.fun;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.utility.MinecraftVersion;
-import lombok.experimental.UtilityClass;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-@UtilityClass
 public class FunItemsService {
     public static void give(final Player player) {
         final boolean modern = ProtocolLibrary.getProtocolManager().getMinecraftVersion()

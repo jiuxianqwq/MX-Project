@@ -4,7 +4,6 @@ import kireiko.dev.anticheat.MX;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
 import kireiko.dev.anticheat.core.AsyncScheduler;
 import kireiko.dev.millennium.vectors.Pair;
-import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -15,7 +14,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@UtilityClass
 public class AnimatedPunishService {
     private static final List<PlayerProfile> punished
             = new ArrayList<>();

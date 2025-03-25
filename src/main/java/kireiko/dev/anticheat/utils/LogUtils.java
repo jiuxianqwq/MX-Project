@@ -3,13 +3,11 @@ package kireiko.dev.anticheat.utils;
 import kireiko.dev.anticheat.MX;
 import kireiko.dev.anticheat.core.AsyncScheduler;
 import lombok.SneakyThrows;
-import lombok.experimental.UtilityClass;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@UtilityClass
 public class LogUtils {
 
     private static final File LOGS_FOLDER;

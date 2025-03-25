@@ -1,8 +1,5 @@
 package kireiko.dev.millennium.math;
 
-import lombok.experimental.UtilityClass;
-
-@UtilityClass
 public class FastMath {
 
     private static final float[] SIN_TABLE_FAST = new float[4096];

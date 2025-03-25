@@ -28,8 +28,8 @@ public final class AimBasicCheck implements HeuristicComponent {
         if (check.getProfile().ignoreCinematic()) return;
         this.rawRotations.add(new Vec2(event.getTo().getX(), event.getTo().getY()));
         if ((event.getDelta().getY() > 1.5f || event.getDelta().getX() > 3.0f)
-                        && (check.getProfile().getTo().getPitch() == 0
-                        || check.getProfile().getTo().getPitch() % 0.01f == 0)) {
+                && (check.getProfile().getTo().getPitch() == 0
+                || check.getProfile().getTo().getPitch() % 0.01f == 0)) {
             this.check.getProfile().punish("Aim", "Randomizer", "[Heuristic] Randomizer flaw", 1.0f);
         }
         if (this.rawRotations.size() >= 10) checkDefaultAim();
@@ -51,9 +51,9 @@ public final class AimBasicCheck implements HeuristicComponent {
             double oldYawChange = Math.abs(rotations.get(0).getX() - oldYawResult);
             double yawChangeFirst = Math.abs(rotations.get(0).getX() - rotations.get(1).getX());
             int machineKnownMovement = 0,
-                            constantRotations = 0, gcd = 0, aggressivePatternI = 0,
-                            aggressivePatternD = 0, aggressivePatternI2 = 0, aggressivePatternD2 = 0,
-                            robotizedAmount = 0, aggressiveAim = 0, infinitives = 0;
+                    constantRotations = 0, gcd = 0, aggressivePatternI = 0,
+                    aggressivePatternD = 0, aggressivePatternI2 = 0, aggressivePatternD2 = 0,
+                    robotizedAmount = 0, aggressiveAim = 0, infinitives = 0;
             for (Vec2 rotation : rotations) {
                 double yawChange = Math.abs(rotation.getX() - oldYawResult);
                 double pitchChange = Math.abs(rotation.getY() - oldPitchResult);
@@ -101,7 +101,7 @@ public final class AimBasicCheck implements HeuristicComponent {
             if (aggressivePatternI > 3 && aggressivePatternD > 3)
                 addNewPunishL2("pattern(random)", 25);
             if (aggressivePatternI2 > 3 && aggressivePatternD2 > 3
-                            && (aggressivePatternI2 + aggressivePatternD2) > 8) {
+                    && (aggressivePatternI2 + aggressivePatternD2) > 8) {
                 streak++;
                 if (streak > 2) addNewPunish("pattern(snap)", 55);
             } else streak = 0;
@@ -127,12 +127,12 @@ public final class AimBasicCheck implements HeuristicComponent {
         this.reason = reason;
         this.vl += vl;
         check.getProfile().debug("&7Aim Component: " + reason
-                        + " " + this.vl + " (+" + vl + ")");
+                + " " + this.vl + " (+" + vl + ")");
     }
 
     private void addNewPunishL2(String reason, float vl) {
         this.vlL2 += vl;
         check.getProfile().debug("&7Interpolation Component: " + reason
-                        + " " + this.vlL2 + " (+" + vl + ")");
+                + " " + this.vlL2 + " (+" + vl + ")");
     }
 }

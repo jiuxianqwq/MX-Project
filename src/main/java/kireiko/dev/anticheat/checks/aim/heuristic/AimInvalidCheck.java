@@ -20,8 +20,8 @@ public final class AimInvalidCheck implements HeuristicComponent {
         final PlayerProfile profile = check.getProfile();
         final Vec2f delta = event.getAbsDelta();
         if ((Statistics.isExponentiallySmall(delta.getY())
-                        && delta.getY() > 0.0
-                        && delta.getX() > 0.5f)) {
+                && delta.getY() > 0.0
+                && delta.getX() > 0.5f)) {
             buffer += 20;
             if (buffer > 70) {
                 profile.punish("Aim", "Invalid", "Invalid Pitch " + event.getDelta().getY(), 10.0f);
