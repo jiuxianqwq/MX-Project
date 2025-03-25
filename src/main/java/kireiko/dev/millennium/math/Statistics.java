@@ -756,7 +756,7 @@ public class Statistics {
         return Math.sqrt(a * a + b * b);
     }
 
-    public double getIQR(final Collection<? extends Number> data) {
+    public static double getIQR(final Collection<? extends Number> data) {
         List<Double> sorted = data.stream().map(Number::doubleValue).sorted().collect(Collectors.toList());
         return calculatePercentile(sorted, 75) - calculatePercentile(sorted, 25);
     }
