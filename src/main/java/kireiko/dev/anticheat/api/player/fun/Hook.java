@@ -1,6 +1,7 @@
 package kireiko.dev.anticheat.api.player.fun;
 
 import kireiko.dev.anticheat.api.player.PlayerProfile;
+import kireiko.dev.anticheat.utils.wrapper.ReflectionWrapper;
 import kireiko.dev.millennium.math.BuildSpeed;
 import kireiko.dev.millennium.math.Euler;
 import kireiko.dev.millennium.math.GeneralMath;
@@ -10,14 +11,13 @@ import kireiko.dev.millennium.vectors.Vec3;
 import lombok.Data;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.util.Vector;
 
 import static kireiko.dev.anticheat.utils.protocol.ProtocolTools.getBlockAsync;
 
 @Data
-public class Hook implements FunThing {
+public final class Hook implements FunThing {
     private final PlayerProfile linked;
     private final Location location;
     private boolean stuck;
@@ -45,14 +45,15 @@ public class Hook implements FunThing {
             final Vector direction = new Vector(
                     -GeneralMath.sin((float) Math.toRadians(yaw), BuildSpeed.FAST),
                     -GeneralMath.sin((float) Math.toRadians(pitch), BuildSpeed.FAST),
-                    GeneralMath.cos((float) Math.toRadians(yaw), BuildSpeed.FAST));
+                    GeneralMath.cos((float) Math.toRadians(yaw), BuildSpeed.FAST)
+            );
             final double interpolatePitch = 1 - ((Math.abs(pitch) * 1.1111) / 100);
             direction.setX(direction.getX() * interpolatePitch);
             direction.setZ(direction.getZ() * interpolatePitch);
             location.add(direction.multiply(speed));
             location.add(0, yPhys, 0);
             yPhys -= 0.98e-2;
-            { // bound
+            {
                 double x = location.getX(),
                         y = location.getY(),
                         z = location.getZ();
@@ -94,7 +95,7 @@ public class Hook implements FunThing {
                 }
             }
         }
-        if (hoverTicks < 20 && optimizer3000) { // animation
+        if (hoverTicks < 20 && optimizer3000) {
             for (double d = 0; d < 1.0; d += 0.05) {
                 final Location to = linked.getTo();
                 final Location i = new Location(
@@ -103,7 +104,7 @@ public class Hook implements FunThing {
                         Interpolation.sineInterpolation(to.getY(), location.getY(), d, Interpolation.Ease.IN),
                         Interpolation.sineInterpolation(to.getZ(), location.getZ(), d, Interpolation.Ease.IN)
                 );
-                i.getWorld().spawnParticle(Particle.CRIT, i, 1, 0, 0, 0, 0);
+                ReflectionWrapper.spawnParticle(linked.getPlayer().getWorld(), "CRIT", i, 1, 0, 0, 0, 0);
             }
         }
     }
