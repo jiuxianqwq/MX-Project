@@ -80,10 +80,8 @@ public final class Spell implements FunThing {
                             ), speed + 0.4)) {
                         { // boom!
                             this.destroyed = true;
-                            Bukkit.getScheduler().runTask(MX.getInstance(), () -> {
-                                target.getPlayer().damage(damage);
-                            });
-                            location.getWorld().spawnParticle(explosion, location, 1, 0, 0, 0, 0);
+                            Bukkit.getScheduler().runTask(MX.getInstance(), () -> target.getPlayer().damage(damage));
+                            ParticleHelper.spawn(location.getWorld(), explosion, location, 1, 0, 0, 0, 0);
                             if (potionEffect != null)
                                 Bukkit.getScheduler().runTask(MX.getInstance(),
                                         () -> target.getPlayer().addPotionEffect(potionEffect));
