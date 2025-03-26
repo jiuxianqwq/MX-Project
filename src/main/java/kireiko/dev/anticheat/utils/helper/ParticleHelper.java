@@ -2,7 +2,6 @@
 package kireiko.dev.anticheat.utils.helper;
 
 import kireiko.dev.anticheat.utils.ReflectionUtils;
-import kireiko.dev.anticheat.utils.enums.ParticleTypes;
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -55,6 +54,7 @@ public final class ParticleHelper {
                 LEGACY_METHOD.invoke(world, type.name().toLowerCase(),
                         loc, count, x, y, z, extra);
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
 }

@@ -10,6 +10,7 @@ import kireiko.dev.anticheat.core.AsyncScheduler;
 import kireiko.dev.anticheat.services.FunThingsService;
 import kireiko.dev.anticheat.utils.ConfigCache;
 import kireiko.dev.anticheat.utils.MessageUtils;
+import kireiko.dev.anticheat.utils.TitleUtils;
 import kireiko.dev.anticheat.utils.enums.ParticleTypes;
 import kireiko.dev.millennium.math.AxisAlignedBB;
 import kireiko.dev.millennium.math.BuildSpeed;
@@ -141,21 +142,21 @@ public class InteractSpellListener implements Listener {
                                         new Vec2(profile.getTo().getPitch(), profile.getTo().getYaw()),
                                         new Vec3(profile.getTo().toVector()), axisAlignedBB, 125)) {
                                     FunThingsService.add(new Rocket(profile, target, profile.getTo().clone().add(0, 1.63, 0)));
-                                    player.sendTitle(
+                                    TitleUtils.sendTitle(player,
                                             MessageUtils.wrapColors("&a[   +   ]"),
                                             "", 0, 20, 20);
                                     Bukkit.getScheduler().runTaskLater(MX.getInstance(), () -> {
-                                        player.sendTitle(
+                                        TitleUtils.sendTitle(player,
                                                 MessageUtils.wrapColors("&e[  +  ]"),
                                                 "", 0, 20, 20);
                                     }, 1L);
                                     Bukkit.getScheduler().runTaskLater(MX.getInstance(), () -> {
-                                        player.sendTitle(
+                                        TitleUtils.sendTitle(player,
                                                 MessageUtils.wrapColors("&c[ + ]"),
                                                 "", 0, 20, 20);
                                     }, 2L);
                                     Bukkit.getScheduler().runTaskLater(MX.getInstance(), () -> {
-                                        player.sendTitle(
+                                        TitleUtils.sendTitle(player,
                                                 MessageUtils.wrapColors("&4[+]"),
                                                 "", 0, 20, 20);
                                         player.sendMessage(MessageUtils.wrapColors("&4//TARGET SPOTTED: " + target.getPlayer().getName().toUpperCase() + "//"));
@@ -163,7 +164,7 @@ public class InteractSpellListener implements Listener {
                                     break;
                                 }
                             }
-                            player.sendTitle(
+                            TitleUtils.sendTitle(player,
                                     MessageUtils.wrapColors("&f[     +     ]"),
                                     "", 0, 5, 5);
                         }
