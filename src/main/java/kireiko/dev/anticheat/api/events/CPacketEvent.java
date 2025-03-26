@@ -6,6 +6,6 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class CPacketEvent {
+public final class CPacketEvent {
     private PacketEvent packetEvent;
 }

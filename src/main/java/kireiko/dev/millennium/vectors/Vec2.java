@@ -3,7 +3,7 @@ package kireiko.dev.millennium.vectors;
 import lombok.Data;
 
 @Data
-public class Vec2 {
+public final class Vec2 {
 
     private double x, y;
 

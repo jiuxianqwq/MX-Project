@@ -11,7 +11,7 @@ import org.bukkit.util.Vector;
 
 import java.util.Collections;
 
-public class VelocityListener extends PacketAdapter {
+public final class VelocityListener extends PacketAdapter {
 
 
     public VelocityListener() {

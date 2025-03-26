@@ -11,7 +11,7 @@ import java.util.List;
 
 import static kireiko.dev.anticheat.utils.MessageUtils.wrapColors;
 
-public class ReloadCommand extends MXSubCommand {
+public final class ReloadCommand extends MXSubCommand {
     public ReloadCommand() {
         super("reload");
     }

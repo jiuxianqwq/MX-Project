@@ -11,7 +11,7 @@ import java.util.List;
 
 import static kireiko.dev.anticheat.utils.MessageUtils.wrapColors;
 
-public class StatsCommand extends MXSubCommand {
+public final class StatsCommand extends MXSubCommand {
     public StatsCommand() {
         super("stats");
     }

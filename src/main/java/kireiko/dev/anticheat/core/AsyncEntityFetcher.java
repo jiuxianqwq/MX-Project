@@ -8,7 +8,7 @@ import org.bukkit.entity.Entity;
 
 import java.util.concurrent.CompletableFuture;
 
-public class AsyncEntityFetcher {
+public final class AsyncEntityFetcher {
     public static CompletableFuture<Entity> getEntityFromIDAsync(final World world, final int entityId) {
         CompletableFuture<Entity> future = new CompletableFuture<>();
         Bukkit.getScheduler().runTask(MX.getInstance(), () -> {

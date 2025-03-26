@@ -4,7 +4,7 @@ import kireiko.dev.millennium.vectors.Vec3;
 import lombok.Getter;
 
 @Getter
-public class AxisAlignedBB {
+public final class AxisAlignedBB {
 
     public double minX;
     public double minY;

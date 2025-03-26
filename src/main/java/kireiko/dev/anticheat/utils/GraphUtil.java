@@ -7,7 +7,7 @@ import org.bukkit.ChatColor;
 
 import java.util.List;
 
-public class GraphUtil {
+public final class GraphUtil {
 
     public static GraphResult getGraph(List<Double> values) {
         StringBuilder graph = new StringBuilder();

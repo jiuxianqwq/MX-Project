@@ -5,7 +5,7 @@ import lombok.Getter;
 import java.util.HashSet;
 import java.util.Set;
 
-public class CheckPacketRegister {
+public final class CheckPacketRegister {
 
     @Getter
     private static final Set<PacketCheckHandler> listeners = new HashSet<>();

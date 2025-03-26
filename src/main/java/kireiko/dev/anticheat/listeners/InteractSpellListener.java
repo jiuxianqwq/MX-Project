@@ -10,6 +10,8 @@ import kireiko.dev.anticheat.core.AsyncScheduler;
 import kireiko.dev.anticheat.services.FunThingsService;
 import kireiko.dev.anticheat.utils.ConfigCache;
 import kireiko.dev.anticheat.utils.MessageUtils;
+import kireiko.dev.anticheat.utils.TitleUtils;
+import kireiko.dev.anticheat.utils.enums.ParticleTypes;
 import kireiko.dev.millennium.math.AxisAlignedBB;
 import kireiko.dev.millennium.math.BuildSpeed;
 import kireiko.dev.millennium.math.RayTrace;
@@ -17,7 +19,6 @@ import kireiko.dev.millennium.vectors.Vec2;
 import kireiko.dev.millennium.vectors.Vec3;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -43,8 +44,8 @@ public class InteractSpellListener implements Listener {
         if (event.getAction().equals(Action.RIGHT_CLICK_AIR) && event.hasItem()) {
             final ItemStack item = event.getItem();
             if (item == null || !item.hasItemMeta()) return;
-            if (!item.getItemMeta().hasDisplayName()) return;
             final String name = item.getItemMeta().getDisplayName();
+            if (name == null) return; // why nulled?? (@NotNull String getDisplayName())
             switch (name) {
                 case "§9Hook":
                     FunThingsService.add(new Hook(profile, profile.getTo().clone().add(0, 1.63, 0)));
@@ -52,12 +53,12 @@ public class InteractSpellListener implements Listener {
                     break;
                 case "§9Посох Винтербелла":
                     FunThingsService.add(new Spell(profile, profile.getTo().clone().add(0, 1.63, 0), 0.7, 8,
-                            Particle.SNOWBALL, Particle.SNOWBALL, new PotionEffect(PotionEffectType.SLOW, 60, 2)));
+                            ParticleTypes.SNOWBALL, ParticleTypes.SNOWBALL, new PotionEffect(PotionEffectType.SLOW, 60, 2)));
                     event.setCancelled(true);
                     break;
                 case "§9Посох Пламени":
                     FunThingsService.add(new Spell(profile, profile.getTo().clone().add(0, 1.63, 0), 0.6, 10,
-                            Particle.FLAME, Particle.LAVA, new PotionEffect(PotionEffectType.WITHER, 45, 1)));
+                            ParticleTypes.FLAME, ParticleTypes.LAVA, new PotionEffect(PotionEffectType.WITHER, 45, 1)));
                     event.setCancelled(true);
                     break;
                 case "§9Проклятое заклинание": {
@@ -68,7 +69,7 @@ public class InteractSpellListener implements Listener {
                         location.setYaw(location.getYaw() + f1);
                         location.setPitch(location.getPitch() + f2);
                         FunThingsService.add(new Spell(profile, location, 0.8, 6,
-                                Particle.FLAME, Particle.LAVA,
+                                ParticleTypes.FLAME, ParticleTypes.LAVA,
                                 new PotionEffect(PotionEffectType.WITHER, 70, 1)));
                     }
                     { // ice
@@ -78,7 +79,7 @@ public class InteractSpellListener implements Listener {
                         location.setYaw(location.getYaw() + f1);
                         location.setPitch(location.getPitch() + f2);
                         FunThingsService.add(new Spell(profile, location, 0.8, 4,
-                                Particle.SNOWBALL, Particle.SNOWBALL,
+                                ParticleTypes.SNOWBALL, ParticleTypes.SNOWBALL,
                                 new PotionEffect(PotionEffectType.SLOW, 70, 1)));
                     }
                     { // smoke
@@ -88,7 +89,7 @@ public class InteractSpellListener implements Listener {
                         location.setYaw(location.getYaw() + f1);
                         location.setPitch(location.getPitch() + f2);
                         FunThingsService.add(new Spell(profile, location, 0.8, 8,
-                                Particle.SMOKE_NORMAL, Particle.SMOKE_NORMAL,
+                                ParticleTypes.SMOKE_NORMAL, ParticleTypes.SMOKE_NORMAL,
                                 new PotionEffect(PotionEffectType.BLINDNESS, 70, 1)));
                     }
                     { // cloud
@@ -98,7 +99,7 @@ public class InteractSpellListener implements Listener {
                         location.setYaw(location.getYaw() + f1);
                         location.setPitch(location.getPitch() + f2);
                         FunThingsService.add(new Spell(profile, location, 0.8, 2,
-                                Particle.CLOUD, Particle.CLOUD,
+                                ParticleTypes.CLOUD, ParticleTypes.CLOUD,
                                 new PotionEffect(PotionEffectType.LEVITATION, 70, 2)));
                     }
                     { // explosion
@@ -108,7 +109,7 @@ public class InteractSpellListener implements Listener {
                         location.setYaw(location.getYaw() + f1);
                         location.setPitch(location.getPitch() + f2);
                         FunThingsService.add(new Spell(profile, location, 0.8, 15,
-                                Particle.EXPLOSION_NORMAL, Particle.EXPLOSION_LARGE, null));
+                                ParticleTypes.EXPLOSION_NORMAL, ParticleTypes.EXPLOSION_LARGE, null));
                     }
                     event.setCancelled(true);
                     break;
@@ -120,7 +121,7 @@ public class InteractSpellListener implements Listener {
                     location.setYaw(location.getYaw() + f1);
                     location.setPitch(location.getPitch() + f2);
                     FunThingsService.add(new Spell(profile, location, 1.5, 4,
-                            Particle.CRIT_MAGIC, Particle.CRIT_MAGIC, null));
+                            ParticleTypes.CRIT_MAGIC, ParticleTypes.CRIT_MAGIC, null));
                     event.setCancelled(true);
                     break;
                 }
@@ -141,21 +142,21 @@ public class InteractSpellListener implements Listener {
                                         new Vec2(profile.getTo().getPitch(), profile.getTo().getYaw()),
                                         new Vec3(profile.getTo().toVector()), axisAlignedBB, 125)) {
                                     FunThingsService.add(new Rocket(profile, target, profile.getTo().clone().add(0, 1.63, 0)));
-                                    player.sendTitle(
+                                    TitleUtils.sendTitle(player,
                                             MessageUtils.wrapColors("&a[   +   ]"),
                                             "", 0, 20, 20);
                                     Bukkit.getScheduler().runTaskLater(MX.getInstance(), () -> {
-                                        player.sendTitle(
+                                        TitleUtils.sendTitle(player,
                                                 MessageUtils.wrapColors("&e[  +  ]"),
                                                 "", 0, 20, 20);
                                     }, 1L);
                                     Bukkit.getScheduler().runTaskLater(MX.getInstance(), () -> {
-                                        player.sendTitle(
+                                        TitleUtils.sendTitle(player,
                                                 MessageUtils.wrapColors("&c[ + ]"),
                                                 "", 0, 20, 20);
                                     }, 2L);
                                     Bukkit.getScheduler().runTaskLater(MX.getInstance(), () -> {
-                                        player.sendTitle(
+                                        TitleUtils.sendTitle(player,
                                                 MessageUtils.wrapColors("&4[+]"),
                                                 "", 0, 20, 20);
                                         player.sendMessage(MessageUtils.wrapColors("&4//TARGET SPOTTED: " + target.getPlayer().getName().toUpperCase() + "//"));
@@ -163,7 +164,7 @@ public class InteractSpellListener implements Listener {
                                     break;
                                 }
                             }
-                            player.sendTitle(
+                            TitleUtils.sendTitle(player,
                                     MessageUtils.wrapColors("&f[     +     ]"),
                                     "", 0, 5, 5);
                         }

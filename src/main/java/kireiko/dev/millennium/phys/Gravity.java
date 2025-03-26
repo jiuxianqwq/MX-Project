@@ -3,7 +3,7 @@ package kireiko.dev.millennium.phys;
 import lombok.Data;
 
 @Data
-public class Gravity {
+public final class Gravity {
     private double gravity;
     private double motion;
 

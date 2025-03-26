@@ -3,23 +3,22 @@ package kireiko.dev.anticheat.listeners;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.*;
-import com.comphenix.protocol.utility.MinecraftVersion;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import kireiko.dev.anticheat.MX;
 import kireiko.dev.anticheat.api.PlayerContainer;
 import kireiko.dev.anticheat.api.events.UseEntityEvent;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
 import kireiko.dev.anticheat.core.AsyncEntityFetcher;
+import kireiko.dev.anticheat.utils.version.VersionUtil;
 import lombok.SneakyThrows;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.Collections;
 
-public class UseEntityListener extends PacketAdapter {
+public final class UseEntityListener extends PacketAdapter {
 
-    private static final boolean modern = ProtocolLibrary.getProtocolManager().getMinecraftVersion()
-            .compareTo(new MinecraftVersion("1.13")) >= 0;
+    private static final boolean modern = VersionUtil.is1_13orAbove();
 
     public UseEntityListener() {
         super(MX.getInstance(), ListenerPriority.HIGHEST, Collections.singletonList(PacketType.Play.Client.USE_ENTITY), ListenerOptions.ASYNC);

@@ -13,7 +13,7 @@ import java.util.List;
 
 import static kireiko.dev.anticheat.utils.MessageUtils.wrapColors;
 
-public class BroadcastCommand extends MXSubCommand {
+public final class BroadcastCommand extends MXSubCommand {
 
     public BroadcastCommand() {
         super("bc");

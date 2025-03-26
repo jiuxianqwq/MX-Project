@@ -1,6 +1,8 @@
 package kireiko.dev.anticheat.api.player.fun;
 
 import kireiko.dev.anticheat.api.player.PlayerProfile;
+import kireiko.dev.anticheat.utils.enums.ParticleTypes;
+import kireiko.dev.anticheat.utils.helper.ParticleHelper;
 import kireiko.dev.millennium.math.BuildSpeed;
 import kireiko.dev.millennium.math.Euler;
 import kireiko.dev.millennium.math.GeneralMath;
@@ -10,7 +12,6 @@ import kireiko.dev.millennium.vectors.Vec3;
 import lombok.Data;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.util.Vector;
 
@@ -103,7 +104,7 @@ public class Hook implements FunThing {
                         Interpolation.sineInterpolation(to.getY(), location.getY(), d, Interpolation.Ease.IN),
                         Interpolation.sineInterpolation(to.getZ(), location.getZ(), d, Interpolation.Ease.IN)
                 );
-                i.getWorld().spawnParticle(Particle.CRIT, i, 1, 0, 0, 0, 0);
+                ParticleHelper.spawn(linked.getPlayer().getWorld(), ParticleTypes.CRIT, i, 1, 0, 0, 0, 0);
             }
         }
     }

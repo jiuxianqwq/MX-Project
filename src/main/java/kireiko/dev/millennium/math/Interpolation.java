@@ -1,6 +1,6 @@
 package kireiko.dev.millennium.math;
 
-public class Interpolation {
+public final class Interpolation {
 
     public static double interpolate(double from, double to, double percent, Type type, Ease ease) {
         switch (type) {

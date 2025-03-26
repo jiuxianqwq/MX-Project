@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 
-public class AimStatisticsCheck implements PacketCheckHandler {
+public final class AimStatisticsCheck implements PacketCheckHandler {
     private final List<Float> buffer;
     private final PlayerProfile profile;
     private final List<Vec2f> rawRotations;

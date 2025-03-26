@@ -11,7 +11,7 @@ import java.util.concurrent.*;
 import java.util.function.Function;
 
 @Log
-public class AsyncScheduler {
+public final class AsyncScheduler {
 
     private static final char INNER_CLASS_SEPARATOR_CHAR = '$';
     public static int STOP_WATCH_TIME_MILLIS = 1500;

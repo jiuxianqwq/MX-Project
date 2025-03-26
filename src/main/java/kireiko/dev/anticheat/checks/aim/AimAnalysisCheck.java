@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class AimAnalysisCheck implements PacketCheckHandler {
+public final class AimAnalysisCheck implements PacketCheckHandler {
     private final List<Float> buffer;
     private final PlayerProfile profile;
     private final List<Vec2f> rawRotations;

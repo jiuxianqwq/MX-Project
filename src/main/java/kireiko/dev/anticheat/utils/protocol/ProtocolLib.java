@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import java.util.Random;
 import java.util.UUID;
 
-public class ProtocolLib {
+public final class ProtocolLib {
 
     private static boolean
             temporaryClass = false;

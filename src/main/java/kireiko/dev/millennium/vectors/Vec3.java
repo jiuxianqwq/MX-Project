@@ -2,7 +2,7 @@ package kireiko.dev.millennium.vectors;
 
 import org.bukkit.util.Vector;
 
-public class Vec3 {
+public final class Vec3 {
     /**
      * X coordinate of Vec3D
      */

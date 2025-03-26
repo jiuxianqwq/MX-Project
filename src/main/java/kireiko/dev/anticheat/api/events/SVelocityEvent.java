@@ -4,7 +4,7 @@ import lombok.Getter;
 import org.bukkit.util.Vector;
 
 @Getter
-public class SVelocityEvent {
+public final class SVelocityEvent {
     private final Vector velocity;
 
     public SVelocityEvent(Vector velocity) {

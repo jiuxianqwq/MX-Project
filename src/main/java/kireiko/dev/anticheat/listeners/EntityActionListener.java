@@ -12,7 +12,7 @@ import kireiko.dev.anticheat.api.player.PlayerProfile;
 
 import java.util.Collections;
 
-public class EntityActionListener extends PacketAdapter {
+public final class EntityActionListener extends PacketAdapter {
 
     public EntityActionListener() {
         super(

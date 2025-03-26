@@ -12,7 +12,7 @@ import java.util.List;
 
 import static kireiko.dev.anticheat.utils.MessageUtils.wrapColors;
 
-public class AlertCommand extends MXSubCommand {
+public final class AlertCommand extends MXSubCommand {
     public AlertCommand() {
         super("alert");
     }

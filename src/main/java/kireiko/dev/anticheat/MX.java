@@ -21,7 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public final class MX extends JavaPlugin {
+public class MX extends JavaPlugin {
 
     public static final String
             command = "mx",

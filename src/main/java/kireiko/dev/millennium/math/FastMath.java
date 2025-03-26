@@ -1,6 +1,6 @@
 package kireiko.dev.millennium.math;
 
-public class FastMath {
+public final class FastMath {
 
     private static final float[] SIN_TABLE_FAST = new float[4096];
     private static final float[] SIN_TABLE = new float[65536];

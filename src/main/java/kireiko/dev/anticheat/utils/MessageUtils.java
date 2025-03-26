@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class MessageUtils {
+public final class MessageUtils {
     public static void sendMessagesToPlayers(String permission, String message) {
         for (Player player : Bukkit.getOnlinePlayers()) {
             PlayerProfile profile = PlayerContainer.getProfile(player);
