@@ -11,7 +11,7 @@ import org.bukkit.Bukkit;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public final class FunThingsService {
+public class FunThingsService {
 
     private static final List<FunThing> things = new CopyOnWriteArrayList<>();
 

@@ -2,13 +2,14 @@ package kireiko.dev.anticheat.api.player.fun;
 
 import kireiko.dev.anticheat.MX;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
+import kireiko.dev.anticheat.utils.enums.ParticleTypes;
+import kireiko.dev.anticheat.utils.helper.ParticleHelper;
 import kireiko.dev.millennium.math.*;
 import kireiko.dev.millennium.vectors.Vec2;
 import kireiko.dev.millennium.vectors.Vec3;
 import lombok.Data;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.util.Vector;
 
 @Data
@@ -62,13 +63,13 @@ public final class Rocket implements FunThing {
                     Bukkit.getScheduler().runTask(MX.getInstance(), () -> {
                         target.getPlayer().damage(100);
                     });
-                    location.getWorld().spawnParticle(Particle.EXPLOSION_LARGE, location, 1, 0, 0, 0, 0);
+                    ParticleHelper.spawn(location.getWorld(), ParticleTypes.EXPLOSION_LARGE, location, 1, 0, 0, 0, 0);
                 }
             }
         }
         if (optimizer3000) { // animation
-            location.getWorld().spawnParticle(Particle.FLAME, location, 1, 0, 0, 0, 0);
-            location.getWorld().spawnParticle(Particle.SMOKE_NORMAL, location, 1, 0, 0, 0, 0);
+            ParticleHelper.spawn(location.getWorld(), ParticleTypes.FLAME, location, 1, 0, 0, 0, 0);
+            ParticleHelper.spawn(location.getWorld(), ParticleTypes.SMOKE_NORMAL, location, 1, 0, 0, 0, 0);
         }
     }
 }
