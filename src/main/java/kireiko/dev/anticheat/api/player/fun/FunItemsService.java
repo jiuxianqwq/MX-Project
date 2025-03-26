@@ -1,7 +1,7 @@
 package kireiko.dev.anticheat.api.player.fun;
 
 import kireiko.dev.anticheat.utils.MaterialUtil;
-import kireiko.dev.anticheat.utils.wrapper.ReflectionWrapper;
+import kireiko.dev.anticheat.utils.helper.ItemStackHelper;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -21,7 +21,7 @@ public final class FunItemsService {
                 meta.addEnchant(Enchantment.DAMAGE_ALL, 10, true);
                 rod.setItemMeta(meta);
             }
-            ReflectionWrapper.setUnbreakable(rod, true);
+            ItemStackHelper.setUnbreakable(rod, true);
             player.getInventory().addItem(rod);
         }
         { // Rocket Launcher
@@ -32,7 +32,7 @@ public final class FunItemsService {
                 meta.addEnchant(Enchantment.DAMAGE_ALL, 10, true);
                 rod.setItemMeta(meta);
             }
-            ReflectionWrapper.setUnbreakable(rod, true);
+            ItemStackHelper.setUnbreakable(rod, true);
             player.getInventory().addItem(rod);
         }
         { // Winter Staff
@@ -43,7 +43,7 @@ public final class FunItemsService {
                 meta.addEnchant(Enchantment.DAMAGE_ALL, 15, true);
                 rod.setItemMeta(meta);
             }
-            ReflectionWrapper.setUnbreakable(rod, true);
+            ItemStackHelper.setUnbreakable(rod, true);
             player.getInventory().addItem(rod);
         }
         { // Blaze Staff
@@ -54,7 +54,7 @@ public final class FunItemsService {
                 meta.addEnchant(Enchantment.DAMAGE_ALL, 15, true);
                 rod.setItemMeta(meta);
             }
-            ReflectionWrapper.setUnbreakable(rod, true);
+            ItemStackHelper.setUnbreakable(rod, true);
             player.getInventory().addItem(rod);
         }
         { // AK-47
@@ -65,7 +65,7 @@ public final class FunItemsService {
                 meta.addEnchant(Enchantment.DAMAGE_ALL, 9, true);
                 rod.setItemMeta(meta);
             }
-            ReflectionWrapper.setUnbreakable(rod, true);
+            ItemStackHelper.setUnbreakable(rod, true);
             player.getInventory().addItem(rod);
         }
         { // Cursed Spell
@@ -76,7 +76,7 @@ public final class FunItemsService {
                 meta.addEnchant(Enchantment.FIRE_ASPECT, 2, true);
                 rod.setItemMeta(meta);
             }
-            ReflectionWrapper.setUnbreakable(rod, true);
+            ItemStackHelper.setUnbreakable(rod, true);
             player.getInventory().addItem(rod);
         }
     }

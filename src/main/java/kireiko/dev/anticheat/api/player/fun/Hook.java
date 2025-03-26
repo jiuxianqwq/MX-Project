@@ -1,7 +1,7 @@
 package kireiko.dev.anticheat.api.player.fun;
 
 import kireiko.dev.anticheat.api.player.PlayerProfile;
-import kireiko.dev.anticheat.utils.wrapper.ReflectionWrapper;
+import kireiko.dev.anticheat.utils.helper.ParticleHelper;
 import kireiko.dev.millennium.math.BuildSpeed;
 import kireiko.dev.millennium.math.Euler;
 import kireiko.dev.millennium.math.GeneralMath;
@@ -104,7 +104,7 @@ public final class Hook implements FunThing {
                         Interpolation.sineInterpolation(to.getY(), location.getY(), d, Interpolation.Ease.IN),
                         Interpolation.sineInterpolation(to.getZ(), location.getZ(), d, Interpolation.Ease.IN)
                 );
-                ReflectionWrapper.spawnParticle(linked.getPlayer().getWorld(), "CRIT", i, 1, 0, 0, 0, 0);
+                ParticleHelper.spawn(linked.getPlayer().getWorld(), "CRIT", i, 1, 0, 0, 0, 0);
             }
         }
     }
