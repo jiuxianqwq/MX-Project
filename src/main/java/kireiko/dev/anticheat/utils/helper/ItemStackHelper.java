@@ -1,25 +1,19 @@
 package kireiko.dev.anticheat.utils.helper;
 
 import kireiko.dev.anticheat.utils.BukkitUtils;
-import org.bukkit.Bukkit;
+import kireiko.dev.anticheat.utils.ReflectionUtils;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import java.lang.reflect.Method;
 
-public class ItemStackHelper {
-    private static boolean MODERN_API;
+public final class ItemStackHelper {
     private static final Method SET_UNBREAKABLE_METHOD;
+    private static final boolean MODERN_API;
 
     static {
-        Method method;
-        try {
-            method = ItemMeta.class.getMethod("setUnbreakable", boolean.class);
-            MODERN_API = true;
-        } catch (NoSuchMethodException e) {
-            method = null;
-            MODERN_API = false;
-        }
-        SET_UNBREAKABLE_METHOD = method;
+        SET_UNBREAKABLE_METHOD = ReflectionUtils.getMethod(ItemMeta.class,
+                "setUnbreakable", boolean.class);
+        MODERN_API = SET_UNBREAKABLE_METHOD != null;
     }
 
     public static void setUnbreakable(ItemStack item, boolean unbreakable) {
@@ -38,24 +32,29 @@ public class ItemStackHelper {
     }
 
     private static void handleLegacy(ItemStack item, boolean unbreakable) throws Exception {
-        // server version getter
         String version = BukkitUtils.getVersion();
-        Class<?> craftClass = Class.forName("org.bukkit.craftbukkit." + version + ".inventory.CraftItemStack");
-        Object nmsItem = craftClass.getMethod("asNMSCopy", ItemStack.class).invoke(null, item);
+        Class<?> craftClass = ReflectionUtils.getClass(
+                "org.bukkit.craftbukkit." + version + ".inventory.CraftItemStack");
+
+        Object nmsItem = ReflectionUtils.invokeStaticMethod(craftClass,
+                "asNMSCopy", new Object[]{item});
 
         Object tag = getTag(nmsItem);
-        tag.getClass().getMethod("setInt", String.class, int.class).invoke(tag, "Unbreakable", unbreakable ? 1 : 0);
-        nmsItem.getClass().getMethod("setTag", tag.getClass()).invoke(nmsItem, tag);
+        ReflectionUtils.invokeMethod(tag, "setInt",
+                new Object[]{"Unbreakable", unbreakable ? 1 : 0});
 
-        ItemStack result = (ItemStack) craftClass.getMethod("asBukkitCopy", nmsItem.getClass()).invoke(null, nmsItem);
+        ReflectionUtils.invokeMethod(nmsItem, "setTag", new Object[]{tag});
+        ItemStack result = (ItemStack) ReflectionUtils.invokeStaticMethod(craftClass,
+                "asBukkitCopy", new Object[]{nmsItem});
+
         item.setItemMeta(result.getItemMeta());
     }
 
-    private static Object getTag(Object nmsItem) throws Exception {
-        if ((boolean) nmsItem.getClass().getMethod("hasTag").invoke(nmsItem)) {
-            return nmsItem.getClass().getMethod("getTag").invoke(nmsItem);
+    private static Object getTag(Object nmsItem) {
+        if ((boolean) ReflectionUtils.invokeMethod(nmsItem, "hasTag")) {
+            return ReflectionUtils.invokeMethod(nmsItem, "getTag");
         }
-        String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
-        return Class.forName("net.minecraft.server." + version + ".NBTTagCompound").newInstance();
+        return ReflectionUtils.newInstance(
+                "net.minecraft.server." + BukkitUtils.getVersion() + ".NBTTagCompound");
     }
 }

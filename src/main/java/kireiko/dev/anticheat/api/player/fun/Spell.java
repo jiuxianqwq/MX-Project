@@ -3,6 +3,8 @@ package kireiko.dev.anticheat.api.player.fun;
 import kireiko.dev.anticheat.MX;
 import kireiko.dev.anticheat.api.PlayerContainer;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
+import kireiko.dev.anticheat.utils.enums.ParticleTypes;
+import kireiko.dev.anticheat.utils.helper.ParticleHelper;
 import kireiko.dev.millennium.math.AxisAlignedBB;
 import kireiko.dev.millennium.math.BuildSpeed;
 import kireiko.dev.millennium.math.GeneralMath;
@@ -13,7 +15,6 @@ import lombok.Data;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.Vector;
@@ -24,7 +25,7 @@ import static kireiko.dev.anticheat.utils.protocol.ProtocolTools.getBlockAsync;
 public final class Spell implements FunThing {
     private final PlayerProfile linked;
     private final Location location;
-    private final Particle effect, explosion;
+    private final ParticleTypes effect, explosion;
     private double speed, damage;
     private boolean destroyed;
     private boolean optimizer3000;
@@ -32,8 +33,8 @@ public final class Spell implements FunThing {
     private int exist;
 
     public Spell(final PlayerProfile linked, final Location location,
-                 final double speed, final double damage, final Particle effect,
-                 final Particle explosion, final PotionEffect potionEffect) {
+                 final double speed, final double damage, final ParticleTypes effect,
+                 final ParticleTypes explosion, final PotionEffect potionEffect) {
         this.linked = linked;
         this.location = location;
         this.location.setWorld(linked.getPlayer().getWorld());
@@ -79,10 +80,8 @@ public final class Spell implements FunThing {
                             ), speed + 0.4)) {
                         { // boom!
                             this.destroyed = true;
-                            Bukkit.getScheduler().runTask(MX.getInstance(), () -> {
-                                target.getPlayer().damage(damage);
-                            });
-                            location.getWorld().spawnParticle(explosion, location, 1, 0, 0, 0, 0);
+                            Bukkit.getScheduler().runTask(MX.getInstance(), () -> target.getPlayer().damage(damage));
+                            ParticleHelper.spawn(location.getWorld(), explosion, location, 1, 0, 0, 0, 0);
                             if (potionEffect != null)
                                 Bukkit.getScheduler().runTask(MX.getInstance(),
                                         () -> target.getPlayer().addPotionEffect(potionEffect));
@@ -112,7 +111,7 @@ public final class Spell implements FunThing {
                         final Material material = block.getType();
                         if (!material.toString().contains("AIR")) {
                             destroyed = true;
-                            location.getWorld().spawnParticle(explosion, location, 5);
+                            ParticleHelper.spawn(location.getWorld(), explosion, location, 5);
                             break;
                         }
                     }
@@ -121,7 +120,7 @@ public final class Spell implements FunThing {
         }
 
         if (optimizer3000) { // animation
-            location.getWorld().spawnParticle(effect, location, 1, 0, 0, 0, 0);
+            ParticleHelper.spawn(location.getWorld(), effect, location, 1, 0, 0, 0, 0);
         }
         if (exist > 1200) destroyed = true;
     }
