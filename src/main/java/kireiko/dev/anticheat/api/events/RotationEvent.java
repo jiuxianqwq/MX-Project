@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class RotationEvent {
+public final class RotationEvent {
     private PlayerProfile profile;
     private Vec2f from;
     private Vec2f to;

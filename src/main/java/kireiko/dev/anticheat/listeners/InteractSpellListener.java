@@ -29,7 +29,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class InteractSpellListener implements Listener {
+public final class InteractSpellListener implements Listener {
     @EventHandler
     public void interact(PlayerInteractEvent event) {
         if (!ConfigCache.INTERACT_SPELL) {

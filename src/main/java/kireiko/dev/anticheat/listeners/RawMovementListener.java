@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 
-public class RawMovementListener extends PacketAdapter {
+public final class RawMovementListener extends PacketAdapter {
     public RawMovementListener() {
         super(
                 MX.getInstance(),

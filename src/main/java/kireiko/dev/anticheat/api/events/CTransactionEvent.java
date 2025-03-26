@@ -2,7 +2,7 @@ package kireiko.dev.anticheat.api.events;
 
 import kireiko.dev.anticheat.api.player.PlayerProfile;
 
-public class CTransactionEvent {
+public final class CTransactionEvent {
 
     public final PlayerProfile protocol;
     public final long time, delay;

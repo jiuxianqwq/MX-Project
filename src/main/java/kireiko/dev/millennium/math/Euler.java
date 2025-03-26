@@ -6,7 +6,7 @@ import lombok.NonNull;
 
 import static java.lang.Math.PI;
 
-public class Euler {
+public final class Euler {
 
     public static boolean compareTwoVectorAngle(@NonNull Vec2 a, @NonNull Vec2 b, double radi) {
         double angleA = Math.atan2(a.getY(), a.getX());

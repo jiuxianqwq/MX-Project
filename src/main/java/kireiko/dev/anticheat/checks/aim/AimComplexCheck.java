@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class AimComplexCheck implements PacketCheckHandler {
+public final class AimComplexCheck implements PacketCheckHandler {
     private final List<Float> buffer;
     private final PlayerProfile profile;
     private final List<Vec2i> /*rotations,*/ rotations2;

@@ -16,7 +16,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Collections;
 
-public class UseEntityListener extends PacketAdapter {
+public final class UseEntityListener extends PacketAdapter {
 
     private static final boolean modern = ProtocolLibrary.getProtocolManager().getMinecraftVersion()
             .compareTo(new MinecraftVersion("1.13")) >= 0;

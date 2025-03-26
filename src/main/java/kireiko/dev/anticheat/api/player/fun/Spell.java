@@ -21,7 +21,7 @@ import org.bukkit.util.Vector;
 import static kireiko.dev.anticheat.utils.protocol.ProtocolTools.getBlockAsync;
 
 @Data
-public class Spell implements FunThing {
+public final class Spell implements FunThing {
     private final PlayerProfile linked;
     private final Location location;
     private final Particle effect, explosion;

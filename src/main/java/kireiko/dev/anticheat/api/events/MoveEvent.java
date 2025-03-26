@@ -8,7 +8,7 @@ import org.bukkit.Location;
 
 @Data
 @AllArgsConstructor
-public class MoveEvent {
+public final class MoveEvent {
     private PlayerProfile profile;
     private Location from;
     private Location to;

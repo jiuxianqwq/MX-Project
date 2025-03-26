@@ -12,7 +12,7 @@ import kireiko.dev.anticheat.api.player.PlayerProfile;
 
 import java.util.Collections;
 
-public class InventoryListener extends PacketAdapter {
+public final class InventoryListener extends PacketAdapter {
 
     public InventoryListener() {
         super(

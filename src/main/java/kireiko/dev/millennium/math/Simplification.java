@@ -1,6 +1,6 @@
 package kireiko.dev.millennium.math;
 
-public class Simplification {
+public final class Simplification {
     public static float castTo360(float num) {
         float value = Math.abs((num + 360) % 360 - 180);
         return value;

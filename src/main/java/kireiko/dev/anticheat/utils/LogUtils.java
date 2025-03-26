@@ -8,7 +8,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LogUtils {
+public final class LogUtils {
 
     private static final File LOGS_FOLDER;
 

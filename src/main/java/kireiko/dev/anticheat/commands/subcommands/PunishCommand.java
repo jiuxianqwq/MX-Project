@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class PunishCommand extends MXSubCommand {
+public final class PunishCommand extends MXSubCommand {
 
     public PunishCommand() {
         super("punish");

@@ -9,7 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-public class PhantomWorld {
+public final class PhantomWorld {
 
 
     // Will create a "phantom" block

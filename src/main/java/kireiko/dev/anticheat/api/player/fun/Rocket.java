@@ -12,7 +12,7 @@ import org.bukkit.Particle;
 import org.bukkit.util.Vector;
 
 @Data
-public class Rocket implements FunThing {
+public final class Rocket implements FunThing {
     private final PlayerProfile linked;
     private final PlayerProfile target;
     private final Location location;

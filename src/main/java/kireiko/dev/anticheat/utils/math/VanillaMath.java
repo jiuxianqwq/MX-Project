@@ -2,7 +2,7 @@ package kireiko.dev.anticheat.utils.math;
 
 import kireiko.dev.millennium.math.FastMath;
 
-public class VanillaMath implements ClientMath {
+public final class VanillaMath implements ClientMath {
     public static float sqrt(float f) {
         return (float) Math.sqrt(f);
     }

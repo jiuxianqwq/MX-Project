@@ -3,7 +3,7 @@ package kireiko.dev.millennium.math;
 import kireiko.dev.millennium.vectors.Vec2;
 import kireiko.dev.millennium.vectors.Vec3;
 
-public class RayTrace {
+public final class RayTrace {
     public static boolean doRayTrace(BuildSpeed s, Vec2 rotation, Vec3 from, AxisAlignedBB box, double dist) {
         boolean intersection = false;
         intersection = isIntersection(from, rotation, intersection, box, dist, s);

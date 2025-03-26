@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 
-public class LatencyHandler extends PacketAdapter {
+public final class LatencyHandler extends PacketAdapter {
 
     public LatencyHandler() {
         super(

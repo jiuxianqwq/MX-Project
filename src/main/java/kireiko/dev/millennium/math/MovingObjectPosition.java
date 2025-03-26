@@ -2,7 +2,7 @@ package kireiko.dev.millennium.math;
 
 import kireiko.dev.millennium.vectors.Vec3;
 
-public class MovingObjectPosition {
+public final class MovingObjectPosition {
     /**
      * What type of ray trace hit was this? 0 = block, 1 = entity
      */

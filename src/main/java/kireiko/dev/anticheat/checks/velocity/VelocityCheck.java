@@ -14,7 +14,7 @@ import org.bukkit.util.Vector;
 
 import java.util.regex.Pattern;
 
-public class VelocityCheck implements PacketCheckHandler {
+public final class VelocityCheck implements PacketCheckHandler {
     private static final Pattern pattern = Pattern.compile("(?i)(.*(snow|step|frame|table|water|lava|web|slab|stair|ladder|vine|waterlily|wall|carpet|fence|rod|bed|skull|pot|hopper|door|bars|piston|lily).*)");
     private final PlayerProfile profile;
     private final double[] jumpReset = new double[]{0.248136, 0.3332};

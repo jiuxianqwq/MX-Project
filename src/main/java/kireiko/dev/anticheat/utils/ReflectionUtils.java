@@ -2,7 +2,7 @@ package kireiko.dev.anticheat.utils;
 
 import java.lang.reflect.Field;
 
-public class ReflectionUtils {
+public final class ReflectionUtils {
 
     public static Class<?> getClass(String s) {
         try {
