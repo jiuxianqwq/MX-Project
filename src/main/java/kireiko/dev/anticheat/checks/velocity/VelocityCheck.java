@@ -1,5 +1,6 @@
 package kireiko.dev.anticheat.checks.velocity;
 
+import kireiko.dev.anticheat.MX;
 import kireiko.dev.anticheat.api.PacketCheckHandler;
 import kireiko.dev.anticheat.api.events.CTransactionEvent;
 import kireiko.dev.anticheat.api.events.MoveEvent;
@@ -8,6 +9,7 @@ import kireiko.dev.anticheat.api.player.PlayerProfile;
 import kireiko.dev.anticheat.services.SimulationFlagService;
 import kireiko.dev.anticheat.utils.ConfigCache;
 import kireiko.dev.millennium.math.Simplification;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.util.Vector;
@@ -86,7 +88,11 @@ public final class VelocityCheck implements PacketCheckHandler {
         final long delay = System.currentTimeMillis() - oldTime;
         Location from = event.getFrom();
         Location to = event.getTo();
-        if (isPointWall(to.clone().add(0, 1, 0), 0.75)) velocity = null;
+        Bukkit.getScheduler().runTask(MX.getInstance(), (task) -> {
+            if (isPointWall(to.clone().add(0, 1, 0), 0.75)) { // cannot handle this asynchronously
+                velocity = null;
+            }
+        });
 
         final double x = -(to.getX() - from.getX());
         final double y = -(to.getY() - from.getY());
