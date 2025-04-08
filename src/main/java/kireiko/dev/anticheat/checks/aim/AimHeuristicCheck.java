@@ -26,6 +26,7 @@ public class AimHeuristicCheck implements PacketCheckHandler {
             this.components.add(new AimConstantCheck(this));
             this.components.add(new AimInvalidCheck(this));
             this.components.add(new AimFilterCheck(this));
+            this.components.add(new AimInconsistentCheck(this));
         }
     }
 

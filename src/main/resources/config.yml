@@ -16,7 +16,7 @@ punishEffect: false
 interactSpell: true
 
 # TURN ON/OFF Anti-KnockBack Checks
-checkVelocity: true
+checkVelocity: false
 
 # will remove false positives from the cinematic camera,
 # but it will severely weaken the checks!

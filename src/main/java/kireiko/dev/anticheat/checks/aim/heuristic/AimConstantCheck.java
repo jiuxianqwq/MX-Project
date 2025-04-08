@@ -6,11 +6,16 @@ import kireiko.dev.anticheat.utils.ConfigCache;
 import kireiko.dev.millennium.math.Statistics;
 
 public final class AimConstantCheck implements HeuristicComponent {
-    private static final double MODULO_THRESHOLD = 90F;
-    private static final double LINEAR_THRESHOLD = 0.1F;
+
+    private static final double MODULO_THRESHOLD = 60.0;
+    private static final double LINEAR_THRESHOLD = 0.1;
+    private static final float MIN_DELTA = 0.1f;
+    private static final float MAX_DELTA = 20.0f;
+
     private final AimHeuristicCheck check;
     private float lastDeltaYaw = 0.0f, lastDeltaPitch = 0.0f;
-    private float buffer = 0, buffer2 = 0;
+    private float buffer = 0, buffer2 = 0, buffer3 = 0;
+    private int rating = 0, toReview = 0;
 
     public AimConstantCheck(final AimHeuristicCheck check) {
         this.check = check;
@@ -20,17 +25,27 @@ public final class AimConstantCheck implements HeuristicComponent {
     public void process(final RotationEvent rotationUpdate) {
         final float deltaYaw = rotationUpdate.getAbsDelta().getX();
         final float deltaPitch = rotationUpdate.getAbsDelta().getY();
-        if (ConfigCache.IGNORE_CINEMATIC) return;
+
+        if (ConfigCache.IGNORE_CINEMATIC || check.getProfile().ignoreCinematic()) return;
+
+        final double sensitivity = check.getProfile().calculateSensitivity();
+        final boolean sensitivityTooLow = sensitivity < 30.0 && sensitivity > -1.0;
+        final double divisorYaw = Statistics.getGcd((long) (deltaYaw * Statistics.EXPANDER), (long) (lastDeltaYaw * Statistics.EXPANDER));
+        final double divisorPitch = Statistics.getGcd((long) (deltaPitch * Statistics.EXPANDER), (long) (lastDeltaPitch * Statistics.EXPANDER));
+
+        final double constantYaw = divisorYaw / Statistics.EXPANDER;
+        final double constantPitch = divisorPitch / Statistics.EXPANDER;
         { // type 1
             final long expandedPitch = (long) (Statistics.EXPANDER * deltaPitch);
             final long expandedLastPitch = (long) (Statistics.EXPANDER * lastDeltaPitch);
             final long gcd = Statistics.getGcd(expandedPitch, expandedLastPitch);
-            final boolean sensitivityIsValid = check.getProfile().calculateSensitivity() > 5;
-            final boolean validAngles = deltaYaw > 0.25f && deltaPitch > 0.25f && deltaPitch < 20.0f && deltaYaw < 20.0f;
+            final boolean validAngles = deltaYaw > 0.25f && deltaPitch > 0.25f && deltaPitch < MAX_DELTA && deltaYaw < MAX_DELTA;
             final boolean invalid = gcd < 131072L;
-            if (invalid && validAngles && !sensitivityIsValid) {
+
+            if (invalid && validAngles && !sensitivityTooLow) {
                 buffer = Math.min(buffer + 1, 200);
                 check.getProfile().debug("&7Aim Constant (1): " + buffer);
+                rating++;
                 if (buffer > 6) {
                     check.getProfile().punish("Aim", "Heuristic", "Constant rotations (1)", 0.0f);
                     check.getProfile().setAttackBlockToTime(System.currentTimeMillis() + 4000);
@@ -40,26 +55,29 @@ public final class AimConstantCheck implements HeuristicComponent {
                 buffer -= 2f;
             }
         }
+
         { // type 2
-            final double divisorYaw = Statistics.getGcd((long) (deltaYaw * Statistics.EXPANDER), (long) (lastDeltaYaw * Statistics.EXPANDER));
-            final double divisorPitch = Statistics.getGcd((long) (deltaPitch * Statistics.EXPANDER), (long) (lastDeltaPitch * Statistics.EXPANDER));
-            final double constantYaw = divisorYaw / Statistics.EXPANDER;
-            final double constantPitch = divisorPitch / Statistics.EXPANDER;
             final double currentX = deltaYaw / constantYaw;
             final double currentY = deltaPitch / constantPitch;
             final double previousX = lastDeltaYaw / constantYaw;
             final double previousY = lastDeltaPitch / constantPitch;
-            if (deltaYaw > 0.0 && deltaPitch > 0.0 && deltaYaw < 20.0f && deltaPitch < 20.0f) {
+
+            final boolean validDelta = deltaYaw > MIN_DELTA && deltaPitch > MIN_DELTA && deltaYaw < MAX_DELTA && deltaPitch < MAX_DELTA;
+
+            if (validDelta) {
                 final double moduloX = currentX % previousX;
                 final double moduloY = currentY % previousY;
+
                 final double floorModuloX = Math.abs(Math.floor(moduloX) - moduloX);
                 final double floorModuloY = Math.abs(Math.floor(moduloY) - moduloY);
+
                 final boolean invalidX = moduloX > MODULO_THRESHOLD && floorModuloX > LINEAR_THRESHOLD;
                 final boolean invalidY = moduloY > MODULO_THRESHOLD && floorModuloY > LINEAR_THRESHOLD;
 
-                if (invalidX && invalidY) {
+                if (invalidX && invalidY && !sensitivityTooLow) {
                     buffer2 = Math.min(buffer2 + 1, 200);
                     check.getProfile().debug("&7Aim Constant (2): " + buffer2);
+                    rating++;
                     if (buffer2 > 6) {
                         check.getProfile().punish("Aim", "Heuristic", "Constant rotations (2)", 0.0f);
                         check.getProfile().setAttackBlockToTime(System.currentTimeMillis() + 4000);
@@ -71,7 +89,55 @@ public final class AimConstantCheck implements HeuristicComponent {
             }
         }
 
+        { // type 3
+            final double currentX = deltaYaw / constantYaw;
+            final double currentY = deltaPitch / constantPitch;
+            final double previousX = lastDeltaYaw / constantYaw;
+            final double previousY = lastDeltaPitch / constantPitch;
+
+            final boolean validDelta = deltaYaw > MIN_DELTA && deltaPitch > MIN_DELTA && deltaYaw < MAX_DELTA && deltaPitch < MAX_DELTA;
+
+            if (validDelta) {
+                final double moduloX = currentX % previousX;
+                final double moduloY = currentY % previousY;
+
+                final double floorModuloX = Math.abs(Math.floor(moduloX) - moduloX);
+                final double floorModuloY = Math.abs(Math.floor(moduloY) - moduloY);
+
+                final boolean invalidX = moduloX > 60.0 && floorModuloX > 0.1;
+                final boolean invalidY = moduloY > 60.0 && floorModuloY > 0.1;
+
+                if (invalidX && invalidY && !sensitivityTooLow) {
+                    buffer3 = Math.min(buffer3 + 1, 200);
+                    check.getProfile().debug("&7Aim Constant (3): " + buffer3);
+                    rating++;
+                    if (buffer3 > ((check.getProfile().calculateSensitivity() < 70) ? 4 : 3)) {
+                        check.getProfile().punish("Aim", "Heuristic", "Constant rotations (3)", 0.0f);
+                        check.getProfile().setAttackBlockToTime(System.currentTimeMillis() + 4000);
+                        buffer3 = 0;
+                    }
+                } else if (buffer3 > 0) {
+                    buffer3 -= 2f;
+                }
+            }
+        }
+        checkRating();
         this.lastDeltaYaw = deltaYaw;
         this.lastDeltaPitch = deltaPitch;
+    }
+
+    private void checkRating() {
+        this.toReview++;
+        if (this.toReview >= 80) {
+            { // check
+                check.getProfile().debug("&7Aim constant history rating: " + this.rating);
+                if (this.rating > 45) {
+                    check.getProfile().punish("Aim", "Heuristic", "Bad history (" + this.rating + ") [Constant check]", 1.5f);
+                }
+                //check.getProfile().getPlayer().sendMessage("rating: " + rating);
+            }
+            this.toReview = 0;
+            this.rating = 0;
+        }
     }
 }

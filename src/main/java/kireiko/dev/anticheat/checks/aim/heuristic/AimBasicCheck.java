@@ -6,6 +6,7 @@ import kireiko.dev.millennium.math.Simplification;
 import kireiko.dev.millennium.math.Statistics;
 import kireiko.dev.millennium.vectors.Vec2;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -36,6 +37,7 @@ public final class AimBasicCheck implements HeuristicComponent {
     }
 
     private void checkDefaultAim() {
+        final List<Double> robotizedStack = new ArrayList<>();
         { // standard checks for bad aim assist
             final List<Vec2> rotations = this.rawRotations;
             Set<Double> yaws = new HashSet<>();
@@ -73,6 +75,7 @@ public final class AimBasicCheck implements HeuristicComponent {
                         infinitives--;
                     }
                 }
+                if (robotized != 0) robotizedStack.add(robotized);
                 if (yawChange == 0.1 || pitchChange == 0.1) gcd++;
                 if (yawChange == 0.01 || pitchChange == 0.01) gcd++;
                 if ((diffBetweenYawChanges > 0.01 && diffBetweenYawChanges < 2)) aggressivePatternI++;
@@ -121,6 +124,10 @@ public final class AimBasicCheck implements HeuristicComponent {
             if (this.vlL2 > 380) this.vlL2 -= 10;
         }
         this.rawRotations.clear();
+        /*
+        this.check.getProfile().getPlayer().sendMessage("r: " +
+                        Statistics.getStandardDeviation(Statistics.getJiffDelta(robotizedStack, 1)));
+         */
     }
 
     private void addNewPunish(String reason, float vl) {

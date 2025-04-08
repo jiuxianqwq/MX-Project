@@ -450,6 +450,11 @@ public class Statistics {
         return mean == 0 ? 0 : sum / (2 * n * n * mean);
     }
 
+    public static double roundToPlace(double value, int places) {
+        double multiplier = Math.pow(10, places);
+        return Math.round(value * multiplier) / multiplier;
+    }
+
     public static List<Double> getZScoreOutliers(final Collection<? extends Number> data, double threshold) {
         List<Double> outliers = new ArrayList<>();
         double mean = getAverage(data);

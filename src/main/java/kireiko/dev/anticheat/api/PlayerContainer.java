@@ -1,6 +1,7 @@
 package kireiko.dev.anticheat.api;
 
 import kireiko.dev.anticheat.api.player.PlayerProfile;
+import kireiko.dev.anticheat.core.AsyncScheduler;
 import kireiko.dev.anticheat.utils.LogUtils;
 import lombok.Getter;
 import org.bukkit.entity.Player;
@@ -16,9 +17,11 @@ public class PlayerContainer {
     private static final Map<UUID, PlayerProfile> uuidPlayerProfileMap = new ConcurrentHashMap<>();
 
     public static void init(Player player) {
-        PlayerProfile profile = new PlayerProfile(player);
-        uuidPlayerProfileMap.put(player.getUniqueId(), profile);
-        profile.initChecks();
+        AsyncScheduler.run(() -> {
+            PlayerProfile profile = new PlayerProfile(player);
+            uuidPlayerProfileMap.put(player.getUniqueId(), profile);
+            profile.initChecks();
+        });
     }
 
     public static void unload(Player player) {

@@ -93,10 +93,6 @@ public class AimStatisticsCheck implements PacketCheckHandler {
                     this.increaseBuffer(14, 1.0f);
                     profile.debug("&7Aim Kolmogorov Smirnov Test: " + kTest + " VL: "
                             + this.buffer.get(2) + " Streak: " + buffer.get(14));
-                    if (buffer.get(14) >= 25 && kTest > 9) {
-                        this.profile.punish("Aim", "KS Test", "[Statistics] Kolmogorov Smirnov Test (Streak) " + buffer.get(14), 0.0f);
-                        this.profile.setAttackBlockToTime(System.currentTimeMillis() + 4000);
-                    }
                     if (this.buffer.get(2) >= 5 && (kTest > 90 || this.buffer.get(2) >= 7)) {
                         this.profile.punish("Aim", "KS Test", "[Statistics] Kolmogorov Smirnov Test (Spikes) " + kTest, 0.0f);
                         this.profile.setAttackBlockToTime(System.currentTimeMillis() + 4000);
@@ -135,8 +131,8 @@ public class AimStatisticsCheck implements PacketCheckHandler {
 
             boolean positive = false, negative = false;
             for (double d : zFactorYaw) {
-                if (d > 12) positive = true;
-                if (d < -12) negative = true;
+                if (d > 10) positive = true;
+                if (d < -10) negative = true;
             }
             if (zFactorYaw.size() == 2 && positive && negative
                     && Statistics.getMax(zFactorYaw) < 55) {

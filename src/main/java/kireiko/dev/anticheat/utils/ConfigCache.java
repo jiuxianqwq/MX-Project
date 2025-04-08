@@ -30,7 +30,7 @@ public class ConfigCache {
         BC_MSG = MX.getInstance().getConfig().getString("bcMsg", "&c&l[MX]&f %message%");
         PUNISH_EFFECT = MX.getInstance().getConfig().getBoolean("punishEffect", false);
         INTERACT_SPELL = MX.getInstance().getConfig().getBoolean("interactSpell", false);
-        CHECK_VELOCITY = MX.getInstance().getConfig().getBoolean("checkVelocity", true);
+        CHECK_VELOCITY = MX.getInstance().getConfig().getBoolean("checkVelocity", false);
         IGNORE_CINEMATIC = MX.getInstance().getConfig().getBoolean("ignoreCinematic", false);
         LOG_IN_FILES = MX.getInstance().getConfig().getBoolean("logInFiles", true);
     }
