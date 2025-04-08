@@ -4,7 +4,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class TryIgnore {
+public final class TryIgnore {
 
     public static ThrowableHandler throwableHandler = Throwable::printStackTrace;
 

@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class Statistics {
+public final class Statistics {
 
     public static final double EXPANDER = Math.pow(2, 24);
 

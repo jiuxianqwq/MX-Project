@@ -6,6 +6,6 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class EntityActionEvent {
+public final class EntityActionEvent {
     private EntityActionListener.AbilitiesEnum abilitiesEnum;
 }

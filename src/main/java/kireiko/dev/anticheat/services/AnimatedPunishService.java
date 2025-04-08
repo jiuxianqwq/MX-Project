@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class AnimatedPunishService {
+public final class AnimatedPunishService {
     private static final List<PlayerProfile> punished
             = new ArrayList<>();
     private static List<Object[]> endAnim = new ArrayList<>();

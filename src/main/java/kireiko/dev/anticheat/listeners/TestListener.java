@@ -6,7 +6,7 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import kireiko.dev.anticheat.MX;
 
-public class TestListener extends PacketAdapter {
+public final class TestListener extends PacketAdapter {
     public TestListener() {
         super(MX.getInstance(), ListenerPriority.HIGHEST,
                 PacketType.Play.Client.getInstance());

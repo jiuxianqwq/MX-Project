@@ -4,7 +4,7 @@ import lombok.Getter;
 
 import java.util.*;
 
-public class ConcurrentList<T> {
+public final class ConcurrentList<T> {
 
     @Getter
     private final List<T> list;

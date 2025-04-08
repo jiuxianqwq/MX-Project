@@ -19,7 +19,7 @@ import java.util.*;
 
 import static kireiko.dev.anticheat.utils.MessageUtils.wrapColors;
 
-public class MXCommandHandler implements TabExecutor {
+public final class MXCommandHandler implements TabExecutor {
 
     private final Set<MXSubCommand> subCommands = new LinkedHashSet<>();
 

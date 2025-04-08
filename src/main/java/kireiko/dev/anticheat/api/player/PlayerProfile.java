@@ -24,7 +24,7 @@ import org.bukkit.entity.Player;
 import java.util.*;
 
 @Data
-public class PlayerProfile {
+public final class PlayerProfile {
 
     private final Player player;
     private final Set<PacketCheckHandler> checks = new HashSet<>();

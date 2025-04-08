@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class FunCommand extends MXSubCommand {
+public final class FunCommand extends MXSubCommand {
     public FunCommand() {
         super("fun");
     }

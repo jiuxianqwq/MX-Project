@@ -14,7 +14,7 @@ Draw a circle to ArrayList
  */
 
 @Data
-public class Circle {
+public final class Circle {
     private final List<Vec2> vectors;
 
     public Circle() {

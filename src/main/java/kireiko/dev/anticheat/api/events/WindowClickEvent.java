@@ -6,6 +6,6 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class WindowClickEvent {
+public final class WindowClickEvent {
     private PacketEvent packetEvent;
 }

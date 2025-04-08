@@ -12,7 +12,7 @@ import kireiko.dev.anticheat.api.player.PlayerProfile;
 
 import java.util.Set;
 
-public class OmniPacketListener extends PacketAdapter {
+public final class OmniPacketListener extends PacketAdapter {
 
     public OmniPacketListener(Set<PacketType> list) {
         super(

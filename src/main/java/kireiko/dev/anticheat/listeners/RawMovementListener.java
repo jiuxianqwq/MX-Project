@@ -1,9 +1,7 @@
 package kireiko.dev.anticheat.listeners;
 
 import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.*;
-import com.comphenix.protocol.utility.MinecraftVersion;
 import kireiko.dev.anticheat.MX;
 import kireiko.dev.anticheat.api.PlayerContainer;
 import kireiko.dev.anticheat.api.events.MoveEvent;
@@ -12,13 +10,14 @@ import kireiko.dev.anticheat.api.player.PlayerProfile;
 import kireiko.dev.anticheat.api.player.SensitivityProcessor;
 import kireiko.dev.anticheat.utils.protocol.ProtocolLib;
 import kireiko.dev.anticheat.utils.protocol.ProtocolTools;
+import kireiko.dev.anticheat.utils.version.VersionUtil;
 import kireiko.dev.millennium.vectors.Vec2f;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 
-public class RawMovementListener extends PacketAdapter {
+public final class RawMovementListener extends PacketAdapter {
     public RawMovementListener() {
         super(
                 MX.getInstance(),
@@ -27,8 +26,7 @@ public class RawMovementListener extends PacketAdapter {
                         PacketType.Play.Client.POSITION,
                         PacketType.Play.Client.POSITION_LOOK,
                         PacketType.Play.Client.LOOK,
-                        (ProtocolLibrary.getProtocolManager().getMinecraftVersion().compareTo(
-                                new MinecraftVersion("1.17")) >= 0)
+                        VersionUtil.is1_17orAbove()
                                 ? PacketType.Play.Client.GROUND
                                 : PacketType.Play.Client.FLYING
                 ),

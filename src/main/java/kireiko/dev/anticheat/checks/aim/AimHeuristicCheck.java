@@ -10,7 +10,7 @@ import lombok.Getter;
 import java.util.HashSet;
 import java.util.Set;
 
-public class AimHeuristicCheck implements PacketCheckHandler {
+public final class AimHeuristicCheck implements PacketCheckHandler {
 
     @Getter
     private final PlayerProfile profile;

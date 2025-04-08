@@ -9,7 +9,7 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 @Getter
-public class MXFlagEvent extends Event implements Cancellable {
+public final class MXFlagEvent extends Event implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
     private final Player player;

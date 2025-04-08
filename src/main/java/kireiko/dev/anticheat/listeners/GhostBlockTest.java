@@ -5,7 +5,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
-public class GhostBlockTest implements Listener {
+public final class GhostBlockTest implements Listener {
 
     @EventHandler
     public void block(BlockPlaceEvent event) {

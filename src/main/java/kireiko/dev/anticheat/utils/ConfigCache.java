@@ -2,7 +2,7 @@ package kireiko.dev.anticheat.utils;
 
 import kireiko.dev.anticheat.MX;
 
-public class ConfigCache {
+public final class ConfigCache {
 
     public static double VL_LIMIT;
     public static float VL_RESET;

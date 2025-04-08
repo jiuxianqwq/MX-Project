@@ -12,7 +12,7 @@ import java.util.List;
 
 import static kireiko.dev.anticheat.utils.MessageUtils.wrapColors;
 
-public class DebugCommand extends MXSubCommand {
+public final class DebugCommand extends MXSubCommand {
     public DebugCommand() {
         super("debug");
     }

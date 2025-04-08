@@ -15,7 +15,7 @@ import java.util.List;
 
 import static kireiko.dev.anticheat.utils.MessageUtils.wrapColors;
 
-public class InfoCommand extends MXSubCommand {
+public final class InfoCommand extends MXSubCommand {
     public InfoCommand() {
         super("info");
     }

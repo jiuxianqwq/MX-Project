@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ProtocolTools {
+public final class ProtocolTools {
 
     public static Location readLocation(PacketEvent event) {
         PacketContainer packet = event.getPacket();

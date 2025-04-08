@@ -6,7 +6,7 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class ForceThreadList<T> {
+public final class ForceThreadList<T> {
 
     @Getter
     private final List<T> list;

@@ -5,7 +5,7 @@ import lombok.Setter;
 
 import java.util.*;
 
-public class SensitivityProcessor {
+public final class SensitivityProcessor {
 
     @Getter
     private static final double[] SENSITIVITY_MCP_VALUES;

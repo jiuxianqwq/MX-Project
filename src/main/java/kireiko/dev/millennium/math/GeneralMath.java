@@ -1,6 +1,6 @@
 package kireiko.dev.millennium.math;
 
-public class GeneralMath {
+public final class GeneralMath {
     public static float sin(float value, BuildSpeed s) {
         return (s.equals(BuildSpeed.NORMAL))
                 ? (float) Math.sin(value)

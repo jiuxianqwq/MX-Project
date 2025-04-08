@@ -1,6 +1,6 @@
 package kireiko.dev.anticheat.utils.math;
 
-public class OptifineMath implements ClientMath {
+public final class OptifineMath implements ClientMath {
     private static final float[] SIN_TABLE_FAST = new float[4096];
     private static final float radToIndex = roundToFloat(651.8986469044033D);
 

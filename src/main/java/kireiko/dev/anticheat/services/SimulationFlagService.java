@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class SimulationFlagService {
+public final class SimulationFlagService {
 
     @Getter
     private static final List<Flag> flags = new CopyOnWriteArrayList<>();
