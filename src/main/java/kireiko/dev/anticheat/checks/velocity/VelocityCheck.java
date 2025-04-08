@@ -88,11 +88,10 @@ public final class VelocityCheck implements PacketCheckHandler {
         final long delay = System.currentTimeMillis() - oldTime;
         Location from = event.getFrom();
         Location to = event.getTo();
-        Bukkit.getScheduler().runTask(MX.getInstance(), (task) -> {
-            if (isPointWall(to.clone().add(0, 1, 0), 0.75)) { // cannot handle this asynchronously
-                velocity = null;
-            }
-        });
+
+        if (isPointWall(to.clone().add(0, 1, 0), 0.75)) {
+            velocity = null;
+        }
 
         final double x = -(to.getX() - from.getX());
         final double y = -(to.getY() - from.getY());
