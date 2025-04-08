@@ -46,11 +46,11 @@ public final class AimInconsistentCheck implements HeuristicComponent {
                 final int outliersY = outliersPitch.getX().size() + outliersPitch.getY().size();
                 check.getProfile().debug("&7Aim Inconsistent: " + outliersX + " "
                                 + outliersY + "; duplicates: " + duplicatesX + " " + duplicatesY);
-                if (duplicatesSum <= 10 && outliersX < 10 && outliersY < 7) {
+                if (duplicatesSum <= 3 && outliersX < 10 && outliersY < 7) {
                     check.getProfile().punish("Aim", "Heuristic", "Inconsistent rotations ("
                                     + outliersX + ", " + outliersY + ", duplicates: " + duplicatesSum + ") [Too low values]", 0.0f);
                     check.getProfile().setAttackBlockToTime(System.currentTimeMillis() + 4500);
-                } else if ((outliersX == 0 || outliersY == 0) && (outliersX > 1 || outliersY > 1) && duplicatesSum <= 7) {
+                } else if ((outliersX == 0 || outliersY == 0) && (outliersX > 1 || outliersY > 1) && duplicatesSum <= 3) {
                     check.getProfile().punish("Aim", "Heuristic", "Inconsistent rotations ("
                                     + outliersX + ", " + outliersY + ", duplicates: " + duplicatesSum + ") [Zero value]", 0.0f);
                     check.getProfile().setAttackBlockToTime(System.currentTimeMillis() + 3500);

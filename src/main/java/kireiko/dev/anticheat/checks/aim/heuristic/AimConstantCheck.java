@@ -3,6 +3,7 @@ package kireiko.dev.anticheat.checks.aim.heuristic;
 import kireiko.dev.anticheat.api.events.RotationEvent;
 import kireiko.dev.anticheat.checks.aim.AimHeuristicCheck;
 import kireiko.dev.anticheat.utils.ConfigCache;
+import kireiko.dev.millennium.math.Simplification;
 import kireiko.dev.millennium.math.Statistics;
 
 public final class AimConstantCheck implements HeuristicComponent {
@@ -108,8 +109,8 @@ public final class AimConstantCheck implements HeuristicComponent {
                 final boolean invalidY = moduloY > 60.0 && floorModuloY > 0.1;
 
                 if (invalidX && invalidY && !sensitivityTooLow) {
-                    buffer3 = Math.min(buffer3 + 1, 200);
-                    check.getProfile().debug("&7Aim Constant (3): " + buffer3);
+                    buffer3 = Math.max(buffer3 + ((deltaPitch < 1 || deltaPitch > 13) ? 2.5f : 1), 0);
+                    check.getProfile().debug("&7Aim Constant (3): " + buffer3 + " " + Simplification.scaleVal(deltaPitch, 3));
                     rating++;
                     if (buffer3 > ((check.getProfile().calculateSensitivity() < 70) ? 4 : 3)) {
                         check.getProfile().punish("Aim", "Heuristic", "Constant rotations (3)", 0.0f);
