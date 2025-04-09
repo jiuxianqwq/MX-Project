@@ -1,6 +1,7 @@
 package kireiko.dev.anticheat.checks.aim.heuristic;
 
 import kireiko.dev.anticheat.api.events.RotationEvent;
+import kireiko.dev.anticheat.api.player.PlayerProfile;
 import kireiko.dev.anticheat.checks.aim.AimHeuristicCheck;
 import kireiko.dev.millennium.math.Simplification;
 import kireiko.dev.millennium.math.Statistics;
@@ -28,10 +29,12 @@ public final class AimBasicCheck implements HeuristicComponent {
     public void process(final RotationEvent event) {
         if (check.getProfile().ignoreCinematic()) return;
         this.rawRotations.add(new Vec2(event.getTo().getX(), event.getTo().getY()));
+        final PlayerProfile profile = check.getProfile();
         if ((event.getDelta().getY() > 1.5f || event.getDelta().getX() > 3.0f)
-                && (check.getProfile().getTo().getPitch() == 0
-                || check.getProfile().getTo().getPitch() % 0.01f == 0)) {
-            this.check.getProfile().punish("Aim", "Randomizer", "[Heuristic] Randomizer flaw", 1.0f);
+                && (profile.getTo().getPitch() == 0
+                && profile.getLastTeleport() + 100 < System.currentTimeMillis()
+                || profile.getTo().getPitch() % 0.01f == 0)) {
+            profile.punish("Aim", "Randomizer", "[Heuristic] Randomizer flaw", 1.0f);
         }
         if (this.rawRotations.size() >= 10) checkDefaultAim();
     }

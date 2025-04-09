@@ -23,6 +23,7 @@ public final class RawMovementListener extends PacketAdapter {
                 MX.getInstance(),
                 ListenerPriority.LOWEST,
                 Arrays.asList(
+                        PacketType.Play.Server.POSITION,
                         PacketType.Play.Client.POSITION,
                         PacketType.Play.Client.POSITION_LOOK,
                         PacketType.Play.Client.LOOK,
@@ -32,6 +33,16 @@ public final class RawMovementListener extends PacketAdapter {
                 ),
                 ListenerOptions.ASYNC
         );
+    }
+
+    @Override
+    public void onPacketSending(PacketEvent event) {
+        final Player player = event.getPlayer();
+        final PlayerProfile profile = PlayerContainer.getProfile(player);
+        if (profile == null) {
+            return;
+        }
+        profile.setLastTeleport(System.currentTimeMillis());
     }
 
     @Override
