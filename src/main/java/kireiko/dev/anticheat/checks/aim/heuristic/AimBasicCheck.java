@@ -30,10 +30,10 @@ public final class AimBasicCheck implements HeuristicComponent {
         if (check.getProfile().ignoreCinematic()) return;
         this.rawRotations.add(new Vec2(event.getTo().getX(), event.getTo().getY()));
         final PlayerProfile profile = check.getProfile();
-        if ((event.getDelta().getY() > 1.5f || event.getDelta().getX() > 3.0f)
+        if (((event.getDelta().getY() > 1.5f || event.getDelta().getX() > 3.0f)
                 && (profile.getTo().getPitch() == 0
-                && profile.getLastTeleport() + 100 < System.currentTimeMillis()
-                || profile.getTo().getPitch() % 0.01f == 0)) {
+                || profile.getTo().getPitch() % 0.01f == 0))
+                && profile.getLastTeleport() + 100 < System.currentTimeMillis()) {
             profile.punish("Aim", "Randomizer", "[Heuristic] Randomizer flaw", 1.0f);
         }
         if (this.rawRotations.size() >= 10) checkDefaultAim();

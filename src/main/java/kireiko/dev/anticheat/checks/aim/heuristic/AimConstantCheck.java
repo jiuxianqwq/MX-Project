@@ -109,7 +109,7 @@ public final class AimConstantCheck implements HeuristicComponent {
                 final boolean invalidY = moduloY > 60.0 && floorModuloY > 0.1;
 
                 if (invalidX && invalidY && !sensitivityTooLow) {
-                    buffer3 = Math.max(buffer3 + ((deltaPitch < 1 || deltaPitch > 13) ? 2.5f : 1), 0);
+                    buffer3 = Math.max(buffer3 + ((deltaPitch < 1 || deltaPitch > 13) ? 2f : 1), 0);
                     check.getProfile().debug("&7Aim Constant (3): " + buffer3 + " " + Simplification.scaleVal(deltaPitch, 3));
                     rating++;
                     if (buffer3 > ((check.getProfile().calculateSensitivity() < 70) ? 4 : 3)) {
