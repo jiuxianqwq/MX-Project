@@ -45,7 +45,7 @@ public final class PlayerProfile {
     private Location from;
     private float vl;
     private long attackBlockToTime, lastTeleport = 0;
-    private boolean alerts, debug, ignoreExitBan;
+    private boolean alerts, debug, ignoreExitBan, ignoreFirstTick = true;
     private Pair<String, String> banAnimInfo;
     private Pair<Location, Location> banAnimPositions;
 

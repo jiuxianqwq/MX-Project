@@ -43,6 +43,7 @@ public final class RawMovementListener extends PacketAdapter {
             return;
         }
         profile.setLastTeleport(System.currentTimeMillis());
+        profile.setIgnoreFirstTick(false);
     }
 
     @Override
@@ -91,6 +92,7 @@ public final class RawMovementListener extends PacketAdapter {
             controller.processSensitivity();
             profile.getCinematicComponent().process(rotationEvent);
             profile.run(rotationEvent);
+            profile.setIgnoreFirstTick(false);
         }
         profile.getPastLoc().add(profile.getTo());
         profile.run(new MoveEvent(profile, profile.getTo(), profile.getFrom()));

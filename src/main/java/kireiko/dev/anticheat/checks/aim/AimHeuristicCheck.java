@@ -27,6 +27,7 @@ public final class AimHeuristicCheck implements PacketCheckHandler {
             this.components.add(new AimInvalidCheck(this));
             this.components.add(new AimFilterCheck(this));
             this.components.add(new AimInconsistentCheck(this));
+            this.components.add(new AimPatternCheck(this));
         }
     }
 
@@ -34,7 +35,7 @@ public final class AimHeuristicCheck implements PacketCheckHandler {
     public void event(Object o) {
         if (o instanceof RotationEvent) {
             RotationEvent event = (RotationEvent) o;
-            if (System.currentTimeMillis() > this.lastAttack + 3500) return;
+            if (System.currentTimeMillis() > this.lastAttack + 3500 || profile.isIgnoreFirstTick()) return;
             for (HeuristicComponent component : components) component.process(event);
         } else if (o instanceof UseEntityEvent) {
             UseEntityEvent event = (UseEntityEvent) o;

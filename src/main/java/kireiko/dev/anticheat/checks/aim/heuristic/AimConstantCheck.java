@@ -133,7 +133,7 @@ public final class AimConstantCheck implements HeuristicComponent {
             { // check
                 check.getProfile().debug("&7Aim constant history rating: " + this.rating);
                 if (this.rating > 45) {
-                    check.getProfile().punish("Aim", "Heuristic", "Bad history (" + this.rating + ") [Constant check]", 1.5f);
+                    check.getProfile().punish("Aim", "Heuristic", "Bad history (" + this.rating + ") [Constant check]", 2.0f);
                 }
                 //check.getProfile().getPlayer().sendMessage("rating: " + rating);
             }

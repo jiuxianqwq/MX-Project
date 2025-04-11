@@ -172,8 +172,10 @@ public final class AimComplexCheck implements PacketCheckHandler {
                             this.increaseBuffer(5, (Statistics.getAverage(x) < 6.0) ? 0 : (xDev < 10) ? 1.5f : 1.0f);
                             profile.debug("&7Machine Heart: " + this.buffer.get(5));
                             if (this.buffer.get(5) >= 7.0f) {
+                                /*
                                 profile.punish("Aim", "MachineHeart",
                                         "Machine Heart " + (int) xDev, 2.5f);
+                                 */
                                 this.buffer.set(5, 6.0f);
                             }
                         } else {
