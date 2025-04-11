@@ -17,6 +17,7 @@ public final class ConfigCache {
     public static boolean CHECK_VELOCITY;
     public static boolean IGNORE_CINEMATIC;
     public static boolean LOG_IN_FILES;
+    public static boolean ROTATIONS_CONTAINER;
 
 
     public static void loadConfig() {
@@ -33,5 +34,6 @@ public final class ConfigCache {
         CHECK_VELOCITY = MX.getInstance().getConfig().getBoolean("checkVelocity", false);
         IGNORE_CINEMATIC = MX.getInstance().getConfig().getBoolean("ignoreCinematic", false);
         LOG_IN_FILES = MX.getInstance().getConfig().getBoolean("logInFiles", true);
+        ROTATIONS_CONTAINER = MX.getInstance().getConfig().getBoolean("rotationsContainer", true);
     }
 }

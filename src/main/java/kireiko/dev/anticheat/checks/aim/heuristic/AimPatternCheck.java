@@ -3,11 +3,11 @@ package kireiko.dev.anticheat.checks.aim.heuristic;
 import kireiko.dev.anticheat.api.events.RotationEvent;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
 import kireiko.dev.anticheat.checks.aim.AimHeuristicCheck;
-import kireiko.dev.millennium.vectors.Vec2f; // Убедитесь, что Vec2f имеет корректный метод equals()
+import kireiko.dev.millennium.vectors.Vec2f;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects; // Для безопасного сравнения объектов
+import java.util.Objects;
 
 public final class AimPatternCheck implements HeuristicComponent {
     private final AimHeuristicCheck check;
@@ -30,10 +30,22 @@ public final class AimPatternCheck implements HeuristicComponent {
         // final Vec2f absDelta = event.getAbsDelta();
         final float yawFactor = delta.getX() - oldDelta.getX();
         final float pitchFactor = delta.getY() - oldDelta.getY();
+        //profile.getPlayer().sendMessage("yaw: " + yawFactor + " pitch: " + pitchFactor);
         final Vec2f vec = new Vec2f(yawFactor, pitchFactor);
         this.sample.add(vec);
         if (this.sample.size() >= SAMPLE_SIZE) {
             final List<Vec2f> patterns = new ArrayList<>();
+            final List<Float>
+            rawPatterns = new ArrayList<>(),
+            filteredPatterns = new ArrayList<>();
+            for (int i = 0; i < SAMPLE_SIZE; i++)
+                if (i > 0 && Math.abs(this.sample.get(i).getX()) > 1.0) {
+                    rawPatterns.add(Math.abs(this.sample.get(i).getX() - this.sample.get(i - 1).getY()));
+                }
+            for (final float x : rawPatterns) if (x < 1e-4)
+                filteredPatterns.add(x);
+            if (filteredPatterns.size() > 3)
+                profile.punish("Aim", "Pattern", "Suspicious patterns: " + filteredPatterns, 2.0f);
             final int currentSampleSize = this.sample.size();
             // searching pattern
             for (int i = 0; i <= currentSampleSize - PATTERN_LENGTH; ++i) {
@@ -51,10 +63,11 @@ public final class AimPatternCheck implements HeuristicComponent {
                 }
             }
             // checking invalid patterns
+            if (!patterns.isEmpty()) profile.debug("&7Aim Patterns: " + patterns);
             for (final Vec2f vec2f : patterns) {
                 final float x = Math.abs(vec2f.getX());
                 final float y = Math.abs(vec2f.getY());
-                if ((x > 1.0 || y > 1.0) && x > 0.26 && y > 0.26) {
+                if ((x > 1.0 || y > 1.0) && (x > 0.26 && y > 0.26)) {
                     profile.punish("Aim", "Pattern", "Suspicious pattern: " + vec2f, 2.0f);
                     break;
                 }

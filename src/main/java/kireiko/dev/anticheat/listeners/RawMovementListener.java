@@ -4,10 +4,12 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.*;
 import kireiko.dev.anticheat.MX;
 import kireiko.dev.anticheat.api.PlayerContainer;
+import kireiko.dev.anticheat.api.RotationsContainer;
 import kireiko.dev.anticheat.api.events.MoveEvent;
 import kireiko.dev.anticheat.api.events.RotationEvent;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
 import kireiko.dev.anticheat.api.player.SensitivityProcessor;
+import kireiko.dev.anticheat.utils.ConfigCache;
 import kireiko.dev.anticheat.utils.protocol.ProtocolLib;
 import kireiko.dev.anticheat.utils.protocol.ProtocolTools;
 import kireiko.dev.anticheat.utils.version.VersionUtil;
@@ -90,6 +92,11 @@ public final class RawMovementListener extends PacketAdapter {
             RotationEvent rotationEvent = new RotationEvent(profile, to, from);
             controller.setDeltaPitch(rotationEvent.getDelta().getY());
             controller.processSensitivity();
+            if (ConfigCache.ROTATIONS_CONTAINER
+                            && !profile.isIgnoreFirstTick()
+                            && profile.getLastTeleport() + 500 < System.currentTimeMillis()) {
+                RotationsContainer.register(ProtocolLib.getUUID(profile.getPlayer()), to);
+            }
             profile.getCinematicComponent().process(rotationEvent);
             profile.run(rotationEvent);
             profile.setIgnoreFirstTick(false);

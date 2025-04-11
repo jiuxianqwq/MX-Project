@@ -16,7 +16,7 @@ public final class AsyncScheduler {
     private static final char INNER_CLASS_SEPARATOR_CHAR = '$';
     public static int STOP_WATCH_TIME_MILLIS = 1500;
     @Getter
-    private static ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(25,
+    private static ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(30,
             new ThreadFactoryBuilder().setNameFormat("MX Thread %d").build());
 
     private AsyncScheduler() {

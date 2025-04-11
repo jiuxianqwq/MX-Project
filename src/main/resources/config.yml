@@ -25,3 +25,8 @@ ignoreCinematic: false
 
 # /plugins/MX/logs
 logInFiles: true
+
+# MX will save the last 600 rotation ticks.
+# You will be able to view player activity via the web panel
+# /mx check %player%
+rotationsContainer: true

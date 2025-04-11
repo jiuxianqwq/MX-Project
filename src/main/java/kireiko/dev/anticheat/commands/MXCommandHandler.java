@@ -25,6 +25,7 @@ public final class MXCommandHandler implements TabExecutor {
 
     public MXCommandHandler() {
         this.subCommands.add(new AlertCommand());
+        this.subCommands.add(new LogCommand());
         this.subCommands.add(new BroadcastCommand());
         this.subCommands.add(new DebugCommand());
         this.subCommands.add(new FunCommand());
@@ -32,6 +33,7 @@ public final class MXCommandHandler implements TabExecutor {
         this.subCommands.add(new PunishCommand());
         this.subCommands.add(new ReloadCommand());
         this.subCommands.add(new StatsCommand());
+        this.subCommands.add(new ActivityCommand());
     }
 
     @Override

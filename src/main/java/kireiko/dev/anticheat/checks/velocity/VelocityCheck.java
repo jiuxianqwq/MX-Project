@@ -1,6 +1,5 @@
 package kireiko.dev.anticheat.checks.velocity;
 
-import kireiko.dev.anticheat.MX;
 import kireiko.dev.anticheat.api.PacketCheckHandler;
 import kireiko.dev.anticheat.api.events.CTransactionEvent;
 import kireiko.dev.anticheat.api.events.MoveEvent;
@@ -9,7 +8,6 @@ import kireiko.dev.anticheat.api.player.PlayerProfile;
 import kireiko.dev.anticheat.services.SimulationFlagService;
 import kireiko.dev.anticheat.utils.ConfigCache;
 import kireiko.dev.millennium.math.Simplification;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.util.Vector;

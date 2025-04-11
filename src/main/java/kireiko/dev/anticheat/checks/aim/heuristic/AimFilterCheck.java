@@ -50,7 +50,7 @@ public final class AimFilterCheck implements HeuristicComponent {
                 if (buffer < 0) {
                     buffer = 0;
                 } else if (buffer >= 9 && r < 0.3) {
-                    profile.punish("Aim", "A/B", "Rate: " + Simplification.scaleVal((1.0 - r), 2) + " [Machine-like rotations]", 0.0f);
+                    profile.punish("Aim", "A/B", "Rate: " + Simplification.scaleVal((1.0 - r), 2) + " [Machine-like rotations]", 0.5f);
                     profile.setAttackBlockToTime(System.currentTimeMillis() + 5000);
                     buffer = 7;
                 }

@@ -33,6 +33,14 @@ public final class MessageUtils {
     public static String wrapColors(String v) {
         return ChatColor.translateAlternateColorCodes('&', v);
     }
+    public static String wrapColors(String... v) {
+        final StringBuilder builder = new StringBuilder();
+        for (final String s : v) {
+            final String wrapped = wrapColors(s);
+            builder.append((builder.length() == 0) ? wrapped : "\n" + wrapped);
+        }
+        return builder.toString();
+    }
 
     public static String getDate() {
         Date date = new Date();
