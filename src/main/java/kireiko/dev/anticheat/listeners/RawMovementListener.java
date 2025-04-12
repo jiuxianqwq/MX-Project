@@ -95,7 +95,7 @@ public final class RawMovementListener extends PacketAdapter {
             if (ConfigCache.ROTATIONS_CONTAINER
                             && !profile.isIgnoreFirstTick()
                             && profile.getLastTeleport() + 500 < System.currentTimeMillis()) {
-                RotationsContainer.register(ProtocolLib.getUUID(profile.getPlayer()), to);
+                RotationsContainer.register(ProtocolLib.getUUID(profile.getPlayer()), rotationEvent.getDelta());
             }
             profile.getCinematicComponent().process(rotationEvent);
             profile.run(rotationEvent);

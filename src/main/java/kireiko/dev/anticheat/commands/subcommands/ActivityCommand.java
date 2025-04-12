@@ -21,7 +21,7 @@ public final class ActivityCommand extends MXSubCommand {
 
     @Override
     public String getDescription() {
-        return "Link to show mouse movements in the web panel";
+        return "Link to show mouse movements in the MX panel";
     }
 
     @Override
@@ -59,11 +59,12 @@ public final class ActivityCommand extends MXSubCommand {
                     sender.sendMessage(MessageUtils.wrapColors("&cUnknown error while loading :("));
                 } else {
                     sender.sendMessage(MessageUtils.wrapColors(
-                                    "",
-                                    "&e" + target.getPlayer().getName() + "&9 data: &7" + result,
-                                    "&cPut this link here:",
-                                    "&e",
-                                    ""
+                                    "&e&e",
+                                    "&e" + target.getPlayer().getName() + "&9 data: &6" + result,
+                                    "&cYou need to paste the link into the MX panel application!",
+                                    "&fPlease download it here:",
+                                    "&7https://drive.google.com/file/d/1b_7RHz0mIuk4PXvcFScFZf57VE-VCfQg/view?usp=sharing",
+                                    "&e&e"
                                     )
                     );
                 }
