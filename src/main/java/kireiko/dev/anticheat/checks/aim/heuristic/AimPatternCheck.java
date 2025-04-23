@@ -1,13 +1,12 @@
 package kireiko.dev.anticheat.checks.aim.heuristic;
 
+import kireiko.dev.anticheat.api.data.ConfigLabel;
 import kireiko.dev.anticheat.api.events.RotationEvent;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
 import kireiko.dev.anticheat.checks.aim.AimHeuristicCheck;
 import kireiko.dev.millennium.vectors.Vec2f;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public final class AimPatternCheck implements HeuristicComponent {
     private final AimHeuristicCheck check;
@@ -17,14 +16,37 @@ public final class AimPatternCheck implements HeuristicComponent {
     private static final int PATTERN_LENGTH = 3;
     private static final int SAMPLE_SIZE = 100;
     private static final int MIN_START_INDEX_GAP = PATTERN_LENGTH;
+    private float buffer = 0;
+    private Map<String, Object> localCfg = new TreeMap<>();
 
     public AimPatternCheck(final AimHeuristicCheck check) {
         this.check = check;
     }
 
     @Override
+    public ConfigLabel config() {
+        localCfg.put("hitCancelTimeMS", 5000);
+        localCfg.put("addGlobalVl", 5);
+        localCfg.put("buffer", 1.7f);
+        localCfg.put("buffer_fade", 0.2f);
+        return new ConfigLabel("pattern_check", localCfg);
+    }
+
+    @Override
+    public void applyConfig(Map<String, Object> params) {
+        localCfg = params;
+    }
+
+    @Override
     public void process(final RotationEvent event) {
         // if (check.getProfile().ignoreCinematic()) return;
+        final float
+        vlLimit = ((Number) localCfg.get("buffer")).floatValue(),
+        vlFade = ((Number) localCfg.get("buffer_fade")).floatValue();
+        boolean flagged = false;
+        final long blockTime = ((Number) localCfg.get("hitCancelTimeMS")).longValue();
+        final float addGlobalVl = ((Number) localCfg.get("addGlobalVl")).floatValue() / 10f;
+        if (blockTime <= 0 && addGlobalVl <= 0) return;
         final PlayerProfile profile = check.getProfile();
         final Vec2f delta = event.getDelta();
         // final Vec2f absDelta = event.getAbsDelta();
@@ -44,8 +66,14 @@ public final class AimPatternCheck implements HeuristicComponent {
                 }
             for (final float x : rawPatterns) if (x < 1e-4)
                 filteredPatterns.add(x);
-            if (filteredPatterns.size() > 3)
-                profile.punish("Aim", "Pattern", "Suspicious patterns: " + filteredPatterns, 2.0f);
+            if (filteredPatterns.size() > 3)  {
+                flagged = true;
+                if (buffer++ >= vlLimit) {
+                    profile.punish("Aim", "Pattern", "Suspicious patterns: " + filteredPatterns, addGlobalVl);
+                    profile.setAttackBlockToTime(System.currentTimeMillis() + blockTime);
+                    buffer -= 1;
+                }
+            }
             final int currentSampleSize = this.sample.size();
             // searching pattern
             for (int i = 0; i <= currentSampleSize - PATTERN_LENGTH; ++i) {
@@ -68,10 +96,16 @@ public final class AimPatternCheck implements HeuristicComponent {
                 final float x = Math.abs(vec2f.getX());
                 final float y = Math.abs(vec2f.getY());
                 if ((x > 1.0 || y > 1.0) && (x > 0.26 && y > 0.26)) {
-                    profile.punish("Aim", "Pattern", "Suspicious pattern: " + vec2f, 2.0f);
+                    flagged = true;
+                    if (buffer++ >= vlLimit) {
+                        profile.punish("Aim", "Pattern", "Suspicious pattern: " + vec2f, addGlobalVl);
+                        profile.setAttackBlockToTime(System.currentTimeMillis() + blockTime);
+                        buffer -= 1f;
+                    }
                     break;
                 }
             }
+            if (!flagged) buffer = Math.max(0, buffer - vlFade);
             //profile.getPlayer().sendMessage("inv: " + patterns);
             this.sample.clear();
         }

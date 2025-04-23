@@ -1,16 +1,16 @@
 package kireiko.dev.anticheat.checks.aim;
 
 import kireiko.dev.anticheat.api.PacketCheckHandler;
+import kireiko.dev.anticheat.api.data.ConfigLabel;
 import kireiko.dev.anticheat.api.events.RotationEvent;
 import kireiko.dev.anticheat.api.events.UseEntityEvent;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
 import kireiko.dev.anticheat.api.player.SensitivityProcessor;
+import kireiko.dev.anticheat.managers.CheckManager;
 import kireiko.dev.millennium.math.Statistics;
 import kireiko.dev.millennium.vectors.Vec2f;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class AimAnalysisCheck implements PacketCheckHandler {
@@ -18,6 +18,7 @@ public final class AimAnalysisCheck implements PacketCheckHandler {
     private final PlayerProfile profile;
     private final List<Vec2f> rawRotations;
     private long lastAttack;
+    private Map<String, Object> localCfg = new TreeMap<>();
 
     public AimAnalysisCheck(PlayerProfile profile) {
         this.profile = profile;
@@ -25,6 +26,28 @@ public final class AimAnalysisCheck implements PacketCheckHandler {
         this.lastAttack = 0L;
         this.buffer = new CopyOnWriteArrayList<>();
         for (int i = 0; i < 16; i++) this.buffer.add(0.0f);
+        if (CheckManager.classCheck(this.getClass()))
+            this.localCfg = CheckManager.getConfig(this.getClass());
+    }
+
+    @Override
+    public ConfigLabel config() {
+        localCfg.put("addGlobalVl(linear)", 30);
+        localCfg.put("addGlobalVl(rank)", 20);
+        localCfg.put("addGlobalVl(distribution)", 20);
+        localCfg.put("localVlLimit(rank)", 6.0f);
+        localCfg.put("localVlLimit(distribution)", 3.2f);
+        return new ConfigLabel("aim_analysis", localCfg);
+    }
+
+    @Override
+    public void applyConfig(Map<String, Object> params) {
+        localCfg = params;
+    }
+
+    @Override
+    public Map<String, Object> getConfig() {
+        return localCfg;
     }
 
     @Override
@@ -71,7 +94,11 @@ public final class AimAnalysisCheck implements PacketCheckHandler {
                 final float distinctRank = (float) resultDistinct / 60;
                 { // linear
                     if (outliers5.isEmpty() || outliers5.size() == 1 && Math.abs(outliers5.get(0)) > 10 && Math.abs(outliers5.get(0)) < 100) {
-                        this.profile.punish("Aim", "Linear", "[Analysis] Invalid outliers " + Arrays.toString(outliers5.toArray()), 3.0f);
+                        final float vl = ((Number) localCfg.get("addGlobalVl(linear)")).floatValue() / 10f;
+                        if (vl > 0) {
+                            this.profile.punish("Aim", "Linear", "[Analysis] Invalid outliers "
+                                            + Arrays.toString(outliers5.toArray()), vl);
+                        }
                     }
                 }
                 { // rank
@@ -80,11 +107,15 @@ public final class AimAnalysisCheck implements PacketCheckHandler {
                         if (this.buffer.get(1) < 0.01) {
                             if (distinctRank < 0.8) this.increaseBuffer(1, 0.2f);
                         } else {
+                            final float limit = ((Number) localCfg.get("localVlLimit(rank)")).floatValue();
                             this.increaseBuffer(1, (distinctRank > 0.9) ? 0.08f : (distinctRank > 0.8) ? 2f : 3f);
                             profile.debug("&7Aim Incorrect rank: " + this.buffer.get(1) + " (" + distinctRank + ")");
-                            if (this.buffer.get(1) >= 6.0f) {
-                                this.profile.punish("Aim", "Rank", "[Analysis] Incorrect rank " + distinctRank, 2.0f);
-                                this.buffer.set(1, 5.0f);
+                            if (this.buffer.get(1) >= limit) {
+                                final float vl = ((Number) localCfg.get("addGlobalVl(rank)")).floatValue() / 10f;
+                                if (vl > 0) {
+                                    this.profile.punish("Aim", "Rank", "[Analysis] Incorrect rank " + distinctRank, vl);
+                                }
+                                this.buffer.set(1, limit - 1);
                             }
                         }
 
@@ -98,12 +129,16 @@ public final class AimAnalysisCheck implements PacketCheckHandler {
                 final double pearson = Statistics.getPearsonCorrelation(x, y);
                 final int spikes = Statistics.getZScoreOutliers(x, 1.0f).size() + Statistics.getZScoreOutliers(y, 1.0f).size();
                 if (max > 8 && pearson < 0.25 && distinctX < 85 && distinctX > 65 && kurtosis > 0 && spikes >= 40) {
+                    final float limit = ((Number) localCfg.get("localVlLimit(distribution)")).floatValue();
                     this.increaseBuffer(0, (distinctX < 80) ? 1.1f : 0.85f);
                     profile.debug("&7Aim Incorrect distribution: " + this.buffer.get(0));
-                    if (this.buffer.get(0) > 3.2f) {
-                        this.profile.punish("Aim", "Distribution", "[Analysis] Incorrect distribution [" + distinctX + ", "
-                                + pearson + ", " + max + ", " + spikes + "]", 2.0f);
-                        this.buffer.set(0, 2.5f);
+                    if (this.buffer.get(0) > limit) {
+                        final float vl = ((Number) localCfg.get("addGlobalVl(distribution)")).floatValue() / 10f;
+                        if (vl > 0) {
+                            this.profile.punish("Aim", "Distribution", "[Analysis] Incorrect distribution ["
+                                            + distinctX + ", " + pearson + ", " + max + ", " + spikes + "]", vl);
+                        }
+                        this.buffer.set(0, limit - 0.7f);
                     }
                 } else this.increaseBuffer(0, -0.5f);
             }

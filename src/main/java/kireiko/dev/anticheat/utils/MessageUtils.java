@@ -1,6 +1,6 @@
 package kireiko.dev.anticheat.utils;
 
-import kireiko.dev.anticheat.api.PlayerContainer;
+import kireiko.dev.anticheat.api.data.PlayerContainer;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

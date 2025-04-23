@@ -2,8 +2,8 @@ package kireiko.dev.anticheat.commands.subcommands;
 
 import com.google.common.collect.ImmutableList;
 import kireiko.dev.anticheat.MX;
-import kireiko.dev.anticheat.api.PlayerContainer;
-import kireiko.dev.anticheat.api.RotationsContainer;
+import kireiko.dev.anticheat.api.data.PlayerContainer;
+import kireiko.dev.anticheat.api.data.RotationsContainer;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
 import kireiko.dev.anticheat.commands.MXSubCommand;
 import kireiko.dev.anticheat.core.AsyncScheduler;

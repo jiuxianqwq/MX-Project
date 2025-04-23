@@ -1,4 +1,4 @@
-package kireiko.dev.anticheat.api;
+package kireiko.dev.anticheat.api.data;
 
 import kireiko.dev.anticheat.api.player.PlayerProfile;
 import kireiko.dev.anticheat.core.AsyncScheduler;
@@ -20,7 +20,7 @@ public final class PlayerContainer {
         AsyncScheduler.run(() -> {
             PlayerProfile profile = new PlayerProfile(player);
             uuidPlayerProfileMap.put(player.getUniqueId(), profile);
-            profile.initChecks();
+            profile.initChecks(profile.getInstance());
         });
     }
 

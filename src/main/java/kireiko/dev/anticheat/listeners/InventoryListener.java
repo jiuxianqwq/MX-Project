@@ -6,7 +6,7 @@ import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import kireiko.dev.anticheat.MX;
-import kireiko.dev.anticheat.api.PlayerContainer;
+import kireiko.dev.anticheat.api.data.PlayerContainer;
 import kireiko.dev.anticheat.api.events.WindowClickEvent;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
 

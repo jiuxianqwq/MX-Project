@@ -1,10 +1,14 @@
 package kireiko.dev.anticheat.checks.aim.heuristic;
 
+import kireiko.dev.anticheat.api.data.ConfigLabel;
 import kireiko.dev.anticheat.api.events.RotationEvent;
 import kireiko.dev.anticheat.checks.aim.AimHeuristicCheck;
 import kireiko.dev.anticheat.utils.ConfigCache;
 import kireiko.dev.millennium.math.Simplification;
 import kireiko.dev.millennium.math.Statistics;
+
+import java.util.Map;
+import java.util.TreeMap;
 
 public final class AimConstantCheck implements HeuristicComponent {
 
@@ -17,9 +21,25 @@ public final class AimConstantCheck implements HeuristicComponent {
     private float lastDeltaYaw = 0.0f, lastDeltaPitch = 0.0f;
     private float buffer = 0, buffer2 = 0, buffer3 = 0;
     private int rating = 0, toReview = 0;
+    private Map<String, Object> localCfg = new TreeMap<>();
 
     public AimConstantCheck(final AimHeuristicCheck check) {
         this.check = check;
+    }
+
+    @Override
+    public ConfigLabel config() {
+        localCfg.put("constant(1)_needVl", 6);
+        localCfg.put("constant(2)_needVl", 6);
+        localCfg.put("constant(3)_needVl", 3);
+        localCfg.put("addGlobalVl(bad history)", 20);
+        localCfg.put("required_rating_for_bad_history", 45);
+        return new ConfigLabel("constant_check", localCfg);
+    }
+
+    @Override
+    public void applyConfig(Map<String, Object> params) {
+        localCfg = params;
     }
 
     @Override
@@ -47,7 +67,7 @@ public final class AimConstantCheck implements HeuristicComponent {
                 buffer = Math.min(buffer + 1, 200);
                 check.getProfile().debug("&7Aim Constant (1): " + buffer);
                 rating++;
-                if (buffer > 6) {
+                if (buffer > getNumCfg("constant(1)_needVl")) {
                     check.getProfile().punish("Aim", "Heuristic", "Constant rotations (1)", 0.0f);
                     check.getProfile().setAttackBlockToTime(System.currentTimeMillis() + 4000);
                     buffer = 4;
@@ -79,7 +99,7 @@ public final class AimConstantCheck implements HeuristicComponent {
                     buffer2 = Math.min(buffer2 + 1, 200);
                     check.getProfile().debug("&7Aim Constant (2): " + buffer2);
                     rating++;
-                    if (buffer2 > 6) {
+                    if (buffer2 > getNumCfg("constant(2)_needVl")) {
                         check.getProfile().punish("Aim", "Heuristic", "Constant rotations (2)", 0.0f);
                         check.getProfile().setAttackBlockToTime(System.currentTimeMillis() + 4000);
                         buffer2 = 4;
@@ -112,7 +132,8 @@ public final class AimConstantCheck implements HeuristicComponent {
                     buffer3 = Math.max(buffer3 + ((deltaPitch < 1 || deltaPitch > 13) ? 2f : 1), 0);
                     check.getProfile().debug("&7Aim Constant (3): " + buffer3 + " " + Simplification.scaleVal(deltaPitch, 3));
                     rating++;
-                    if (buffer3 > ((check.getProfile().calculateSensitivity() < 70) ? 4 : 3)) {
+                    final float limit = getNumCfg("constant(3)_needVl");
+                    if (buffer3 > ((check.getProfile().calculateSensitivity() < 70) ? limit + 1 : limit)) {
                         check.getProfile().punish("Aim", "Heuristic", "Constant rotations (3)", 0.0f);
                         check.getProfile().setAttackBlockToTime(System.currentTimeMillis() + 4000);
                         buffer3 = 0;
@@ -132,13 +153,17 @@ public final class AimConstantCheck implements HeuristicComponent {
         if (this.toReview >= 80) {
             { // check
                 check.getProfile().debug("&7Aim constant history rating: " + this.rating);
-                if (this.rating > 45 && this.rating < 100) {
-                    check.getProfile().punish("Aim", "Heuristic", "Bad history (" + this.rating + ") [Constant check]", 2.0f);
+                if (this.rating > getNumCfg("required_rating_for_bad_history") && this.rating < 80) {
+                    check.getProfile().punish("Aim", "Heuristic", "Bad history ("
+                    + this.rating + ") [Constant check]", getNumCfg("addGlobalVl(bad history)") / 10);
                 }
                 //check.getProfile().getPlayer().sendMessage("rating: " + rating);
             }
             this.toReview = 0;
             this.rating = 0;
         }
+    }
+    private float getNumCfg(String key) {
+        return ((Number) localCfg.get(key)).floatValue();
     }
 }

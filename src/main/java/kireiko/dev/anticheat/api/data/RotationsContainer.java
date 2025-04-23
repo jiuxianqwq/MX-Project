@@ -1,4 +1,4 @@
-package kireiko.dev.anticheat.api;
+package kireiko.dev.anticheat.api.data;
 
 import kireiko.dev.millennium.types.EvictingList;
 import kireiko.dev.millennium.vectors.Vec2f;

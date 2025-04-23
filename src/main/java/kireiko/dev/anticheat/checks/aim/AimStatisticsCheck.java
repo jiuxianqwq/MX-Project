@@ -1,16 +1,15 @@
 package kireiko.dev.anticheat.checks.aim;
 
 import kireiko.dev.anticheat.api.PacketCheckHandler;
+import kireiko.dev.anticheat.api.data.ConfigLabel;
 import kireiko.dev.anticheat.api.events.RotationEvent;
 import kireiko.dev.anticheat.api.events.UseEntityEvent;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
+import kireiko.dev.anticheat.managers.CheckManager;
 import kireiko.dev.millennium.math.Statistics;
 import kireiko.dev.millennium.vectors.Vec2f;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 
@@ -20,6 +19,7 @@ public final class AimStatisticsCheck implements PacketCheckHandler {
     private final List<Vec2f> rawRotations;
     private final List<Double> shannonAnalysis;
     private long lastAttack;
+    private Map<String, Object> localCfg = new TreeMap<>();
 
     public AimStatisticsCheck(PlayerProfile profile) {
         this.profile = profile;
@@ -28,6 +28,36 @@ public final class AimStatisticsCheck implements PacketCheckHandler {
         this.buffer = new CopyOnWriteArrayList<>();
         this.shannonAnalysis = new CopyOnWriteArrayList<>();
         for (int i = 0; i < 16; i++) this.buffer.add(0.0f);
+        if (CheckManager.classCheck(this.getClass()))
+            this.localCfg = CheckManager.getConfig(this.getClass());
+    }
+
+    @Override
+    public ConfigLabel config() {
+        localCfg.put("addGlobalVl(iqr)", 25);
+        localCfg.put("addGlobalVl(ks_test)", 0);
+        localCfg.put("addGlobalVl(bot_pattern)", 35);
+        localCfg.put("addGlobalVl(zfactor)", 0);
+        localCfg.put("addGlobalVl(improbable)", 30);
+        localCfg.put("hitCancelTimeMS(iqr)", 0);
+        localCfg.put("hitCancelTimeMS(ks_test)", 4000);
+        localCfg.put("hitCancelTimeMS(bot_pattern)", 0);
+        localCfg.put("hitCancelTimeMS(zfactor)", 5500);
+        localCfg.put("hitCancelTimeMS(improbable)", 4000);
+        localCfg.put("localVlLimit(iqr)", 11.0f);
+        localCfg.put("localVlLimit(ks_test)", 5.0f);
+        localCfg.put("localVlLimit(zfactor)", 7.0f);
+        localCfg.put("localVlLimit(improbable)", 15.0f);
+        return new ConfigLabel("aim_statistics", localCfg);
+    }
+    @Override
+    public void applyConfig(Map<String, Object> params) {
+        localCfg = params;
+    }
+
+    @Override
+    public Map<String, Object> getConfig() {
+        return localCfg;
     }
 
     private static double getDifference(double a, double b) {
@@ -73,9 +103,15 @@ public final class AimStatisticsCheck implements PacketCheckHandler {
                 if (iqr > 12.5 && iqr < 96 && infs > 0) {
                     this.increaseBuffer(8, (iqr > 20) ? 1.4f : 0.8f);
                     this.profile.debug("&7Aim IQR: " + this.buffer.get(8) + " infs: " + infs);
-                    if (this.buffer.get(8) > 11.0f) {
-                        this.profile.punish("Aim", "IQR", "[Statistics] IQR " + iqr, 2.5f);
-                        this.buffer.set(8, 9.5f);
+                    final float vl = ((Number) localCfg.get("addGlobalVl(iqr)")).floatValue() / 10f;
+                    final long cancel = ((Number) localCfg.get("hitCancelTimeMS(iqr)")).longValue();
+                    final float vlLimit = ((Number) localCfg.get("localVlLimit(iqr)")).floatValue();
+                    if (this.buffer.get(8) > vlLimit) {
+                        if (cancel > 0 || vl > 0) {
+                            this.profile.punish("Aim", "IQR", "[Statistics] IQR " + iqr, vl);
+                            this.profile.setAttackBlockToTime(System.currentTimeMillis() + cancel);
+                        }
+                        this.buffer.set(8, vlLimit - 2f);
                     }
                 } else if (iqr < 13 || infs == 0) {
                     if (iqr < 7) {
@@ -93,10 +129,15 @@ public final class AimStatisticsCheck implements PacketCheckHandler {
                     this.increaseBuffer(14, 1.0f);
                     profile.debug("&7Aim Kolmogorov Smirnov Test: " + kTest + " VL: "
                             + this.buffer.get(2) + " Streak: " + buffer.get(14));
-                    if (this.buffer.get(2) >= 5 && (kTest > 90 || this.buffer.get(2) >= 7)) {
-                        this.profile.punish("Aim", "KS Test", "[Statistics] Kolmogorov Smirnov Test (Spikes) " + kTest, 0.0f);
-                        this.profile.setAttackBlockToTime(System.currentTimeMillis() + 4000);
-                        this.buffer.set(2, (this.buffer.get(2) >= 7) ? 6.5f : 4.5f);
+                    final float vlLimit = ((Number) localCfg.get("localVlLimit(ks_test)")).floatValue();
+                    if (this.buffer.get(2) >= (vlLimit * 1.25f) && (kTest > 90 || this.buffer.get(2) >= vlLimit)) {
+                        final float vl = ((Number) localCfg.get("addGlobalVl(ks_test)")).floatValue() / 10f;
+                        final long cancel = ((Number) localCfg.get("hitCancelTimeMS(ks_test)")).longValue();
+                        if (vl > 0 || cancel > 0) {
+                            this.profile.punish("Aim", "KS Test", "[Statistics] Kolmogorov Smirnov Test (Spikes) " + kTest, vl);
+                            this.profile.setAttackBlockToTime(System.currentTimeMillis() + cancel);
+                        }
+                        this.buffer.set(2, vlLimit - 0.6f);
                     }
                 } else {
                     this.increaseBuffer(2, -2f);
@@ -125,7 +166,12 @@ public final class AimStatisticsCheck implements PacketCheckHandler {
             }
             if (jiffPatterns > 2 && Statistics.getAverage(x) > 3.0
                     && jiffPatterns != 6 && jiffPatterns != 12 && jiffPatterns != 4) {
-                this.profile.punish("Aim", "Pattern", "[Statistics] AimBot pattern " + jiffPatterns, 3.0f);
+                final float vl = ((Number) localCfg.get("addGlobalVl(bot_pattern)")).floatValue() / 10f;
+                final long cancel = ((Number) localCfg.get("hitCancelTimeMS(bot_pattern)")).longValue();
+                if (vl > 0 || cancel > 0) {
+                    this.profile.punish("Aim", "Pattern", "[Statistics] AimBot pattern " + jiffPatterns, vl);
+                    this.profile.setAttackBlockToTime(System.currentTimeMillis() + cancel);
+                }
             }
             //profile.getPlayer().sendMessage("j: " + Arrays.toString(jiffYaw.toArray()));
 
@@ -140,10 +186,15 @@ public final class AimStatisticsCheck implements PacketCheckHandler {
                 if (this.buffer.get(0) > 4)
                     total++;
                 profile.debug("&7Aim zFactor: " + this.buffer.get(0));
-                if (this.buffer.get(0) > 7.0f) {
-                    this.profile.punish("Aim", "Factor", "[Statistics] Suspicious zFactor " + zFactorYaw, 0.0f);
-                    this.profile.setAttackBlockToTime(System.currentTimeMillis() + 5500L);
-                    this.buffer.set(0, 6.0f);
+                final float vlLimit = ((Number) localCfg.get("localVlLimit(zfactor)")).floatValue();
+                if (this.buffer.get(0) > vlLimit) {
+                    final float vl = ((Number) localCfg.get("addGlobalVl(zfactor)")).floatValue() / 10f;
+                    final long cancel = ((Number) localCfg.get("hitCancelTimeMS(zfactor)")).longValue();
+                    if (vl > 0 || cancel > 0) {
+                        this.profile.punish("Aim", "Factor", "[Statistics] Suspicious zFactor " + zFactorYaw, vl);
+                        this.profile.setAttackBlockToTime(System.currentTimeMillis() + cancel);
+                    }
+                    this.buffer.set(0, vlLimit - 1f);
                 }
             } else this.increaseBuffer(0, -1.2f);
         }
@@ -153,10 +204,15 @@ public final class AimStatisticsCheck implements PacketCheckHandler {
                 this.increaseBuffer(10, -2f);
             } else if (total > 2.0) {
                 this.increaseBuffer(10, 5f);
-                if (this.buffer.get(10) >= 15) {
-                    this.profile.punish("Aim", "Statistics", "[Statistics] Improbable " + this.buffer.get(10), 3.0f);
-                    this.profile.setAttackBlockToTime(System.currentTimeMillis() + 3600L);
-                    this.increaseBuffer(10, -2f);
+                final float vlLimit = ((Number) localCfg.get("localVlLimit(improbable)")).floatValue();
+                if (this.buffer.get(10) >= vlLimit) {
+                    final float vl = ((Number) localCfg.get("addGlobalVl(improbable)")).floatValue() / 10f;
+                    final long cancel = ((Number) localCfg.get("hitCancelTimeMS(improbable)")).longValue();
+                    if (vl > 0 || cancel > 0) {
+                        this.profile.punish("Aim", "Statistics", "[Statistics] Improbable " + this.buffer.get(10), 3.0f);
+                        this.profile.setAttackBlockToTime(System.currentTimeMillis() + cancel);
+                    }
+                    this.increaseBuffer(10, vlLimit - 2.0f);
                 }
             }
         }

@@ -1,10 +1,12 @@
 package kireiko.dev.anticheat.checks.velocity;
 
 import kireiko.dev.anticheat.api.PacketCheckHandler;
+import kireiko.dev.anticheat.api.data.ConfigLabel;
 import kireiko.dev.anticheat.api.events.CTransactionEvent;
 import kireiko.dev.anticheat.api.events.MoveEvent;
 import kireiko.dev.anticheat.api.events.SVelocityEvent;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
+import kireiko.dev.anticheat.managers.CheckManager;
 import kireiko.dev.anticheat.services.SimulationFlagService;
 import kireiko.dev.anticheat.utils.ConfigCache;
 import kireiko.dev.millennium.math.Simplification;
@@ -12,6 +14,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.util.Vector;
 
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 public final class VelocityCheck implements PacketCheckHandler {
@@ -26,9 +30,28 @@ public final class VelocityCheck implements PacketCheckHandler {
     private Vector velocity = null;
     private Location from = null;
     private boolean isOnGroundFrom = false;
+    private Map<String, Object> localCfg = new TreeMap<>();
+
+    @Override
+    public ConfigLabel config() {
+        localCfg.put("buffer", 6);
+        return new ConfigLabel("velocity", localCfg);
+    }
+    @Override
+    public void applyConfig(Map<String, Object> params) {
+        localCfg = params;
+    }
+
+    @Override
+    public Map<String, Object> getConfig() {
+        return localCfg;
+    }
+
 
     public VelocityCheck(PlayerProfile profile) {
         this.profile = profile;
+        if (CheckManager.classCheck(this.getClass()))
+            this.localCfg = CheckManager.getConfig(this.getClass());
     }
 
     private static double abs(double v) {
@@ -160,10 +183,11 @@ public final class VelocityCheck implements PacketCheckHandler {
 
     private void flag(final String check, final String component, final String info, final float m, float vl) {
         this.vl += vl;
-        if (this.vl > 60) {
+        float vlLimit = ((Number) localCfg.get("buffer")).floatValue() * 10f;
+        if (this.vl > vlLimit) {
             this.profile.punish(check, component, info, m);
             SimulationFlagService.getFlags().add(new SimulationFlagService.Flag(profile, from, velocity));
-            this.vl = 50;
+            this.vl = vlLimit - 10;
         }
     }
 

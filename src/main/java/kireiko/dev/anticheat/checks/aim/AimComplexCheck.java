@@ -1,20 +1,19 @@
 package kireiko.dev.anticheat.checks.aim;
 
 import kireiko.dev.anticheat.api.PacketCheckHandler;
+import kireiko.dev.anticheat.api.data.ConfigLabel;
 import kireiko.dev.anticheat.api.events.RotationEvent;
 import kireiko.dev.anticheat.api.events.UseEntityEvent;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
+import kireiko.dev.anticheat.managers.CheckManager;
 import kireiko.dev.millennium.math.Statistics;
 import kireiko.dev.millennium.vectors.Pair;
 import kireiko.dev.millennium.vectors.Vec2;
 import kireiko.dev.millennium.vectors.Vec2f;
 import kireiko.dev.millennium.vectors.Vec2i;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.locks.ReentrantLock;
 
 public final class AimComplexCheck implements PacketCheckHandler {
     private final List<Float> buffer;
@@ -22,9 +21,9 @@ public final class AimComplexCheck implements PacketCheckHandler {
     private final List<Vec2i> /*rotations,*/ rotations2;
     private final List<Vec2> kireikoGeneric;
     private final List<Vec2f> rawRotations;
-    private final ReentrantLock aimLock = new ReentrantLock();
     private long lastAttack;
     private double oldShannonYaw, oldShannonPitch;
+    private Map<String, Object> localCfg = new TreeMap<>();
 
     public AimComplexCheck(PlayerProfile profile) {
         this.profile = profile;
@@ -37,6 +36,35 @@ public final class AimComplexCheck implements PacketCheckHandler {
         this.oldShannonYaw = 0;
         this.oldShannonPitch = 0;
         for (int i = 0; i < 16; i++) this.buffer.add(0.0f);
+        if (CheckManager.classCheck(this.getClass()))
+            this.localCfg = CheckManager.getConfig(this.getClass());
+    }
+
+
+    @Override
+    public ConfigLabel config() {
+        localCfg.put("addGlobalVl(entropy)", 30);
+        localCfg.put("addGlobalVl(distinct)", 5);
+        localCfg.put("addGlobalVl(randomizer)", 35);
+        localCfg.put("addGlobalVl(snap)", 0);
+        localCfg.put("hitCancelTimeMS(entropy)", 5000);
+        localCfg.put("hitCancelTimeMS(distinct)", 3000);
+        localCfg.put("hitCancelTimeMS(randomizer)", 0);
+        localCfg.put("hitCancelTimeMS(snap)", 3500);
+        localCfg.put("localVlLimit(entropy)", 30);
+        localCfg.put("localVlLimit(distinct)", 4.0f);
+        localCfg.put("localVlLimit(randomizer)", 2.5f);
+        localCfg.put("localVlLimit(snap)", 4.0f);
+        return new ConfigLabel("aim_complex", localCfg);
+    }
+    @Override
+    public void applyConfig(Map<String, Object> params) {
+        localCfg = params;
+    }
+
+    @Override
+    public Map<String, Object> getConfig() {
+        return localCfg;
     }
 
     private static double getDifference(double a, double b) {
@@ -87,11 +115,16 @@ public final class AimComplexCheck implements PacketCheckHandler {
                 this.increaseBuffer(11, 1.0f);
                 if (this.buffer.get(11) > 3)
                     profile.debug("&7Aim Perfect Shannon Entropy: " + this.buffer.get(11));
-                if (this.buffer.get(11) > 30) {
-                    profile.punish("Aim", "Entropy",
-                            "[Analysis] Perfect shannon entropy " + shannonYaw, 0.0f);
-                    profile.setAttackBlockToTime(System.currentTimeMillis() + 5000);
-                    this.buffer.set(11, 29f);
+                final int vlLimit = ((Number) localCfg.get("localVlLimit(entropy)")).intValue();
+                if (this.buffer.get(11) > vlLimit) {
+                    final float vl = ((Number) localCfg.get("addGlobalVl(entropy)")).floatValue() / 10f;
+                    final long cancel = ((Number) localCfg.get("hitCancelTimeMS(entropy)")).longValue();
+                    if (cancel > 0 || vl > 0) {
+                        profile.punish("Aim", "Entropy",
+                                        "[Analysis] Perfect shannon entropy " + shannonYaw, vl);
+                        profile.setAttackBlockToTime(System.currentTimeMillis() + cancel);
+                    }
+                    this.buffer.set(11, (float) (vlLimit - 1));
                 }
             } else this.buffer.set(11, 0f);
 
@@ -99,21 +132,31 @@ public final class AimComplexCheck implements PacketCheckHandler {
                 this.increaseBuffer(12, 1.0f);
                 if (this.buffer.get(12) > 7)
                     profile.debug("&7Aim Similar Shannon Entropy: " + this.buffer.get(11));
-                if (this.buffer.get(12) > 30) {
-                    profile.punish("Aim", "Entropy",
-                            "[Analysis] Similar shannon entropy " + shannonYaw, 0.0f);
-                    profile.setAttackBlockToTime(System.currentTimeMillis() + 5000);
-                    this.buffer.set(12, 29f);
+                final int vlLimit = ((Number) localCfg.get("localVlLimit(entropy)")).intValue();
+                if (this.buffer.get(12) > vlLimit) {
+                    final float vl = ((Number) localCfg.get("addGlobalVl(entropy)")).floatValue() / 10f;
+                    final long cancel = ((Number) localCfg.get("hitCancelTimeMS(entropy)")).longValue();
+                    if (cancel > 0 || vl > 0) {
+                        profile.punish("Aim", "Entropy",
+                                        "[Analysis] Similar shannon entropy " + shannonYaw, vl);
+                        profile.setAttackBlockToTime(System.currentTimeMillis() + cancel);
+                    }
+                    this.buffer.set(12, (float) (vlLimit - 1));
                 }
             } else this.buffer.set(12, 0f);
 
             if ((disX < 8 && Math.abs(Statistics.getAverage(x)) > 2.5)) {
                 this.increaseBuffer(9, 1.7f);
                 profile.debug("&7Aim Invalid Distinct: " + this.buffer.get(9));
-                if (this.buffer.get(9) >= 4.0f) {
-                    profile.punish("Aim", "Distinct",
-                            "[Flaw] Invalid distinct", 0.5f);
-                    profile.setAttackBlockToTime(System.currentTimeMillis() + 3000);
+                final float vlLimit = ((Number) localCfg.get("localVlLimit(distinct)")).floatValue();
+                if (this.buffer.get(9) >= vlLimit) {
+                    final float vl = ((Number) localCfg.get("addGlobalVl(distinct)")).floatValue() / 10f;
+                    final long cancel = ((Number) localCfg.get("hitCancelTimeMS(distinct)")).longValue();
+                    if (cancel > 0 || vl > 0) {
+                        profile.punish("Aim", "Distinct",
+                                        "[Flaw] Invalid distinct", vl);
+                        profile.setAttackBlockToTime(System.currentTimeMillis() + cancel);
+                    }
                     this.increaseBuffer(9, -0.5f);
                 }
             } else this.increaseBuffer(9, -0.35f);
@@ -192,11 +235,17 @@ public final class AimComplexCheck implements PacketCheckHandler {
                 double max = Math.max(devX, devY);
                 if ((min < 0.09 && max > 35 && Statistics.getMin(gcdPitch) != 0.0)) {
                     this.increaseBuffer(4, 1.0f);
+                    final float vlLimit = ((Number) localCfg.get("localVlLimit(randomizer)")).floatValue();
                     profile.debug("&7Aim Randomizer flaw: " + this.buffer.get(4));
-                    if (this.buffer.get(4) > 2.5f) {
+                    if (this.buffer.get(4) > vlLimit) {
                         // bluemouse...
-                        profile.punish("Aim", "Randomizer", "[Analysis] Randomizer flaw", 3.5f);
-                        this.buffer.set(4, 1.0f);
+                        final float vl = ((Number) localCfg.get("addGlobalVl(randomizer)")).floatValue() / 10f;
+                        final long cancel = ((Number) localCfg.get("hitCancelTimeMS(randomizer)")).longValue();
+                        if (cancel > 0 || vl > 0) {
+                            profile.punish("Aim", "Randomizer", "[Analysis] Randomizer flaw", vl);
+                            profile.setAttackBlockToTime(System.currentTimeMillis() + cancel);
+                        }
+                        this.buffer.set(4, vlLimit - 1);
                     }
                 } else this.increaseBuffer(4, -0.4f);
             }
@@ -205,12 +254,17 @@ public final class AimComplexCheck implements PacketCheckHandler {
                         && ((yawYMax == yawYMin && yawYMax > 55)
                         || (yawYMax > 60 && (yawYMin < yawYMax / 3)))) {
                     this.increaseBuffer(3, 1.25f);
+                    final float vlLimit = ((Number) localCfg.get("localVlLimit(snap)")).floatValue();
                     profile.debug("&7Rough yaw(y) spikes: " + this.buffer.get(3));
-                    if (this.buffer.get(3) > 4.0f) {
-                        profile.punish("Aim", "Snap",
-                                "[Analysis] Rough yaw spikes " + yawY, 0.0f);
-                        profile.setAttackBlockToTime(System.currentTimeMillis() + 3500);
-                        this.increaseBuffer(3, -0.75f);
+                    if (this.buffer.get(3) > vlLimit) {
+                        final float vl = ((Number) localCfg.get("addGlobalVl(snap)")).floatValue() / 10f;
+                        final long cancel = ((Number) localCfg.get("hitCancelTimeMS(snap)")).longValue();
+                        if (cancel > 0 || vl > 0) {
+                            profile.punish("Aim", "Snap",
+                                            "[Analysis] Rough yaw spikes " + yawY, vl);
+                            profile.setAttackBlockToTime(System.currentTimeMillis() + cancel);
+                        }
+                        this.increaseBuffer(3, vlLimit - 0.5f);
                     }
                 } else {
                     this.increaseBuffer(3, -0.65f);

@@ -3,10 +3,11 @@ package kireiko.dev.anticheat;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import kireiko.dev.anticheat.api.PlayerContainer;
+import kireiko.dev.anticheat.api.data.PlayerContainer;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
 import kireiko.dev.anticheat.commands.MXCommandHandler;
 import kireiko.dev.anticheat.listeners.*;
+import kireiko.dev.anticheat.managers.CheckManager;
 import kireiko.dev.anticheat.services.AnimatedPunishService;
 import kireiko.dev.anticheat.services.FunThingsService;
 import kireiko.dev.anticheat.services.SimulationFlagService;
@@ -38,6 +39,7 @@ public class MX extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+        CheckManager.init();
         saveDefaultConfig();
         ConfigCache.loadConfig();
 

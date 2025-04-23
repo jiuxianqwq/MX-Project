@@ -4,11 +4,7 @@ import kireiko.dev.anticheat.MX;
 import kireiko.dev.anticheat.api.CheckPacketRegister;
 import kireiko.dev.anticheat.api.PacketCheckHandler;
 import kireiko.dev.anticheat.api.events.MXFlagEvent;
-import kireiko.dev.anticheat.checks.aim.AimAnalysisCheck;
-import kireiko.dev.anticheat.checks.aim.AimComplexCheck;
-import kireiko.dev.anticheat.checks.aim.AimHeuristicCheck;
-import kireiko.dev.anticheat.checks.aim.AimStatisticsCheck;
-import kireiko.dev.anticheat.checks.velocity.VelocityCheck;
+import kireiko.dev.anticheat.managers.CheckManager;
 import kireiko.dev.anticheat.services.AnimatedPunishService;
 import kireiko.dev.anticheat.utils.ConfigCache;
 import kireiko.dev.anticheat.utils.MessageUtils;
@@ -17,6 +13,7 @@ import kireiko.dev.millennium.math.Statistics;
 import kireiko.dev.millennium.types.EvictingList;
 import kireiko.dev.millennium.vectors.Pair;
 import lombok.Data;
+import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -48,10 +45,12 @@ public final class PlayerProfile {
     private boolean alerts, debug, ignoreExitBan, ignoreFirstTick = true;
     private Pair<String, String> banAnimInfo;
     private Pair<Location, Location> banAnimPositions;
+    private final Object instance;
 
     public PlayerProfile(Player player) {
         this.player = player;
         this.to = this.from = player.getLocation();
+        this.instance = this;
     }
 
     public void punish(final String check, final String component, final String info, final float m) {
@@ -115,12 +114,11 @@ public final class PlayerProfile {
         if (this.vl < 0) this.vl = 0;
     }
 
-    public void initChecks() {
-        this.checks.add(new AimHeuristicCheck(this));
-        this.checks.add(new AimComplexCheck(this));
-        this.checks.add(new AimStatisticsCheck(this));
-        this.checks.add(new AimAnalysisCheck(this));
-        this.checks.add(new VelocityCheck(this));
+    @SneakyThrows
+    public void initChecks(Object dependency) {
+        for (Class<? extends PacketCheckHandler> checkHandler : CheckManager.getChecks()) {
+            this.checks.add(checkHandler.getConstructor(dependency.getClass()).newInstance(this));
+        }
     }
 
     public void run(Object handler) {
@@ -167,6 +165,7 @@ public final class PlayerProfile {
     }
 
     public void setAttackBlockToTime(long time) {
+        if (time < System.currentTimeMillis() + 10) return;
         if (!ConfigCache.BYPASS.equalsIgnoreCase("none")
                 && this.player.hasPermission(ConfigCache.BYPASS)) {
             return;
