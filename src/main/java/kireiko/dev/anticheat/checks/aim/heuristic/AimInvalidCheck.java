@@ -21,7 +21,7 @@ public final class AimInvalidCheck implements HeuristicComponent {
     @Override
     public ConfigLabel config() {
         localCfg.put("hitCancelTimeMS", 0);
-        localCfg.put("addGlobalVl", 0);
+        localCfg.put("addGlobalVl", 100);
         return new ConfigLabel("invalid_check", localCfg);
     }
 
