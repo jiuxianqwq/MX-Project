@@ -71,7 +71,7 @@ public final class AimFilterCheck implements HeuristicComponent {
                 } else if (buffer >= 9 && r < 0.3) {
                     profile.punish("Aim", "A/B",
                                     "Rate: " + Simplification.scaleVal((1.0 - r), 2) + " [Machine-like rotations]",
-                                    ((Number) localCfg.get("addGlobalVl")).floatValue());
+                                    ((Number) localCfg.get("addGlobalVl")).floatValue() / 10);
                     profile.setAttackBlockToTime(System.currentTimeMillis() + ((Number) localCfg.get("hitCancelTimeMS")).longValue());
                     buffer = 7;
                 }
