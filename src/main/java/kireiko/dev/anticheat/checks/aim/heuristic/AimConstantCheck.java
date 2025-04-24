@@ -50,8 +50,8 @@ public final class AimConstantCheck implements HeuristicComponent {
         if (ConfigCache.IGNORE_CINEMATIC || check.getProfile().ignoreCinematic()) return;
 
         final double sensitivity = check.getProfile().calculateSensitivity();
-        final boolean sensitivityTooLow = sensitivity < 35.0 && sensitivity > -1.0
-                        || (check.getProfile().getSensitivityProcessor().totalSensitivityClient < 35);
+        final boolean sensitivityTooLow = sensitivity < 50.0 && sensitivity > -1.0
+                        || (check.getProfile().getSensitivityProcessor().totalSensitivityClient < 50);
         final double divisorYaw = Statistics.getGcd((long) (deltaYaw * Statistics.EXPANDER), (long) (lastDeltaYaw * Statistics.EXPANDER));
         final double divisorPitch = Statistics.getGcd((long) (deltaPitch * Statistics.EXPANDER), (long) (lastDeltaPitch * Statistics.EXPANDER));
 

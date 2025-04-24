@@ -2,6 +2,7 @@ package kireiko.dev.anticheat.checks.aim.heuristic;
 
 import kireiko.dev.anticheat.api.data.ConfigLabel;
 import kireiko.dev.anticheat.api.events.RotationEvent;
+import kireiko.dev.anticheat.api.player.PlayerProfile;
 import kireiko.dev.anticheat.checks.aim.AimHeuristicCheck;
 import kireiko.dev.millennium.math.Statistics;
 import kireiko.dev.millennium.vectors.Pair;
@@ -38,7 +39,12 @@ public final class AimInconsistentCheck implements HeuristicComponent {
     public void process(final RotationEvent rotationUpdate) {
         final long cancelTime = ((Number) localCfg.get("hitCancelTimeMS")).longValue();
         if (cancelTime <= 0) return;
-        final boolean invalidSensitivity = check.getProfile().calculateSensitivity() < 75 || check.getProfile().calculateSensitivity() > 175;
+        final PlayerProfile profile = check.getProfile();
+        final boolean invalidSensitivity =
+                        profile.calculateSensitivity() < 75
+                        || profile.calculateSensitivity() > 175
+                        || profile.getSensitivityProcessor().totalSensitivityClient < 75
+                        || profile.getSensitivityProcessor().totalSensitivityClient > 170;
         if (check.getProfile().ignoreCinematic() || invalidSensitivity) return;
         final float deltaYaw = Math.abs(rotationUpdate.getAbsDelta().getX());
         final float deltaPitch = Math.abs(rotationUpdate.getAbsDelta().getY());

@@ -43,7 +43,7 @@ public final class AimComplexCheck implements PacketCheckHandler {
 
     @Override
     public ConfigLabel config() {
-        localCfg.put("addGlobalVl(entropy)", 30);
+        localCfg.put("addGlobalVl(entropy)", 0);
         localCfg.put("addGlobalVl(distinct)", 5);
         localCfg.put("addGlobalVl(randomizer)", 35);
         localCfg.put("addGlobalVl(snap)", 0);
