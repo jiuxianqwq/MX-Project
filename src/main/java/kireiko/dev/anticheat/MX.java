@@ -3,6 +3,7 @@ package kireiko.dev.anticheat;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import kireiko.dev.anticheat.api.data.Metrics;
 import kireiko.dev.anticheat.api.data.PlayerContainer;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
 import kireiko.dev.anticheat.commands.MXCommandHandler;
@@ -51,6 +52,12 @@ public class MX extends JavaPlugin {
             pCommand.setExecutor(handler);
             pCommand.setTabCompleter(handler);
         }
+        final Metrics metrics = new Metrics(this, 25612);
+        metrics.addCustomChart(new Metrics.SingleLineChart("banned_players_count", () -> {
+            int banCount = 0;
+            for (int i : MX.bannedPerMinuteList) banCount += i;
+            return banCount;
+        }));
         getLogger().info("Launched!");
     }
 

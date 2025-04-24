@@ -99,7 +99,7 @@ public final class AimComplexCheck implements PacketCheckHandler {
 
     private void checkRaw() {
         if (!profile.ignoreCinematic()) { // uh
-            final int sens = profile.calculateSensitivity();
+            final int sens = profile.calculateSensitivity(), sensTemp = profile.getSensitivityProcessor().totalSensitivityClient;
             final List<Float> x = new ArrayList<>(), y = new ArrayList<>();
             for (Vec2f vec2 : this.rawRotations) {
                 x.add(vec2.getX());
@@ -108,7 +108,7 @@ public final class AimComplexCheck implements PacketCheckHandler {
             final int disX = Statistics.getDistinct(x);
             final double shannonYaw = Statistics.getShannonEntropy(x);
             final double shannonPitch = Statistics.getShannonEntropy(y);
-            final boolean valid = sens >= 60 && sens <= 150;
+            final boolean valid = sens >= 60 && sens <= 150 && sensTemp >= 60 && sensTemp < 150;
             //profile.getPlayer().sendMessage("y: " + shannonYaw + " " + shannonPitch);
             if (valid && getDifference(shannonYaw, oldShannonYaw) < 1e-5
                     && getDifference(shannonPitch, oldShannonPitch) < 1e-5) {
