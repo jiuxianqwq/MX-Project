@@ -29,6 +29,7 @@ public final class OmniPacketListener extends PacketAdapter {
         if (protocol == null) {
             return;
         }
+        //protocol.getPlayer().sendMessage("i: " + event.getPacket().getType().name());
         protocol.run(new CPacketEvent(event));
     }
 }

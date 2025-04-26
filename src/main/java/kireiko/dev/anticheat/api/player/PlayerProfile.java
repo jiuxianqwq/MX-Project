@@ -192,4 +192,10 @@ public final class PlayerProfile {
         }
         return -1;
     }
+    @Override public int hashCode() {
+        return System.identityHashCode(this);
+    }
+    @Override public boolean equals(Object o) {
+        return this == o;
+    }
 }
