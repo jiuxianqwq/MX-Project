@@ -145,7 +145,7 @@ public final class VelocityCheck implements PacketCheckHandler {
                 this.timing = 0;
             } else if (delay > 25) {
                 if (isJumpReset(y)) totalVlAtY = 12;
-                if (timing < 2) {
+                if (timing < 3) {
                     if (!transactionLock) timing++;
                 } else {
                     // time for vertical flag

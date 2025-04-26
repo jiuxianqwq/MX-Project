@@ -31,7 +31,7 @@ public final class AimConstantCheck implements HeuristicComponent {
     public ConfigLabel config() {
         localCfg.put("constant(1)_needVl", 6);
         localCfg.put("constant(2)_needVl", 6);
-        localCfg.put("constant(3)_needVl", 3);
+        localCfg.put("constant(3)_needVl", 4);
         localCfg.put("addGlobalVl(bad history)", 20);
         localCfg.put("required_rating_for_bad_history", 45);
         return new ConfigLabel("constant_check", localCfg);

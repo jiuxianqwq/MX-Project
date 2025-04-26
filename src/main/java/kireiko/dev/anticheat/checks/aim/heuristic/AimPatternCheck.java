@@ -26,7 +26,7 @@ public final class AimPatternCheck implements HeuristicComponent {
     @Override
     public ConfigLabel config() {
         localCfg.put("hitCancelTimeMS", 5000);
-        localCfg.put("addGlobalVl", 5);
+        localCfg.put("addGlobalVl", 20);
         localCfg.put("buffer", 1.7f);
         localCfg.put("buffer_fade", 0.2f);
         return new ConfigLabel("pattern_check", localCfg);
@@ -74,35 +74,37 @@ public final class AimPatternCheck implements HeuristicComponent {
                     buffer -= 1;
                 }
             }
-            final int currentSampleSize = this.sample.size();
-            // searching pattern
-            for (int i = 0; i <= currentSampleSize - PATTERN_LENGTH; ++i) {
-                for (int j = i + MIN_START_INDEX_GAP; j <= currentSampleSize - PATTERN_LENGTH; ++j) {
-                    Vec2f pattern = null;
-                    for (int k = 0; k < PATTERN_LENGTH; ++k) {
-                        final Vec2f first = this.sample.get(i + k);
-                        final Vec2f second = this.sample.get(j + k);
-                        if (Objects.equals(first, second)) {
-                            pattern = first;
-                            break;
+            if (!flagged) {
+                final int currentSampleSize = this.sample.size();
+                // searching pattern
+                for (int i = 0; i <= currentSampleSize - PATTERN_LENGTH; ++i) {
+                    for (int j = i + MIN_START_INDEX_GAP; j <= currentSampleSize - PATTERN_LENGTH; ++j) {
+                        Vec2f pattern = null;
+                        for (int k = 0; k < PATTERN_LENGTH; ++k) {
+                            final Vec2f first = this.sample.get(i + k);
+                            final Vec2f second = this.sample.get(j + k);
+                            if (Objects.equals(first, second)) {
+                                pattern = first;
+                                break;
+                            }
                         }
+                        if (pattern != null && !patterns.contains(pattern)) patterns.add(pattern);
                     }
-                    if (pattern != null && !patterns.contains(pattern)) patterns.add(pattern);
                 }
-            }
-            // checking invalid patterns
-            if (!patterns.isEmpty()) profile.debug("&7Aim Patterns: " + patterns);
-            for (final Vec2f vec2f : patterns) {
-                final float x = Math.abs(vec2f.getX());
-                final float y = Math.abs(vec2f.getY());
-                if ((x > 1.0 || y > 1.0) && (x > 0.26 && y > 0.26)) {
-                    flagged = true;
-                    if (buffer++ >= vlLimit) {
-                        profile.punish("Aim", "Pattern", "Suspicious pattern: " + vec2f, addGlobalVl);
-                        profile.setAttackBlockToTime(System.currentTimeMillis() + blockTime);
-                        buffer -= 1f;
+                // checking invalid patterns
+                if (!patterns.isEmpty()) profile.debug("&7Aim Patterns: " + patterns);
+                for (final Vec2f vec2f : patterns) {
+                    final float x = Math.abs(vec2f.getX());
+                    final float y = Math.abs(vec2f.getY());
+                    if ((x > 1.0 || y > 1.0) && (x > 0.26 && y > 0.26)) {
+                        flagged = true;
+                        if (buffer++ >= vlLimit) {
+                            profile.punish("Aim", "Pattern", "Suspicious pattern: " + vec2f, addGlobalVl);
+                            profile.setAttackBlockToTime(System.currentTimeMillis() + blockTime);
+                            buffer -= 1f;
+                        }
+                        break;
                     }
-                    break;
                 }
             }
             if (!flagged) buffer = Math.max(0, buffer - vlFade);

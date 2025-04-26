@@ -1,5 +1,6 @@
 package kireiko.dev.anticheat.api.player;
 
+import kireiko.dev.millennium.math.Statistics;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -56,7 +57,9 @@ public final class SensitivityProcessor {
         };
     }
 
-    private final List<Integer> sensitivitySamples = new ArrayList<>();
+    private final List<Integer>
+                    sensitivitySamples = new ArrayList<>(),
+                    sensitivityStrictSamples = new ArrayList<>();
     private final PlayerProfile playerProfile;
     public double totalSensitivity = 0;
     public int totalSensitivityClient = 0;
@@ -69,6 +72,7 @@ public final class SensitivityProcessor {
     private double finalSensitivity;
     @Getter
     private int sensitivity;
+    private int lastStrictSensitivity = 0;
 
     public SensitivityProcessor(PlayerProfile playerProfile) {
         this.playerProfile = playerProfile;
@@ -103,6 +107,26 @@ public final class SensitivityProcessor {
     }
 
     public void processSensitivity() {
+        if (Math.abs(this.deltaPitch) < 0.31) {
+            for (int i = 0; i < 200; i++) {
+                final double gcdValue = Statistics.getGCDValue(SENSITIVITY_MCP_VALUES[i]);
+                final double diff = Math.abs(gcdValue - Math.abs(this.deltaPitch));
+                if (diff < 1e-3) {
+                    sensitivityStrictSamples.add(i);
+                    if (sensitivityStrictSamples.size() >= 10) {
+                        final int finalSens = (int) Statistics.getMin(sensitivityStrictSamples);
+                        playerProfile.debug("&7Sensitivity (Strict): " + finalSens);
+                        if (finalSens == lastStrictSensitivity) {
+                            playerProfile.getSensitivity().clear();
+                            for (int r = 0; r < 5; r++) playerProfile.getSensitivity().add(finalSens);
+                        } else playerProfile.getSensitivity().add(finalSens);
+                        sensitivityStrictSamples.clear();
+                        lastStrictSensitivity = finalSens;
+                    }
+                    break;
+                }
+            }
+        }
         final float gcd = (float) getGcd(this.deltaPitch, this.lastDeltaPitch);
         final double sensitivityModifier = Math.cbrt(0.8333 * gcd);
         final double sensitivityStepTwo = 1.666 * sensitivityModifier - 0.3333;

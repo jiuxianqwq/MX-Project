@@ -27,6 +27,9 @@ ignoreCinematic: false
 logInFiles: true
 
 # MX will save the last 600 rotation ticks.
-# You will be able to view player activity via the web panel
-# /mx check %player%
+# You will be able to view player activity via the MX panel
+# /mx activity %player%
 rotationsContainer: true
+
+# Does not allow players to climb walls using ghost blocks
+preventGhostBlockAbuse: false

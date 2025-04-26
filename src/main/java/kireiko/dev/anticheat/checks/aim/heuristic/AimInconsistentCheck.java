@@ -18,6 +18,7 @@ public final class AimInconsistentCheck implements HeuristicComponent {
     private final List<Float> samplesYaw = new ArrayList<>();
     private final List<Float> samplesPitch = new ArrayList<>();
     private Map<String, Object> localCfg = new TreeMap<>();
+    private float buffer = 0;
 
 
     public AimInconsistentCheck(final AimHeuristicCheck check) {
@@ -28,6 +29,7 @@ public final class AimInconsistentCheck implements HeuristicComponent {
     public ConfigLabel config() {
         localCfg.put("hitCancelTimeMS", 4000);
         localCfg.put("addGlobalVl", 0);
+        localCfg.put("buffer", 2);
         return new ConfigLabel("inconsistent_check", localCfg);
     }
     @Override
@@ -69,19 +71,21 @@ public final class AimInconsistentCheck implements HeuristicComponent {
                 final int outliersX = outliersYaw.getX().size() + outliersYaw.getY().size();
                 final int outliersY = outliersPitch.getX().size() + outliersPitch.getY().size();
                 final float addGlobalVl = ((Number) localCfg.get("addGlobalVl")).floatValue() / 10f;
+                final float bufferLimit = ((Number) localCfg.get("buffer")).floatValue();
                 check.getProfile().debug("&7Aim Inconsistent: " + outliersX + " "
                                 + outliersY + "; duplicates: " + duplicatesX + " " + duplicatesY);
-                if (duplicatesSum <= 3 && outliersX < 10 && outliersY < 7) {
+                if ((duplicatesSum <= 3 && outliersX < 10 && outliersY < 7) && buffer++ >= bufferLimit) {
                     check.getProfile().punish("Aim", "Heuristic", "Inconsistent rotations ("
                                     + outliersX + ", " + outliersY + ", duplicates: "
                                     + duplicatesSum + ") [Too low values]", addGlobalVl);
                     check.getProfile().setAttackBlockToTime(System.currentTimeMillis() + cancelTime);
-                } else if ((outliersX == 0 || outliersY == 0) && (outliersX > 1 || outliersY > 1) && duplicatesSum <= 3) {
+                } else if (((outliersX == 0 || outliersY == 0) && (outliersX > 1 || outliersY > 1)
+                                && duplicatesSum <= 3) && buffer++ >= bufferLimit) {
                     check.getProfile().punish("Aim", "Heuristic", "Inconsistent rotations ("
                                     + outliersX + ", " + outliersY + ", duplicates: "
                                     + duplicatesSum + ") [Zero value]", addGlobalVl);
                     check.getProfile().setAttackBlockToTime(System.currentTimeMillis() + cancelTime);
-                }
+                } else buffer -= 0.5f;
             }
             samplesYaw.clear();
             samplesPitch.clear();
