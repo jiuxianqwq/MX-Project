@@ -29,11 +29,9 @@ public final class AimConstantCheck implements HeuristicComponent {
 
     @Override
     public ConfigLabel config() {
-        localCfg.put("constant(1)_needVl", 6);
+        localCfg.put("constant(1)_needVl", 8);
         localCfg.put("constant(2)_needVl", 6);
-        localCfg.put("constant(3)_needVl", 4);
-        localCfg.put("addGlobalVl(bad history)", 20);
-        localCfg.put("required_rating_for_bad_history", 45);
+        localCfg.put("constant(3)_needVl", 6);
         return new ConfigLabel("constant_check", localCfg);
     }
 
@@ -44,6 +42,7 @@ public final class AimConstantCheck implements HeuristicComponent {
 
     @Override
     public void process(final RotationEvent rotationUpdate) {
+        if (rotationUpdate.getAbsDelta().getY() == 0 && rotationUpdate.getAbsDelta().getY() == 0) return;
         final float deltaYaw = rotationUpdate.getAbsDelta().getX();
         final float deltaPitch = rotationUpdate.getAbsDelta().getY();
 
@@ -144,25 +143,8 @@ public final class AimConstantCheck implements HeuristicComponent {
                 }
             }
         }
-        checkRating();
         this.lastDeltaYaw = deltaYaw;
         this.lastDeltaPitch = deltaPitch;
-    }
-
-    private void checkRating() {
-        this.toReview++;
-        if (this.toReview >= 80) {
-            { // check
-                check.getProfile().debug("&7Aim constant history rating: " + this.rating);
-                if (this.rating > getNumCfg("required_rating_for_bad_history") && this.rating < 80) {
-                    check.getProfile().punish("Aim", "Heuristic", "Bad history ("
-                    + this.rating + ") [Constant check]", getNumCfg("addGlobalVl(bad history)") / 10);
-                }
-                //check.getProfile().getPlayer().sendMessage("rating: " + rating);
-            }
-            this.toReview = 0;
-            this.rating = 0;
-        }
     }
     private float getNumCfg(String key) {
         return ((Number) localCfg.get(key)).floatValue();

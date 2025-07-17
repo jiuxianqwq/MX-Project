@@ -233,7 +233,7 @@ public final class AimComplexCheck implements PacketCheckHandler {
                 double devY = Statistics.getVariance(gcdPitch);
                 double min = Math.min(devX, devY);
                 double max = Math.max(devX, devY);
-                if ((min < 0.09 && max > 35 && Statistics.getMin(gcdPitch) != 0.0)) {
+                if ((min < 0.09 && max > 35 && Statistics.getMin(gcdPitch) != 0.0) && profile.calculateSensitivity() > 50) {
                     this.increaseBuffer(4, 1.0f);
                     final float vlLimit = ((Number) localCfg.get("localVlLimit(randomizer)")).floatValue();
                     profile.debug("&7Aim Randomizer flaw: " + this.buffer.get(4));
@@ -248,27 +248,6 @@ public final class AimComplexCheck implements PacketCheckHandler {
                         this.buffer.set(4, vlLimit - 1);
                     }
                 } else this.increaseBuffer(4, -0.4f);
-            }
-            {
-                if (!yawY.isEmpty() && (yawY.size() < 4)
-                        && ((yawYMax == yawYMin && yawYMax > 55)
-                        || (yawYMax > 60 && (yawYMin < yawYMax / 3)))) {
-                    this.increaseBuffer(3, 1.25f);
-                    final float vlLimit = ((Number) localCfg.get("localVlLimit(snap)")).floatValue();
-                    profile.debug("&7Rough yaw(y) spikes: " + this.buffer.get(3));
-                    if (this.buffer.get(3) > vlLimit) {
-                        final float vl = ((Number) localCfg.get("addGlobalVl(snap)")).floatValue() / 10f;
-                        final long cancel = ((Number) localCfg.get("hitCancelTimeMS(snap)")).longValue();
-                        if (cancel > 0 || vl > 0) {
-                            profile.punish("Aim", "Snap",
-                                            "[Analysis] Rough yaw spikes " + yawY, vl);
-                            profile.setAttackBlockToTime(System.currentTimeMillis() + cancel);
-                        }
-                        this.increaseBuffer(3, vlLimit - 0.5f);
-                    }
-                } else {
-                    this.increaseBuffer(3, -0.65f);
-                }
             }
         }
     }

@@ -32,11 +32,9 @@ public final class AimAnalysisCheck implements PacketCheckHandler {
 
     @Override
     public ConfigLabel config() {
-        localCfg.put("addGlobalVl(linear)", 30);
+        localCfg.put("addGlobalVl(linear)", 20);
         localCfg.put("addGlobalVl(rank)", 20);
-        localCfg.put("addGlobalVl(distribution)", 20);
         localCfg.put("localVlLimit(rank)", 6.0f);
-        localCfg.put("localVlLimit(distribution)", 3.2f);
         return new ConfigLabel("aim_analysis", localCfg);
     }
 
@@ -122,27 +120,6 @@ public final class AimAnalysisCheck implements PacketCheckHandler {
                     } else this.increaseBuffer(1, -2.25f);
                 }
             }
-            { // distribution
-                final double distinctX = Statistics.getDistinct(x);
-                final double max = Math.abs(Statistics.getMax(xAbs));
-                final double kurtosis = Statistics.getKurtosis(x);
-                final double pearson = Statistics.getPearsonCorrelation(x, y);
-                final int spikes = Statistics.getZScoreOutliers(x, 1.0f).size() + Statistics.getZScoreOutliers(y, 1.0f).size();
-                if (max > 8 && pearson < 0.25 && distinctX < 85 && distinctX > 65 && kurtosis > 0 && spikes >= 40) {
-                    final float limit = ((Number) localCfg.get("localVlLimit(distribution)")).floatValue();
-                    this.increaseBuffer(0, (distinctX < 80) ? 1.1f : 0.85f);
-                    profile.debug("&7Aim Incorrect distribution: " + this.buffer.get(0));
-                    if (this.buffer.get(0) > limit) {
-                        final float vl = ((Number) localCfg.get("addGlobalVl(distribution)")).floatValue() / 10f;
-                        if (vl > 0) {
-                            this.profile.punish("Aim", "Distribution", "[Analysis] Incorrect distribution ["
-                                            + distinctX + ", " + pearson + ", " + max + ", " + spikes + "]", vl);
-                        }
-                        this.buffer.set(0, limit - 0.7f);
-                    }
-                } else this.increaseBuffer(0, -0.5f);
-            }
-            //profile.getPlayer().sendMessage("f: " + distinctX + " " + pearson + " " + max + " " + kurtosis + " " + spikes);
         }
         this.rawRotations.clear();
     }

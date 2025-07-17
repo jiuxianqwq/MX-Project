@@ -39,6 +39,7 @@ public final class AimInconsistentCheck implements HeuristicComponent {
 
     @Override
     public void process(final RotationEvent rotationUpdate) {
+        if (rotationUpdate.getAbsDelta().getY() == 0 && rotationUpdate.getAbsDelta().getY() == 0) return;
         final long cancelTime = ((Number) localCfg.get("hitCancelTimeMS")).longValue();
         if (cancelTime <= 0) return;
         final PlayerProfile profile = check.getProfile();

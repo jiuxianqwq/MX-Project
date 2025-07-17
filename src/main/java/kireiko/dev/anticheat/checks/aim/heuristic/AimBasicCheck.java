@@ -27,6 +27,7 @@ public final class AimBasicCheck implements HeuristicComponent {
     @Override
     public void process(final RotationEvent event) {
         if (check.getProfile().ignoreCinematic()) return;
+        if (event.getAbsDelta().getY() == 0 && event.getAbsDelta().getY() == 0) return;
         this.rawRotations.add(new Vec2(event.getTo().getX(), event.getTo().getY()));
         final PlayerProfile profile = check.getProfile();
         //profile.getPlayer().sendMessage("x: " + event.getDelta().getX() + " y: " + event.getDelta().getY());
@@ -56,7 +57,7 @@ public final class AimBasicCheck implements HeuristicComponent {
         localCfg.put("localVl_limit(interpolation)", 400);
         localCfg.put("localVl_fade(component)", 5);
         localCfg.put("localVl_fade(interpolation)", 5);
-        localCfg.put("randomizer_flaw_addVl", 10);
+        localCfg.put("randomizer_flaw_addVl", 25);
         return new ConfigLabel("basic_component", localCfg);
     }
 

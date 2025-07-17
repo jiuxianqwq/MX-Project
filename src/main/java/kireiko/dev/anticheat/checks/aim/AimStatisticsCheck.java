@@ -122,26 +122,8 @@ public final class AimStatisticsCheck implements PacketCheckHandler {
             //profile.getPlayer().sendMessage("j: " + Arrays.toString(jiffOmni.toArray()));
             final double kTest = Statistics.kolmogorovSmirnovTest(Statistics.getJiffDelta(x, 6), Function.identity());
             { // Kolmogorov Smirnov Test
-                if (kTest > 7 && Math.abs(Statistics.getAverage(x)) < 13) {
-                    this.increaseBuffer(2, (kTest > 100)
-                            ? 2.0f : (kTest > 45) ? 1.25f : 0.1f);
-                    if (kTest > 10) total++;
-                    this.increaseBuffer(14, 1.0f);
-                    profile.debug("&7Aim Kolmogorov Smirnov Test: " + kTest + " VL: "
-                            + this.buffer.get(2) + " Streak: " + buffer.get(14));
-                    final float vlLimit = ((Number) localCfg.get("localVlLimit(ks_test)")).floatValue();
-                    if (this.buffer.get(2) >= (vlLimit * 1.25f) && (kTest > 90 || this.buffer.get(2) >= vlLimit)) {
-                        final float vl = ((Number) localCfg.get("addGlobalVl(ks_test)")).floatValue() / 10f;
-                        final long cancel = ((Number) localCfg.get("hitCancelTimeMS(ks_test)")).longValue();
-                        if (vl > 0 || cancel > 0) {
-                            this.profile.punish("Aim", "KS Test", "[Statistics] Kolmogorov Smirnov Test (Spikes) " + kTest, vl);
-                            this.profile.setAttackBlockToTime(System.currentTimeMillis() + cancel);
-                        }
-                        this.buffer.set(2, vlLimit - 0.6f);
-                    }
-                } else {
-                    this.increaseBuffer(2, -2f);
-                    this.buffer.set(14, 0f);
+                if (kTest > 10 && Math.abs(Statistics.getAverage(x)) < 13) {
+                    total++;
                 }
             }
             shannonAnalysis.add(Statistics.getShannonEntropy(jiffYaw));

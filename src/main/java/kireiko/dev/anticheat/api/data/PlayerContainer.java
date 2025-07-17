@@ -26,6 +26,7 @@ public final class PlayerContainer {
 
     public static void unload(Player player) {
         PlayerProfile profile = uuidPlayerProfileMap.get(player.getUniqueId());
+        if (profile == null) return;
         if (!profile.getLogs().isEmpty()) {
             final StringBuilder logBuilder = new StringBuilder();
             LogUtils.createLog(player.getName());

@@ -27,8 +27,8 @@ public final class AimPatternCheck implements HeuristicComponent {
     public ConfigLabel config() {
         localCfg.put("hitCancelTimeMS", 5000);
         localCfg.put("addGlobalVl", 20);
-        localCfg.put("buffer", 1.7f);
-        localCfg.put("buffer_fade", 0.2f);
+        localCfg.put("buffer", 2.5f);
+        localCfg.put("buffer_fade", 0.3f);
         return new ConfigLabel("pattern_check", localCfg);
     }
 
@@ -40,6 +40,7 @@ public final class AimPatternCheck implements HeuristicComponent {
     @Override
     public void process(final RotationEvent event) {
         // if (check.getProfile().ignoreCinematic()) return;
+        if (event.getAbsDelta().getY() == 0 && event.getAbsDelta().getY() == 0) return;
         final float
         vlLimit = ((Number) localCfg.get("buffer")).floatValue(),
         vlFade = ((Number) localCfg.get("buffer_fade")).floatValue();

@@ -34,6 +34,7 @@ public final class VelocityCheck implements PacketCheckHandler {
 
     @Override
     public ConfigLabel config() {
+        localCfg.put("enabled", false);
         localCfg.put("buffer", 6);
         return new ConfigLabel("velocity", localCfg);
     }
@@ -68,7 +69,7 @@ public final class VelocityCheck implements PacketCheckHandler {
 
     @Override
     public void event(Object o) {
-        if (!ConfigCache.CHECK_VELOCITY) return;
+        if (!(boolean) localCfg.get("enabled")) return;
         if (o instanceof SVelocityEvent) {
             SVelocityEvent event = (SVelocityEvent) o;
             this.totalVlAtY = 25;
@@ -145,7 +146,7 @@ public final class VelocityCheck implements PacketCheckHandler {
                 this.timing = 0;
             } else if (delay > 25) {
                 if (isJumpReset(y)) totalVlAtY = 12;
-                if (timing < 3) {
+                if (timing <= 3) {
                     if (!transactionLock) timing++;
                 } else {
                     // time for vertical flag

@@ -14,7 +14,6 @@ public final class ConfigCache {
     public static String BC_MSG;
     public static boolean PUNISH_EFFECT;
     public static boolean INTERACT_SPELL;
-    public static boolean CHECK_VELOCITY;
     public static boolean IGNORE_CINEMATIC;
     public static boolean LOG_IN_FILES;
     public static boolean ROTATIONS_CONTAINER;
@@ -32,7 +31,6 @@ public final class ConfigCache {
         BC_MSG = MX.getInstance().getConfig().getString("bcMsg", "&c&l[MX]&f %message%");
         PUNISH_EFFECT = MX.getInstance().getConfig().getBoolean("punishEffect", false);
         INTERACT_SPELL = MX.getInstance().getConfig().getBoolean("interactSpell", false);
-        CHECK_VELOCITY = MX.getInstance().getConfig().getBoolean("checkVelocity", false);
         IGNORE_CINEMATIC = MX.getInstance().getConfig().getBoolean("ignoreCinematic", false);
         LOG_IN_FILES = MX.getInstance().getConfig().getBoolean("logInFiles", true);
         ROTATIONS_CONTAINER = MX.getInstance().getConfig().getBoolean("rotationsContainer", true);

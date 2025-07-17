@@ -1,6 +1,7 @@
 package kireiko.dev.millennium.math;
 
 import kireiko.dev.millennium.vectors.Vec2;
+import kireiko.dev.millennium.vectors.Vec2f;
 import kireiko.dev.millennium.vectors.Vec3;
 import lombok.NonNull;
 
@@ -73,6 +74,18 @@ public final class Euler {
             return Math.min(num, max);
         }
     }
+
+    public static double getAngleInDegrees(Vec2f delta) {
+        double angleInRadians = Math.atan2(delta.getX(), delta.getY());
+        double angleInDegrees = Math.toDegrees(angleInRadians);
+
+        if (angleInDegrees < 0) {
+            angleInDegrees += 360;
+        }
+
+        return angleInDegrees;
+    }
+
 
     public static double calculateVectorAngle(@NonNull Vec2 a) {
         return Math.atan2(a.getY(), a.getX());

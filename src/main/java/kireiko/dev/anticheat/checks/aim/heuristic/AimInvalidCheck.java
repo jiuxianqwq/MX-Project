@@ -33,6 +33,7 @@ public final class AimInvalidCheck implements HeuristicComponent {
     @Override
     public void process(final RotationEvent event) {
         //if (check.getProfile().ignoreCinematic()) return;
+        if (event.getAbsDelta().getY() == 0 && event.getAbsDelta().getY() == 0) return;
         final PlayerProfile profile = check.getProfile();
         final Vec2f delta = event.getAbsDelta();
         final long blockTime = ((Number) localCfg.get("hitCancelTimeMS")).longValue();

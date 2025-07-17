@@ -6,6 +6,7 @@ import kireiko.dev.anticheat.MX;
 import kireiko.dev.anticheat.api.data.PlayerContainer;
 import kireiko.dev.anticheat.api.data.RotationsContainer;
 import kireiko.dev.anticheat.api.events.MoveEvent;
+import kireiko.dev.anticheat.api.events.NoRotationEvent;
 import kireiko.dev.anticheat.api.events.RotationEvent;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
 import kireiko.dev.anticheat.api.player.SensitivityProcessor;
@@ -45,7 +46,7 @@ public final class RawMovementListener extends PacketAdapter {
             return;
         }
         profile.setLastTeleport(System.currentTimeMillis());
-        profile.setIgnoreFirstTick(false);
+        profile.setIgnoreFirstTick(true);
     }
 
     @Override
@@ -100,7 +101,14 @@ public final class RawMovementListener extends PacketAdapter {
             profile.getCinematicComponent().process(rotationEvent);
             profile.run(rotationEvent);
             profile.setIgnoreFirstTick(false);
+        } else {
+            if (!profile.isIgnoreFirstTick() && profile.getLastTeleport() + 1000 < System.currentTimeMillis()) {
+                if (profile.getTo().toVector().distance(profile.getFrom().toVector()) > 1e-4) {
+                    profile.run(new NoRotationEvent(profile));
+                }
+            }
         }
+
         profile.getPastLoc().add(profile.getTo());
         profile.run(new MoveEvent(profile, profile.getTo(), profile.getFrom()));
 
