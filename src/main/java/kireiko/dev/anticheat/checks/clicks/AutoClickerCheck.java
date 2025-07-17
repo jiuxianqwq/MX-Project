@@ -98,15 +98,10 @@ public final class AutoClickerCheck implements PacketCheckHandler {
             if (negative > 1) {
                 profile.punish("AutoClicker", "Kurtosis", "Analysis <negative> [" + kurtosisStack + "]", vl);
             } else {
-                final double max = Statistics.getMax(kurtosisStack);
-                if (max < 13) {
-                    profile.punish("AutoClicker", "Kurtosis", "Analysis <max> (" + kurtosisStack + ") => " + max, vl);
-                } else {
-                    final List<Float> jiff = Statistics.getJiffDelta(shannonStack, 2);
-                    double min = Statistics.getMin(jiff);
-                    if (min < 0.04 && Statistics.getMax(jiff) < 0.06) {
-                        profile.punish("AutoClicker", "Entropy", "Analysis <min> (" + jiff + ") => " + min, vl);
-                    }
+                final List<Float> jiff = Statistics.getJiffDelta(shannonStack, 2);
+                double min = Statistics.getMin(jiff);
+                if (min < 0.04 && Statistics.getMax(jiff) < 0.06) {
+                    profile.punish("AutoClicker", "Entropy", "Analysis <min> (" + jiff + ") => " + min, vl);
                 }
             }
         }

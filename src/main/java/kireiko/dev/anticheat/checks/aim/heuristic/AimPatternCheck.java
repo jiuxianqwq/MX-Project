@@ -17,6 +17,7 @@ public final class AimPatternCheck implements HeuristicComponent {
     private static final int SAMPLE_SIZE = 100;
     private static final int MIN_START_INDEX_GAP = PATTERN_LENGTH;
     private float buffer = 0;
+    private int longTermRating = 0, toCheck = 0;
     private Map<String, Object> localCfg = new TreeMap<>();
 
     public AimPatternCheck(final AimHeuristicCheck check) {
@@ -93,7 +94,17 @@ public final class AimPatternCheck implements HeuristicComponent {
                     }
                 }
                 // checking invalid patterns
-                if (!patterns.isEmpty()) profile.debug("&7Aim Patterns: " + patterns);
+                longTermRating += patterns.size();
+                toCheck++;
+                //profile.getPlayer().sendMessage("p: " + patterns);
+                if (toCheck >= 8) {
+                    //profile.getPlayer().sendMessage("p: " + longTermRating);
+                    toCheck = 0;
+                    longTermRating = 0;
+                }
+                if (!patterns.isEmpty()) {
+                    profile.debug("&7Aim Patterns: " + patterns);
+                }
                 for (final Vec2f vec2f : patterns) {
                     final float x = Math.abs(vec2f.getX());
                     final float y = Math.abs(vec2f.getY());
