@@ -37,13 +37,13 @@ public final class AimSmoothCheck implements HeuristicComponent {
         final PlayerProfile profile = check.getProfile();
         final Vec2f delta = event.getDelta();
         double angle = Euler.getAngleInDegrees(delta) % 90;
-        //profile.getPlayer().sendMessage("d: " + delta.toString());
         { // check logic
             if (event.getAbsDelta().getY() > 1.5 || event.getAbsDelta().getX() > 1.5)
                 stack.add(angle);
             if (stack.size() >= 20) {
                 {
                     List<Float> jiff = Statistics.getJiffDelta(stack, 1);
+                    //profile.getPlayer().sendMessage("d: " + jiff);
                     float prev = 999;
                     for (float f : jiff) {
                         if (f == 0.0 && prev == 0.0) {

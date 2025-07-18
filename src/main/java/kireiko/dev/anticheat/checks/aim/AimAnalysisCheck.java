@@ -16,13 +16,16 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public final class AimAnalysisCheck implements PacketCheckHandler {
     private final List<Float> buffer;
     private final PlayerProfile profile;
-    private final List<Vec2f> rawRotations;
+    private final List<Vec2f> rawRotations, limitedRotations;
+    private final List<Float> longTermAnalysis;
     private long lastAttack;
     private Map<String, Object> localCfg = new TreeMap<>();
 
     public AimAnalysisCheck(PlayerProfile profile) {
         this.profile = profile;
         this.rawRotations = new CopyOnWriteArrayList<>();
+        this.limitedRotations = new CopyOnWriteArrayList<>();
+        this.longTermAnalysis = new ArrayList<>();
         this.lastAttack = 0L;
         this.buffer = new CopyOnWriteArrayList<>();
         for (int i = 0; i < 16; i++) this.buffer.add(0.0f);
@@ -34,6 +37,7 @@ public final class AimAnalysisCheck implements PacketCheckHandler {
     public ConfigLabel config() {
         localCfg.put("addGlobalVl(linear)", 20);
         localCfg.put("addGlobalVl(rank)", 20);
+        localCfg.put("addGlobalVl(longterm)", 40);
         localCfg.put("localVlLimit(rank)", 6.0f);
         return new ConfigLabel("aim_analysis", localCfg);
     }
@@ -56,6 +60,10 @@ public final class AimAnalysisCheck implements PacketCheckHandler {
             Vec2f delta = event.getDelta();
             this.rawRotations.add(delta);
             if (this.rawRotations.size() >= 100) this.checkRaw();
+            if (Math.abs(delta.getX()) > 1.35 || Math.abs(delta.getY()) > 1.35) {
+                this.limitedRotations.add(delta);
+                if (this.limitedRotations.size() >= 100) this.checkLimited();
+            }
         } else if (o instanceof UseEntityEvent) {
             UseEntityEvent event = (UseEntityEvent) o;
             if (event.isAttack()) {
@@ -64,17 +72,56 @@ public final class AimAnalysisCheck implements PacketCheckHandler {
         }
     }
 
+    private void checkLimited() {
+        {
+            final List<Float> x = new ArrayList<>(), xAbs = new ArrayList<>(), y = new ArrayList<>();
+            final int sens = profile.calculateSensitivity();
+            for (Vec2f vec2 : this.limitedRotations) {
+                x.add(vec2.getX());
+                xAbs.add(vec2.getX());
+                y.add(vec2.getY());
+            }
+            { // limited analysis
+                final List<Float> yawStack = new ArrayList<>();
+                int resultDistinct = 0;
+                for (final float yaw : x) {
+                    yawStack.add(yaw);
+                    if (yawStack.size() >= 10) {
+                        resultDistinct += Statistics.getDistinct(Statistics.getJiffDelta(yawStack, 4));
+                        yawStack.clear();
+                    }
+                }
+                final float distinctRank = (float) resultDistinct / 60;
+                longTermAnalysis.add(distinctRank);
+                profile.debug("&7Long-Term Aim Analysis " + longTermAnalysis.size() + "/10");
+                if (longTermAnalysis.size() >= 10) {
+                    final double avg = Statistics.getAverage(longTermAnalysis);
+                    double normal = 0;
+                    for (double d : longTermAnalysis) if (d > 0.97) normal++;
+                    profile.debug("&7Long-Term Aim Analysis | avg: " + avg + " | normal: " + normal + "/10");
+                    if (avg < 0.95 && normal < 4) {
+                        final float vl = ((Number) localCfg.get("addGlobalVl(longterm)")).floatValue() / 10f;
+                        if (vl > 0) {
+                            this.profile.punish("Aim", "Analysis", "Long term analysis (average rank: " + avg + ", normal: " + normal + " /10)", vl);
+                        }
+                    }
+                    //profile.getPlayer().sendMessage("avg: " + avg + " | distinct: " + normal);
+
+                    longTermAnalysis.clear();
+                }
+            }
+        }
+        this.limitedRotations.clear();
+    }
+
     private void checkRaw() {
         { // uh
             final List<Float> x = new ArrayList<>(), xAbs = new ArrayList<>(), y = new ArrayList<>();
-            final List<Long> xGcd = new ArrayList<>();
             final int sens = profile.calculateSensitivity();
-            final float gcdValue = (sens > 0) ? Statistics.getGCDValue(SensitivityProcessor.getSENSITIVITY_MCP_VALUES()[sens - 1]) : 0;
             for (Vec2f vec2 : this.rawRotations) {
                 x.add(vec2.getX());
                 xAbs.add(vec2.getX());
                 y.add(vec2.getY());
-                xGcd.add((long) (vec2.getX() / gcdValue));
             }
             { // score
                 final List<Float> yawStack = new ArrayList<>();

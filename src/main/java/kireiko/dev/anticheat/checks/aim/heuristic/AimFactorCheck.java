@@ -70,7 +70,7 @@ public final class AimFactorCheck implements HeuristicComponent {
                 float bufferLimit = ((Number) localCfg.get("buffer")).floatValue();
                 float localVl = (centre > 160) ? 3 : (centre < 60) ? 1 : 2;
                 buffer += localVl;
-                check.getProfile().debug("&7Factor analysis: " + Arrays.toString(stack.toArray()) + " ( " + buffer + ")");
+                check.getProfile().debug("&7Factor analysis: " + Arrays.toString(stack.toArray()) + " (" + buffer + ")");
                 if (buffer >= bufferLimit) {
                     check.getProfile().punish("Aim", "Factor", "Factor analysis ("
                                     + centre + "/" + Simplification.scaleVal(stack.get(0) + stack.get(2), 2) + ")", vl);
