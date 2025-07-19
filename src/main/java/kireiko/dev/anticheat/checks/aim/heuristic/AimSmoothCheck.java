@@ -22,7 +22,7 @@ public final class AimSmoothCheck implements HeuristicComponent {
 
     @Override
     public ConfigLabel config() {
-        localCfg.put("addGlobalVl", 30);
+        localCfg.put("addGlobalVl", 35);
         return new ConfigLabel("smooth_check", localCfg);
     }
     @Override
@@ -45,11 +45,13 @@ public final class AimSmoothCheck implements HeuristicComponent {
                     List<Float> jiff = Statistics.getJiffDelta(stack, 1);
                     //profile.getPlayer().sendMessage("d: " + jiff);
                     float prev = 999;
+                    float prePrev = 999;
                     for (float f : jiff) {
-                        if (f == 0.0 && prev == 0.0) {
+                        if (f == 0.0 && prev == 0.0 && prePrev == 0) {
                             profile.punish("Aim", "Smooth", "Invalid smoothing " + Arrays.toString(jiff.toArray()), getNumCfg("addGlobalVl") / 10);
                             break;
                         }
+                        prePrev = prev;
                         prev = f;
                     }
                 }

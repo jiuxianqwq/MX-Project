@@ -88,7 +88,7 @@ public final class PlayerProfile {
                 forcePunish(check, info);
             }
         } else if (this.vl >= vlLimit / 1.8) {
-            if (flagCount > 2) {
+            if (flagCount > 2 && !ConfigCache.SUSPECTED.isEmpty()) {
                 MessageUtils.sendMessagesToPlayersNative(
                         MX.permissionHead + "personal",
                         MX.permission,
@@ -98,7 +98,7 @@ public final class PlayerProfile {
                 );
                 this.flagCount = 0;
             }
-        } else if (flagCount == 2) {
+        } else if (flagCount == 2 && !ConfigCache.UNUSUAL.isEmpty()) {
             MessageUtils.sendMessagesToPlayersNative(
                     MX.permissionHead + "personal",
                     MX.permission,

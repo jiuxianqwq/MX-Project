@@ -60,7 +60,7 @@ public final class AimAnalysisCheck implements PacketCheckHandler {
             Vec2f delta = event.getDelta();
             this.rawRotations.add(delta);
             if (this.rawRotations.size() >= 100) this.checkRaw();
-            if (Math.abs(delta.getX()) > 1.35 || Math.abs(delta.getY()) > 1.35) {
+            if (Math.abs(delta.getX()) > 1.35 || Math.abs(delta.getY()) > 1.35 && Math.abs(delta.getX()) > 0.32) {
                 this.limitedRotations.add(delta);
                 if (this.limitedRotations.size() >= 100) this.checkLimited();
             }
