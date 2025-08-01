@@ -67,7 +67,7 @@ public final class AimConstantCheck implements HeuristicComponent {
                 buffer = Math.min(buffer + 1, 200);
                 check.getProfile().debug("&7Aim Constant (1): " + buffer);
                 rating++;
-                if (buffer > getNumCfg("constant(1)_needVl")) {
+                if (buffer > getNumCfg("constant(1)_needVl") + 2) {
                     check.getProfile().punish("Aim", "Heuristic", "Constant rotations (1)", 0.0f);
                     check.getProfile().setAttackBlockToTime(System.currentTimeMillis() + 4000);
                     buffer = 4;
@@ -132,7 +132,7 @@ public final class AimConstantCheck implements HeuristicComponent {
                     buffer3 = Math.max(buffer3 + ((deltaPitch < 1 || deltaPitch > 13) ? 2f : 1), 0);
                     check.getProfile().debug("&7Aim Constant (3): " + buffer3 + " " + Simplification.scaleVal(deltaPitch, 3));
                     rating++;
-                    final float limit = getNumCfg("constant(3)_needVl");
+                    final float limit = getNumCfg("constant(3)_needVl") + 1;
                     if (buffer3 > ((check.getProfile().calculateSensitivity() < 70) ? limit + 1 : limit)) {
                         check.getProfile().punish("Aim", "Heuristic", "Constant rotations (3)", 0.0f);
                         check.getProfile().setAttackBlockToTime(System.currentTimeMillis() + 4000);

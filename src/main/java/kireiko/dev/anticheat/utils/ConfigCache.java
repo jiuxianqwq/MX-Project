@@ -18,11 +18,13 @@ public final class ConfigCache {
     public static boolean LOG_IN_FILES;
     public static boolean ROTATIONS_CONTAINER;
     public static boolean PREVENT_GHOST_BLOCK_ABUSE;
+    public static int PREVENTION;
 
 
     public static void loadConfig() {
         VL_LIMIT = MX.getInstance().getConfig().getDouble("vlLimit", 100);
         VL_RESET = (float) MX.getInstance().getConfig().getDouble("vlReset", 15);
+        PREVENTION = MX.getInstance().getConfig().getInt("prevention", 2);
         ALERT_MSG = MX.getInstance().getConfig().getString("alertMsg", "&9&l[MX] &e%player% &8>>&c %check% &7(&c%component%&7) &8%info% &f[%vl%/%vlLimit%]");
         UNUSUAL = MX.getInstance().getConfig().getString("unusual", "&9&l[MX] &e%player% &8>>&6 Playing suspiciously");
         SUSPECTED = MX.getInstance().getConfig().getString("suspected", "&9&l[MX] &e%player% &8>>&4 Looks like a cheater!");

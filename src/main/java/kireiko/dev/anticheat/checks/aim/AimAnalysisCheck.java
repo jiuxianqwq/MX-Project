@@ -19,6 +19,7 @@ public final class AimAnalysisCheck implements PacketCheckHandler {
     private final List<Vec2f> rawRotations, limitedRotations;
     private final List<Float> longTermAnalysis;
     private long lastAttack;
+    private boolean query = false;
     private Map<String, Object> localCfg = new TreeMap<>();
 
     public AimAnalysisCheck(PlayerProfile profile) {
@@ -35,7 +36,7 @@ public final class AimAnalysisCheck implements PacketCheckHandler {
 
     @Override
     public ConfigLabel config() {
-        localCfg.put("addGlobalVl(linear)", 20);
+        localCfg.put("addGlobalVl(linear)", 30);
         localCfg.put("addGlobalVl(rank)", 20);
         localCfg.put("addGlobalVl(longterm)", 40);
         localCfg.put("localVlLimit(rank)", 6.0f);
@@ -141,9 +142,15 @@ public final class AimAnalysisCheck implements PacketCheckHandler {
                     if (outliers5.isEmpty() || outliers5.size() == 1 && Math.abs(outliers5.get(0)) > 10 && Math.abs(outliers5.get(0)) < 100) {
                         final float vl = ((Number) localCfg.get("addGlobalVl(linear)")).floatValue() / 10f;
                         if (vl > 0) {
-                            this.profile.punish("Aim", "Linear", "[Analysis] Invalid outliers "
-                                            + Arrays.toString(outliers5.toArray()), vl);
+                            if (!query) {
+                                query = true;
+                            } else {
+                                this.profile.punish("Aim", "Linear", "[Analysis] Invalid outliers "
+                                                + Arrays.toString(outliers5.toArray()), vl);
+                            }
                         }
+                    } else {
+                        query = false;
                     }
                 }
                 { // rank

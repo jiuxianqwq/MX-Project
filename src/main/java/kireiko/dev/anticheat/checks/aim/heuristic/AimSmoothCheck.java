@@ -38,7 +38,7 @@ public final class AimSmoothCheck implements HeuristicComponent {
         final Vec2f delta = event.getDelta();
         double angle = Euler.getAngleInDegrees(delta) % 90;
         { // check logic
-            if (event.getAbsDelta().getY() > 1.5 || event.getAbsDelta().getX() > 1.5)
+            if ((event.getAbsDelta().getY() > 1.5 && event.getAbsDelta().getX() > 0.32) || event.getAbsDelta().getX() > 1.5)
                 stack.add(angle);
             if (stack.size() >= 20) {
                 {

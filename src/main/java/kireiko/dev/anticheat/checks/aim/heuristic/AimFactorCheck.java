@@ -56,10 +56,10 @@ public final class AimFactorCheck implements HeuristicComponent {
         if (stack.size() != 3) return;
         double hash = stack.get(0) + stack.get(1) + stack.get(2);
         if (hash == lastHash) return;
-        double centre = stack.get(1) % 360;
+        double centre = stack.get(1);
         boolean hugeRotation = centre > 35;
         //check.getProfile().getPlayer().sendMessage("p: " + Arrays.toString(stack.toArray()) + " " + buffer);
-        if (hugeRotation) {
+        if (hugeRotation && centre != 360.0f) {
             double compare = 1.2;
             boolean invalid = (stack.get(0) < compare && stack.get(2) < compare)
                             || (stack.get(0) > 55 && stack.get(1) < 2 && stack.get(2) > 55)

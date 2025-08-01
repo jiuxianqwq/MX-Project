@@ -2,14 +2,21 @@ package kireiko.dev.anticheat.utils;
 
 import kireiko.dev.anticheat.api.data.PlayerContainer;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
+import kireiko.dev.anticheat.utils.version.VersionUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class MessageUtils {
+
+    private static final Pattern HEX_PATTERN =
+                    Pattern.compile("(?i)&#([A-F0-9]{6})");
+
     public static void sendMessagesToPlayers(String permission, String message) {
         for (Player player : Bukkit.getOnlinePlayers()) {
             PlayerProfile profile = PlayerContainer.getProfile(player);
@@ -30,9 +37,24 @@ public final class MessageUtils {
         }
     }
 
-    public static String wrapColors(String v) {
-        return ChatColor.translateAlternateColorCodes('&', v);
+    public static String wrapColors(String input) {
+        if (input == null) return null;
+        if (VersionUtil.is1_16orAbove()) {
+            Matcher matcher = HEX_PATTERN.matcher(input);
+            StringBuffer sb = new StringBuffer(input.length() * 2);
+
+            while (matcher.find()) {
+                String hexCode = "#" + matcher.group(1); // "#A1B2C3"
+                String replacement = net.md_5.bungee.api.ChatColor.of(hexCode).toString(); // §x§A§1§B§2§C§3
+                matcher.appendReplacement(sb, Matcher.quoteReplacement(replacement));
+            }
+            matcher.appendTail(sb);
+
+            return ChatColor.translateAlternateColorCodes('&', sb.toString());
+        }
+        return ChatColor.translateAlternateColorCodes('&', input);
     }
+
     public static String wrapColors(String... v) {
         final StringBuilder builder = new StringBuilder();
         for (final String s : v) {

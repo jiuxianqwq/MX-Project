@@ -44,21 +44,34 @@ public class MX extends JavaPlugin {
         saveDefaultConfig();
         ConfigCache.loadConfig();
 
+        getLogger().info("Loading listeners...");
         loadListeners();
+        getLogger().info("Booting timers...");
         punishTimer();
+        getLogger().info("Initializing commands...");
         PluginCommand pCommand = this.getCommand(command);
         if (pCommand != null) {
             MXCommandHandler handler = new MXCommandHandler();
             pCommand.setExecutor(handler);
             pCommand.setTabCompleter(handler);
         }
+        getLogger().info("Running metrics...");
         final Metrics metrics = new Metrics(this, 25612);
         metrics.addCustomChart(new Metrics.SingleLineChart("banned_players_count", () -> {
             int banCount = 0;
             for (int i : MX.bannedPerMinuteList) banCount += i;
             return banCount;
         }));
-        getLogger().info("Launched!");
+        getLogger().info("Launched!\n"
+                        + "        :::   :::       :::    :::\n" +
+                        "      :+:+: :+:+:      :+:    :+:\n" +
+                        "    +:+ +:+:+ +:+      +:+  +:+  \n" +
+                        "   +#+  +:+  +#+       +#++:+\n" +
+                        "  +#+       +#+      +#+  +#+\n" +
+                        " #+#       #+#     #+#    #+#\n" +
+                        "###       ###     ###    ###\n" +
+                        "\nCreated by pawsashatoy (Kireiko Oleksandr)\n"
+                        );
     }
 
     private void punishTimer() {

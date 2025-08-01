@@ -24,11 +24,12 @@ public final class AutoClickerCheck implements PacketCheckHandler {
                     lastMove = System.currentTimeMillis(), lastAttack = System.currentTimeMillis();
     private boolean enabled = false;
     private final List<Long> stack = new ArrayList<>();
+    private boolean entropyQuery = false;
     private Map<String, Object> localCfg = new TreeMap<>();
 
     @Override
     public ConfigLabel config() {
-        localCfg.put("enabled", true);
+        localCfg.put("enabled", false);
         localCfg.put("addGlobalVl", 20);
         return new ConfigLabel("auto_clicker", localCfg);
     }
@@ -92,16 +93,20 @@ public final class AutoClickerCheck implements PacketCheckHandler {
                     localDeltaStack.clear();
                 }
             }
-            int negative = 0;
-            for (double kurtosis : kurtosisStack) if (kurtosis < 0) negative++;
             final float vl = ((Number) localCfg.get("addGlobalVl")).floatValue() / 10;
-            if (negative > 1) {
+            if (Statistics.getMax(kurtosisStack) < 0) {
                 profile.punish("AutoClicker", "Kurtosis", "Analysis <negative> [" + kurtosisStack + "]", vl);
             } else {
                 final List<Float> jiff = Statistics.getJiffDelta(shannonStack, 2);
                 double min = Statistics.getMin(jiff);
                 if (min < 0.04 && Statistics.getMax(jiff) < 0.06) {
-                    profile.punish("AutoClicker", "Entropy", "Analysis <min> (" + jiff + ") => " + min, vl);
+                    if (!entropyQuery) {
+                        entropyQuery = true;
+                    } else {
+                        profile.punish("AutoClicker", "Entropy", "Analysis <min> (" + jiff + ") => " + min, vl);
+                    }
+                } else {
+                    entropyQuery = false;
                 }
             }
         }

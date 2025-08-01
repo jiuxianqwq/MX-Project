@@ -15,6 +15,14 @@ bcMsg: "&c&l[MX]&f %message%"
 punishEffect: false
 interactSpell: true
 
+# Some checks also apply measures,
+# such as a ban on dealing damage to others for a few seconds.
+# AGGRESSIVE (3) - rough hit blocking + teleport
+# CAREFUL (2) - rough hit blocking (full hit block)
+# LENIENT (1) - a detected cheater can still deal hits, but their outgoing damage will be very small
+# SILENT (0) - all measures fully disabled
+prevention: 2
+
 # will remove false positives from the cinematic camera,
 # but it will severely weaken the checks!
 # turn on only when you aim to minimize the number of FP
