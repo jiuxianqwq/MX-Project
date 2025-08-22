@@ -46,15 +46,12 @@ public final class AimComplexCheck implements PacketCheckHandler {
         localCfg.put("addGlobalVl(entropy)", 0);
         localCfg.put("addGlobalVl(distinct)", 5);
         localCfg.put("addGlobalVl(randomizer)", 35);
-        localCfg.put("addGlobalVl(snap)", 0);
         localCfg.put("hitCancelTimeMS(entropy)", 5000);
         localCfg.put("hitCancelTimeMS(distinct)", 3000);
         localCfg.put("hitCancelTimeMS(randomizer)", 0);
-        localCfg.put("hitCancelTimeMS(snap)", 3500);
         localCfg.put("localVlLimit(entropy)", 30);
         localCfg.put("localVlLimit(distinct)", 4.0f);
         localCfg.put("localVlLimit(randomizer)", 2.5f);
-        localCfg.put("localVlLimit(snap)", 4.0f);
         return new ConfigLabel("aim_complex", localCfg);
     }
     @Override

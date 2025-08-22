@@ -35,17 +35,14 @@ public final class AimStatisticsCheck implements PacketCheckHandler {
     @Override
     public ConfigLabel config() {
         localCfg.put("addGlobalVl(iqr)", 25);
-        localCfg.put("addGlobalVl(ks_test)", 0);
         localCfg.put("addGlobalVl(bot_pattern)", 35);
         localCfg.put("addGlobalVl(zfactor)", 0);
         localCfg.put("addGlobalVl(improbable)", 30);
         localCfg.put("hitCancelTimeMS(iqr)", 0);
-        localCfg.put("hitCancelTimeMS(ks_test)", 4000);
         localCfg.put("hitCancelTimeMS(bot_pattern)", 0);
         localCfg.put("hitCancelTimeMS(zfactor)", 5500);
         localCfg.put("hitCancelTimeMS(improbable)", 4000);
         localCfg.put("localVlLimit(iqr)", 11.0f);
-        localCfg.put("localVlLimit(ks_test)", 5.0f);
         localCfg.put("localVlLimit(zfactor)", 7.0f);
         localCfg.put("localVlLimit(improbable)", 15.0f);
         return new ConfigLabel("aim_statistics", localCfg);

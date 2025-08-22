@@ -13,6 +13,7 @@ import kireiko.dev.anticheat.services.AnimatedPunishService;
 import kireiko.dev.anticheat.services.FunThingsService;
 import kireiko.dev.anticheat.services.SimulationFlagService;
 import kireiko.dev.anticheat.utils.ConfigCache;
+import kireiko.dev.millennium.ml.ClientML;
 import kireiko.dev.millennium.types.EvictingList;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -62,6 +63,8 @@ public class MX extends JavaPlugin {
             for (int i : MX.bannedPerMinuteList) banCount += i;
             return banCount;
         }));
+        getLogger().info("Launching ML (Kireiko Millennium 4.5)...");
+        ClientML.run();
         getLogger().info("Launched!\n"
                         + "        :::   :::       :::    :::\n" +
                         "      :+:+: :+:+:      :+:    :+:\n" +

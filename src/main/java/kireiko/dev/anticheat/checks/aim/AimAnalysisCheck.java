@@ -36,9 +36,9 @@ public final class AimAnalysisCheck implements PacketCheckHandler {
 
     @Override
     public ConfigLabel config() {
-        localCfg.put("addGlobalVl(linear)", 30);
+        localCfg.put("addGlobalVl(linear)", 35);
         localCfg.put("addGlobalVl(rank)", 20);
-        localCfg.put("addGlobalVl(longterm)", 40);
+        localCfg.put("addGlobalVl(longterm)", 55);
         localCfg.put("localVlLimit(rank)", 6.0f);
         return new ConfigLabel("aim_analysis", localCfg);
     }

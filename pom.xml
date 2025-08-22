@@ -6,7 +6,7 @@
 
     <groupId>kireiko.dev</groupId>
     <artifactId>MX</artifactId>
-    <version>4.2 (Calalini)</version>
+    <version>4.3 (Mintia)</version>
     <packaging>jar</packaging>
 
     <name>MX</name>
@@ -45,6 +45,17 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
+                <includes>
+                    <include>**/*.yml</include>
+                    <include>**/*.properties</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>**/*.dat</include>
+                </includes>
             </resource>
         </resources>
     </build>
