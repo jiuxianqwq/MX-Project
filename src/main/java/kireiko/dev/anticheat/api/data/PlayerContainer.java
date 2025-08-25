@@ -1,7 +1,9 @@
 package kireiko.dev.anticheat.api.data;
 
+import kireiko.dev.anticheat.MX;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
 import kireiko.dev.anticheat.core.AsyncScheduler;
+import kireiko.dev.anticheat.utils.ConfigCache;
 import kireiko.dev.anticheat.utils.LogUtils;
 import lombok.Getter;
 import org.bukkit.entity.Player;
@@ -10,6 +12,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static kireiko.dev.anticheat.utils.MessageUtils.wrapColors;
 
 public final class PlayerContainer {
 
@@ -21,6 +25,11 @@ public final class PlayerContainer {
             PlayerProfile profile = new PlayerProfile(player);
             uuidPlayerProfileMap.put(player.getUniqueId(), profile);
             profile.initChecks(profile.getInstance());
+
+            if (player.hasPermission(MX.permission) && ConfigCache.ENABLE_ALERTS_ON_JOIN && !profile.isAlerts()) {
+                profile.setAlerts(true);
+                player.sendMessage(wrapColors("&cAlerts: &etrue"));
+            }
         });
     }
 

@@ -17,25 +17,6 @@ public final class JoinQuitListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         PlayerContainer.init(event.getPlayer());
 
-        new BukkitRunnable() {
-            int attempts = 0;
-
-            @Override
-            public void run() {
-                PlayerProfile profile = PlayerContainer.getProfile(event.getPlayer());
-                if (profile != null) {
-                    if (event.getPlayer().hasPermission(MX.permission) && ConfigCache.ENABLE_ALERTS_ON_JOIN) {
-                        profile.setAlerts(true);
-                        event.getPlayer().sendMessage(wrapColors("&cAlerts: &etrue"));
-                    }
-                    cancel();
-                    return;
-                }
-                if (++attempts >= 40) { // ~2s timeout
-                    cancel();
-                }
-            }
-        }.runTaskTimer(MX.getInstance(), 1L, 1L);
     }
 
     @EventHandler
