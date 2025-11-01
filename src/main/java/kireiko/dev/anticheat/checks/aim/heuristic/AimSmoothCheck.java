@@ -8,7 +8,6 @@ import kireiko.dev.millennium.math.Euler;
 import kireiko.dev.millennium.math.Statistics;
 import kireiko.dev.millennium.vectors.Vec2f;
 
-import java.net.StandardSocketOptions;
 import java.util.*;
 
 public final class AimSmoothCheck implements HeuristicComponent {

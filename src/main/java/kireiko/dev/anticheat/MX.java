@@ -7,6 +7,7 @@ import kireiko.dev.anticheat.api.data.Metrics;
 import kireiko.dev.anticheat.api.data.PlayerContainer;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
 import kireiko.dev.anticheat.commands.MXCommandHandler;
+import kireiko.dev.anticheat.core.AsyncScheduler;
 import kireiko.dev.anticheat.listeners.*;
 import kireiko.dev.anticheat.managers.CheckManager;
 import kireiko.dev.anticheat.services.AnimatedPunishService;
@@ -118,7 +119,7 @@ public class MX extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        AsyncScheduler.shutdown();
     }
 
 }

@@ -1,12 +1,14 @@
 package kireiko.dev.anticheat.checks.aim.ml.modules;
 
-import kireiko.dev.millennium.math.Simplification;
 import kireiko.dev.millennium.ml.data.ResultML;
 import kireiko.dev.millennium.ml.data.module.FlagType;
 import kireiko.dev.millennium.ml.data.module.ModuleML;
 import kireiko.dev.millennium.ml.data.module.ModuleResultML;
 
 public class MHuge1Module implements ModuleML {
+
+    private static final double M = 2.0;
+
     @Override
     public String getName() {
         return "m_huge1";
@@ -15,10 +17,10 @@ public class MHuge1Module implements ModuleML {
     @Override
     public ModuleResultML getResult(ResultML resultML) {
         ResultML.CheckResultML checkResult = resultML.statisticsResult;
-        double ab1 = checkResult.UNUSUAL;
-        double ab2 = checkResult.STRANGE;
-        double ab3 = checkResult.SUSPECTED;
-        double ab4 = checkResult.SUSPICIOUSLY;
+        double ab1 = checkResult.UNUSUAL / M;
+        double ab2 = checkResult.STRANGE / M;
+        double ab3 = checkResult.SUSPECTED / M;
+        double ab4 = checkResult.SUSPICIOUSLY / M;
         FlagType type = FlagType.NORMAL;
         if (ab1 > 1.0) {
             double percent = Math.min(((ab1 - 1.0)) * 100, 100.0);
@@ -33,5 +35,10 @@ public class MHuge1Module implements ModuleML {
             type = FlagType.UNUSUAL;
         }
         return new ModuleResultML(30, type, checkResult.toString());
+    }
+
+    @Override
+    public int getParameterBuffer() {
+        return 10;
     }
 }

@@ -13,6 +13,7 @@ import java.util.Map;
 public final class AimInvalidCheck implements HeuristicComponent {
     private final AimHeuristicCheck check;
     private int buffer = 0;
+    private static final float INVALID_PITCH = 90f + 1e-6f;
     private Map<String, Object> localCfg = new HashMap<>();
     public AimInvalidCheck(final AimHeuristicCheck check) {
         this.check = check;
@@ -47,7 +48,7 @@ public final class AimInvalidCheck implements HeuristicComponent {
                 profile.setAttackBlockToTime(System.currentTimeMillis() + blockTime);
             }
         } else buffer--;
-        if (delta.getY() > 90.1f) {
+        if (profile.getTo().getPitch() > INVALID_PITCH) {
             profile.punish("Aim", "Invalid", "Unlimited Pitch " + event.getDelta().getY(), vl);
             profile.setAttackBlockToTime(System.currentTimeMillis() + blockTime);
         }

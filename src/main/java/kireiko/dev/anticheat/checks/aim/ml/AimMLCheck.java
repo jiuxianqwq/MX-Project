@@ -77,9 +77,9 @@ public final class AimMLCheck implements PacketCheckHandler {
             Vec2f delta = event.getDelta();
             this.rawRotations.add(delta);
             if (TEST_MODE) {
-                profile.getPlayer().sendActionBar(this.rawRotations.size() + "/300");
+                profile.getPlayer().sendActionBar(this.rawRotations.size() + "/600");
             }
-            if (this.rawRotations.size() >= 300) this.check();
+            if (this.rawRotations.size() >= 600) this.check();
         } else if (o instanceof UseEntityEvent) {
             UseEntityEvent event = (UseEntityEvent) o;
             if (event.isAttack()) {
