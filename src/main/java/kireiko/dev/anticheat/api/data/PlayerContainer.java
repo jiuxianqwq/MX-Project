@@ -1,5 +1,6 @@
 package kireiko.dev.anticheat.api.data;
 
+import kireiko.dev.anticheat.checks.movement.BlinkNoSlowCheck;
 import kireiko.dev.anticheat.api.player.PlayerProfile;
 import kireiko.dev.anticheat.core.AsyncScheduler;
 import kireiko.dev.anticheat.utils.LogUtils;
@@ -27,6 +28,11 @@ public final class PlayerContainer {
     public static void unload(Player player) {
         PlayerProfile profile = uuidPlayerProfileMap.get(player.getUniqueId());
         if (profile == null) return;
+        for (Object check : profile.getChecks()) {
+            if (check instanceof BlinkNoSlowCheck) {
+                ((BlinkNoSlowCheck) check).unregister();
+            }
+        }
         if (!profile.getLogs().isEmpty()) {
             final StringBuilder logBuilder = new StringBuilder();
             LogUtils.createLog(player.getName());
