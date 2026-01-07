@@ -10,7 +10,6 @@ import kireiko.dev.anticheat.checks.aim.AimHeuristicCheck;
 import kireiko.dev.anticheat.checks.aim.AimStatisticsCheck;
 import kireiko.dev.anticheat.checks.aim.ml.AimMLCheck;
 import kireiko.dev.anticheat.checks.clicks.AutoClickerCheck;
-import kireiko.dev.anticheat.checks.movement.BlinkNoSlowCheck;
 import kireiko.dev.anticheat.checks.movement.GhostBlockAbuseCheck;
 import kireiko.dev.anticheat.checks.velocity.VelocityCheck;
 import lombok.Getter;
@@ -40,7 +39,6 @@ public class CheckManager {
                         AimMLCheck.class,
                         VelocityCheck.class,
                         AutoClickerCheck.class,
-                        BlinkNoSlowCheck.class,
                         GhostBlockAbuseCheck.class
         ));
     }
